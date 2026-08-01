@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@layer base {
+  *, ::before, ::after {
+    font-family: 'Vazirmatn', 'IBM Plex Sans Arabic', 'Alexandria', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  html, body, button, input, select, textarea {
+    font-family: 'Vazirmatn', 'IBM Plex Sans Arabic', 'Alexandria', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Scrollbar hiding utilities */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Leaflet Dark Glassmorphism Popups */
+.leaflet-popup-content-wrapper {
+  background: rgba(10, 15, 12, 0.95) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px !important;
+  line-height: 1.5 !important;
+}
+
+.leaflet-popup-tip {
+  background: rgba(10, 15, 12, 0.95) !important;
+  box-shadow: none !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  color: rgba(255, 255, 255, 0.4) !important;
+  padding: 6px 8px 0 0 !important;
+  font-size: 14px !important;
+  font-weight: 300 !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #ffffff !important;
+}
+
+

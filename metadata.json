@@ -1,0 +1,6 @@
+{
+  "name": "AllinCar - آلین‌کار",
+  "description": "سامانه مدیریت و شارژ سیار هوشمند خودروهای برقی و خدمات اختصاصی پریمیوم",
+  "requestFramePermissions": ["geolocation", "microphone", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
