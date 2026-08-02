@@ -1,6 +1,6 @@
 import React from 'react';
 import { ServiceItem, ThemeAccent, WalletState } from '../types';
-import { SERVICES_LIST } from '../data/mockData';
+import { getServicesList } from '../data/mockData';
 import { Zap, Sparkles, UserCheck, Wrench, ShieldAlert, Check, Plus, ShoppingBag, Gem } from 'lucide-react';
 import { Language, translations } from '../translations';
 
@@ -17,7 +17,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
   walletState,
   onSelectService,
   onTopUpClick,
-  lang = 'fa',
+  lang = 'fa' as Language,
 }) => {
   const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
   const [bundledMap, setBundledMap] = React.useState<Record<string, boolean>>({});
@@ -25,13 +25,13 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
 
   const categories = [
     { id: 'all', label: t.allServices },
-    { id: 'charging', label: lang === 'fa' ? 'شارژ برقی' : 'EV Charging' },
-    { id: 'wash', label: lang === 'fa' ? 'کارواش و زیبایی' : 'Nano Wash' },
-    { id: 'driver', label: lang === 'fa' ? 'راننده تشریفات' : 'Chauffeur' },
-    { id: 'maintenance', label: lang === 'fa' ? 'سرویس دوره‌ای' : 'Maintenance' },
+    { id: 'charging', label: t.catCharging },
+    { id: 'wash', label: t.catWash },
+    { id: 'driver', label: t.catDriver },
+    { id: 'maintenance', label: t.catMaintenance },
   ];
 
-  const filteredServices = SERVICES_LIST.filter(
+  const filteredServices = getServicesList(lang).filter(
     (s) => selectedCategory === 'all' || s.category === selectedCategory
   );
 
@@ -190,7 +190,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                   </div>
                   {isBundled && (
                     <span className="text-[10px] px-2 py-0.5 rounded-full font-bold text-black" style={{ backgroundColor: currentTheme.primaryHex }}>
-                      {lang === 'fa' ? 'باندل شد +' : 'Bundled +'}
+                      {t.bundledActive}
                     </span>
                   )}
                 </div>

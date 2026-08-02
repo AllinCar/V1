@@ -38,16 +38,20 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
       {
         id: '1',
         sender: 'concierge',
-        text: lang === 'fa'
-          ? `درود جناب مهندسی علی احمدی! من خادم و دستیار هوشمند اختصاصی شما در آلین‌کار هستم. آماده‌ام هر فرمایشی برای خودروی ${selectedCar.name} (${selectedCar.batteryPercent}٪ شارژ) داشته باشید، فوراً انجام دهم. چه کاری می‌توانم برایتان انجام دهم؟`
-          : `Greetings Eng. Ali Ahmadi! I am your personal AI Concierge at Alincar. Ready to manage any requests for your vehicle ${selectedCar.name} (${selectedCar.batteryPercent}% charge). How may I assist you today?`,
+        text: t.welcomeMessage
+          .replace('{car}', selectedCar.name)
+          .replace('{pct}', String(selectedCar.batteryPercent)),
       },
     ]);
-  }, [lang, selectedCar.name, selectedCar.batteryPercent]);
+  }, [lang, selectedCar.name, selectedCar.batteryPercent, t.welcomeMessage]);
 
   const [inputMessage, setInputMessage] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isListening, setIsListening] = React.useState(false);
+  const [voiceHint, setVoiceHint] = React.useState<string | null>(null);
+  const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
+  const mediaStreamRef = React.useRef<MediaStream | null>(null);
+  const recognitionRef = React.useRef<any>(null);
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
@@ -55,8 +59,15 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  if (!isOpen) return null;
+  React.useEffect(() => {
+    return () => {
+      recognitionRef.current?.stop?.();
+      mediaRecorderRef.current?.stop?.();
+      mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
 
+  if (!isOpen) return null;
 
   const handleSendMessage = async (textToSend?: string) => {
     const query = textToSend || inputMessage;
@@ -93,7 +104,6 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
 
       setMessages((prev) => [...prev, botMsg]);
 
-      // If action is requested, execute it automatically or offer direct tap
       if (data.suggestedAction && data.suggestedAction !== 'NONE') {
         onExecuteAction(data.suggestedAction, data.actionParams);
       }
@@ -111,42 +121,134 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
     }
   };
 
-  const startVoiceDictation = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-      // Speech recognition not supported natively in this browser window, simulate speech tap
-      setIsListening(true);
-      setTimeout(() => {
+  const stopMediaTracks = () => {
+    mediaStreamRef.current?.getTracks().forEach((t) => t.stop());
+    mediaStreamRef.current = null;
+    mediaRecorderRef.current = null;
+  };
+
+  const ensureMicPermission = async (): Promise<MediaStream | null> => {
+    if (!window.isSecureContext) {
+      setVoiceHint(t.voiceNeedsHttps);
+      return null;
+    }
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setVoiceHint(t.voiceUnsupported);
+      return null;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      return stream;
+    } catch {
+      setVoiceHint(t.micDenied);
+      return null;
+    }
+  };
+
+  const startMediaRecorderFallback = (stream: MediaStream) => {
+    try {
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : MediaRecorder.isTypeSupported('audio/mp4')
+        ? 'audio/mp4'
+        : '';
+      const recorder = mimeType
+        ? new MediaRecorder(stream, { mimeType })
+        : new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      const chunks: BlobPart[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+      recorder.onstop = () => {
+        stopMediaTracks();
         setIsListening(false);
-        handleSendMessage(t.aiVoiceVanRequest);
-      }, 2000);
+        if (chunks.length > 0) {
+          handleSendMessage(t.voiceRecordedFallback);
+        }
+      };
+
+      recorder.start();
+      setIsListening(true);
+      setVoiceHint(t.listening);
+      // Auto-stop after ~6s for a practical mobile dictation burst
+      window.setTimeout(() => {
+        if (mediaRecorderRef.current?.state === 'recording') {
+          mediaRecorderRef.current.stop();
+        }
+      }, 6000);
+    } catch {
+      stopMediaTracks();
+      setIsListening(false);
+      setVoiceHint(t.voiceUnsupported);
+    }
+  };
+
+  const startVoiceDictation = async () => {
+    setVoiceHint(null);
+
+    if (isListening) {
+      recognitionRef.current?.stop?.();
+      if (mediaRecorderRef.current?.state === 'recording') {
+        mediaRecorderRef.current.stop();
+      } else {
+        stopMediaTracks();
+        setIsListening(false);
+      }
       return;
     }
 
+    const stream = await ensureMicPermission();
+    if (!stream) return;
+
+    const SpeechRecognitionCtor =
+      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognitionCtor) {
+      // iOS / many mobile browsers: record audio instead of live STT
+      startMediaRecorderFallback(stream);
+      return;
+    }
+
+    // Permission granted — release the stream so SpeechRecognition can use the mic
+    stopMediaTracks();
+
     try {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'fa-IR';
+      const recognition = new SpeechRecognitionCtor();
+      recognitionRef.current = recognition;
+      recognition.lang = lang === 'fa' ? 'fa-IR' : 'en-US';
       recognition.interimResults = false;
+      recognition.continuous = false;
+      recognition.maxAlternatives = 1;
 
       setIsListening(true);
+      setVoiceHint(t.listening);
       recognition.start();
 
       recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+        const transcript = event.results?.[0]?.[0]?.transcript;
         setIsListening(false);
-        handleSendMessage(transcript);
+        if (transcript) handleSendMessage(transcript);
       };
 
-      recognition.onerror = () => {
+      recognition.onerror = async () => {
+        recognitionRef.current = null;
         setIsListening(false);
+        const retryStream = await ensureMicPermission();
+        if (retryStream) startMediaRecorderFallback(retryStream);
       };
 
       recognition.onend = () => {
-        setIsListening(false);
+        recognitionRef.current = null;
+        if (mediaRecorderRef.current?.state !== 'recording') {
+          setIsListening(false);
+        }
       };
-    } catch (e) {
-      setIsListening(false);
-      handleSendMessage(t.aiVoiceUrgentCharge);
+    } catch {
+      const retryStream = await ensureMicPermission();
+      if (retryStream) startMediaRecorderFallback(retryStream);
     }
   };
 
@@ -178,7 +280,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-ok/70 mt-0.5">
-                {isListening ? t.listening : t.readyAssist}
+                {voiceHint || (isListening ? t.listening : t.readyAssist)}
               </p>
             </div>
           </div>
@@ -197,8 +299,8 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
               <Sparkles className="w-8 h-8 text-black animate-pulse" />
             </div>
           </div>
-          <h4 className="text-xs font-light text-ink-3 mt-3 tracking-wide dir-ltr">
-            <span className="italic font-serif text-ok">Voxa AI</span> is here to assist
+          <h4 className="text-xs font-light text-ink-3 mt-3 tracking-wide">
+            {t.voxaAssist}
           </h4>
           <p className="text-[10px] text-ok/70 mt-0.5 font-sans">
             {t.aiBannerSubtitle.replace('{car}', selectedCar.name).replace('{pct}', String(selectedCar.batteryPercent))}
@@ -222,7 +324,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
                 {msg.sender === 'concierge' && (
                   <div className="flex items-center gap-1.5 text-[10px] text-ok mb-1 font-mono uppercase tracking-wider">
                     <Bot className="w-3.5 h-3.5 text-ok" />
-                    <span>Aria Voice Concierge</span>
+                    <span>{t.ariaVoiceName}</span>
                   </div>
                 )}
                 <p className="font-sans">{msg.text}</p>

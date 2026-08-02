@@ -1,14 +1,65 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
+import https from 'https';
+import http from 'http';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
 import { GoogleGenAI, Type } from '@google/genai';
 import dotenv from 'dotenv';
+import { generate as generateSelfSigned } from 'selfsigned';
+import os from 'os';
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+function getLocalIPs(): string[] {
+  const nets = os.networkInterfaces();
+  const ips: string[] = [];
+  for (const entries of Object.values(nets)) {
+    for (const net of entries || []) {
+      if (net.family === 'IPv4' && !net.internal) ips.push(net.address);
+    }
+  }
+  return ips;
+}
+
+async function loadOrCreateHttpsCerts() {
+  const certDir = path.join(process.cwd(), '.certs');
+  const keyPath = path.join(certDir, 'key.pem');
+  const certPath = path.join(certDir, 'cert.pem');
+
+  if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
+    return {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath),
+    };
+  }
+
+  fs.mkdirSync(certDir, { recursive: true });
+  const attrs = [{ name: 'commonName', value: 'localhost' }];
+  const pems = await generateSelfSigned(attrs, {
+    days: 365,
+    keySize: 2048,
+    algorithm: 'sha256',
+    extensions: [
+      {
+        name: 'subjectAltName',
+        altNames: [
+          { type: 2, value: 'localhost' },
+          { type: 7, ip: '127.0.0.1' },
+          ...getLocalIPs().map((ip) => ({ type: 7 as const, ip })),
+        ],
+      },
+    ],
+  });
+
+  fs.writeFileSync(keyPath, pems.private);
+  fs.writeFileSync(certPath, pems.cert);
+  return { key: pems.private, cert: pems.cert };
+}
 
 async function startServer() {
   const app = express();
@@ -194,9 +245,24 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`AllinCar Express server running on http://0.0.0.0:${PORT}`);
-  });
+  // HTTPS is required for geolocation + microphone on real phones (LAN IP is not a secure context over HTTP).
+  const useHttps = process.env.DISABLE_HTTPS !== 'true';
+  const host = '0.0.0.0';
+
+  if (useHttps) {
+    const credentials = await loadOrCreateHttpsCerts();
+    https.createServer(credentials, app).listen(PORT, host, () => {
+      const ips = getLocalIPs();
+      console.log(`AllinCar HTTPS server running on https://localhost:${PORT}`);
+      ips.forEach((ip) => console.log(`  Phone URL: https://${ip}:${PORT}`));
+      console.log('Accept the self-signed certificate warning on your phone, then allow Location & Microphone.');
+    });
+  } else {
+    http.createServer(app).listen(PORT, host, () => {
+      console.log(`AllinCar HTTP server running on http://0.0.0.0:${PORT}`);
+      console.log('Warning: Location/Mic will fail on mobile over plain HTTP. Unset DISABLE_HTTPS.');
+    });
+  }
 }
 
 startServer();

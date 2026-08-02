@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { NavTab, Car, WalletState, ThemeAccent, ActiveServiceOrder, PrepaidPackage, ServiceItem, ServiceHistory, UserPersona } from './types';
-import { INITIAL_CARS, PREPAID_PACKAGES, SERVICES_LIST, THEME_ACCENTS, INITIAL_USER_PERSONA, INITIAL_HISTORY } from './data/mockData';
+import { getInitialCars, getInitialHistory, getInitialUserPersona, getThemeAccents } from './data/mockData';
 import { MapCanvas } from './components/MapCanvas';
 import { FloatingCarCard } from './components/FloatingCarCard';
 import { ProactiveServiceSection } from './components/ProactiveServiceSection';
@@ -37,18 +37,59 @@ export default function App() {
   const t = translations[lang];
 
   // Core Data States
-  const [cars, setCars] = React.useState<Car[]>(INITIAL_CARS);
-  const [selectedCar, setSelectedCar] = React.useState<Car>(INITIAL_CARS[0]);
+  const [cars, setCars] = React.useState<Car[]>(() => getInitialCars('fa'));
+  const [selectedCar, setSelectedCar] = React.useState<Car>(() => getInitialCars('fa')[0]);
   const [walletState, setWalletState] = React.useState<WalletState>({
     balance: 4500000,
     remainingKwh: 7,
     remainingWashes: 1,
     remainingDrivers: 1,
-    activePackageName: 'پکیج الماس برقی VIP',
+    activePackageName: translations.fa.pkgDiamondShort,
   });
-  const [currentTheme, setCurrentTheme] = React.useState<ThemeAccent>(THEME_ACCENTS[0]);
-  const [userPersona, setUserPersona] = React.useState<UserPersona>(INITIAL_USER_PERSONA);
-  const [history, setHistory] = React.useState<ServiceHistory[]>(INITIAL_HISTORY);
+  const [currentTheme, setCurrentTheme] = React.useState<ThemeAccent>(() => getThemeAccents('fa')[0]);
+  const [userPersona, setUserPersona] = React.useState<UserPersona>(() => getInitialUserPersona('fa'));
+  const [history, setHistory] = React.useState<ServiceHistory[]>(() => getInitialHistory('fa'));
+
+  // Keep localized mock content in sync when language changes
+  React.useEffect(() => {
+    const localizedCars = getInitialCars(lang);
+    setCars((prev) =>
+      prev.map((car) => {
+        const match = localizedCars.find((c) => c.id === car.id);
+        return match ? { ...car, name: match.name, color: match.color } : car;
+      })
+    );
+    setSelectedCar((prev) => {
+      const match = localizedCars.find((c) => c.id === prev.id);
+      return match ? { ...prev, name: match.name, color: match.color } : prev;
+    });
+    setUserPersona(getInitialUserPersona(lang));
+    setHistory((prev) => {
+      const localized = getInitialHistory(lang);
+      return prev.map((item) => {
+        const match = localized.find((h) => h.id === item.id);
+        return match || item;
+      });
+    });
+    setCurrentTheme((prev) => {
+      const themes = getThemeAccents(lang);
+      return themes.find((th) => th.id === prev.id) || themes[0];
+    });
+    setWalletState((prev) => ({
+      ...prev,
+      activePackageName:
+        prev.activePackageName.includes('الماس') ||
+        prev.activePackageName.toLowerCase().includes('diamond')
+          ? translations[lang].pkgDiamondShort
+          : prev.activePackageName.includes('طلا') ||
+              prev.activePackageName.toLowerCase().includes('gold')
+            ? translations[lang].pkgGoldName
+            : prev.activePackageName.includes('نقره') ||
+                prev.activePackageName.toLowerCase().includes('silver')
+              ? translations[lang].pkgSilverName
+              : translations[lang].pkgDiamondShort,
+    }));
+  }, [lang]);
 
   // Modals & Active Orders
   const [isAIModalOpen, setIsAIModalOpen] = React.useState(false);
@@ -56,11 +97,15 @@ export default function App() {
   const [activeOrder, setActiveOrder] = React.useState<ActiveServiceOrder | null>(null);
 
   // Shake-to-SOS Detection (Physical Shake Listener)
+  // Higher threshold + cooldown: only a firm, deliberate shake opens SOS
   React.useEffect(() => {
     let lastX = 0,
       lastY = 0,
       lastZ = 0;
     let lastTime = 0;
+    let lastTrigger = 0;
+    const SHAKE_THRESHOLD = 2800;
+    const SHAKE_COOLDOWN_MS = 3000;
 
     const handleMotion = (event: DeviceMotionEvent) => {
       const current = event.accelerationIncludingGravity;
@@ -76,7 +121,8 @@ export default function App() {
         const deltaZ = Math.abs((current.z || 0) - lastZ);
 
         const speed = ((deltaX + deltaY + deltaZ) / diffTime) * 10000;
-        if (speed > 800) {
+        if (speed > SHAKE_THRESHOLD && currentTime - lastTrigger > SHAKE_COOLDOWN_MS) {
+          lastTrigger = currentTime;
           setIsSOSModalOpen(true);
         }
 
@@ -91,13 +137,31 @@ export default function App() {
   }, []);
 
   // Handlers for Zero Page-Jump Map Expansions
+  const closeMapOverlays = () => {
+    setIsMapExpanded(false);
+  };
+
+  const switchTab = (tab: NavTab) => {
+    setIsMapExpanded(false);
+    setIsAIModalOpen(false);
+    setActiveTab(tab);
+  };
+
+  // Leave home → always dismiss map booking sheet (any navigation path)
+  React.useEffect(() => {
+    if (activeTab !== 'home') {
+      setIsMapExpanded(false);
+    }
+  }, [activeTab]);
+
   const handleOpenChargeFlow = () => {
-    setActiveTab('home');
+    switchTab('home');
     setIsMapExpanded(true);
   };
 
   const handleBookDriverDirectly = () => {
-    setActiveTab('home');
+    switchTab('home');
+    setIsMapExpanded(false);
     const newOrder: ActiveServiceOrder = {
       id: `ord-${Date.now()}`,
       serviceTitle: t.driverServiceTitle,
@@ -110,8 +174,7 @@ export default function App() {
       technicianName: t.techDriver,
       technicianScore: 4.9,
       technicianPhone: t.techDriverPhone,
-      technicianPhoto:
-        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+      technicianPhoto: '/images/avatars/tech-driver.jpg',
       startTime: t.startNow,
       progressPercent: 35,
     };
@@ -138,7 +201,8 @@ export default function App() {
   };
 
   const handleBookServiceDirectly = () => {
-    setActiveTab('home');
+    switchTab('home');
+    setIsMapExpanded(false);
     const newOrder: ActiveServiceOrder = {
       id: `ord-${Date.now()}`,
       serviceTitle: t.bmsServiceTitle,
@@ -151,8 +215,7 @@ export default function App() {
       technicianName: t.techBms,
       technicianScore: 5.0,
       technicianPhone: t.techBmsPhone,
-      technicianPhoto:
-        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
+      technicianPhoto: '/images/avatars/tech-bms.jpg',
       startTime: t.startNow,
       progressPercent: 15,
     };
@@ -173,8 +236,7 @@ export default function App() {
       technicianName: t.techMap,
       technicianScore: 4.95,
       technicianPhone: t.techMapPhone,
-      technicianPhoto:
-        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80',
+      technicianPhoto: '/images/avatars/tech-map.jpg',
       startTime: t.startNow,
       kwhAmount: kwhAmount || 7,
       isBundledWash: dryWash,
@@ -205,7 +267,9 @@ export default function App() {
   const handleAIExecuteAction = (action: string, params?: any) => {
     if (action === 'BOOK_MOBILE_CHARGER') {
       handleConfirmMapChargeBooking(t.aiMobileChargeTitle, params?.kWh || 7, true);
+      switchTab('home');
     } else if (action === 'SHOW_FAST_CHARGER_MAP') {
+      switchTab('home');
       setIsMapExpanded(true);
       setChargeOptionSelected('fast_charger_2km');
     } else if (action === 'BOOK_DRIVER') {
@@ -213,7 +277,7 @@ export default function App() {
     } else if (action === 'SOS_EMERGENCY') {
       setIsSOSModalOpen(true);
     } else if (action === 'TOPUP_WALLET') {
-      setActiveTab('profile');
+      switchTab('profile');
     }
   };
 
@@ -224,7 +288,7 @@ export default function App() {
         <button
           onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
           className="icon-btn rounded-full group"
-          title={lang === 'fa' ? 'Switch to English' : 'تغییر به فارسی'}
+          title={t.languageToggle}
         >
           <Globe className="w-4 h-4 text-gold group-hover:rotate-45 transition-transform" />
         </button>
@@ -243,81 +307,98 @@ export default function App() {
       <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gold/10 border-l border-y border-gold/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
         <div className="w-1 h-6 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
         <p className="writing-vertical-rl text-[9px] uppercase tracking-widest font-bold dir-ltr" style={{ color: currentTheme.primaryHex }}>
-          VIP Elite
+          {t.vipElite}
         </p>
       </div>
 
       {/* Main Tab Render Container */}
       <div className="relative flex-1 w-full h-full overflow-hidden">
-        {activeTab === 'home' && (
-          <div className="w-full h-full relative tab-enter" key="home">
-            {/* Base Full Map background */}
-            <MapCanvas
-              currentTheme={currentTheme}
-              isMapExpanded={isMapExpanded}
-              activeServiceMode="idle"
-              chargeOptionSelected={chargeOptionSelected}
-              onSelectChargeOption={setChargeOptionSelected}
-              onConfirmBooking={handleConfirmMapChargeBooking}
-              onCloseMapExpansion={() => setIsMapExpanded(false)}
-              userBatteryPercent={selectedCar.batteryPercent}
-              lang={lang}
-            />
+        {/* Home/map stays mounted (hidden off-tab) so Leaflet never remounts */}
+        <div
+          className={`absolute inset-0 ${
+            activeTab === 'home'
+              ? 'z-10 opacity-100'
+              : 'z-0 opacity-0 pointer-events-none'
+          }`}
+          aria-hidden={activeTab !== 'home'}
+        >
+          <MapCanvas
+            currentTheme={currentTheme}
+            isMapExpanded={isMapExpanded && activeTab === 'home'}
+            activeServiceMode="idle"
+            chargeOptionSelected={chargeOptionSelected}
+            onSelectChargeOption={setChargeOptionSelected}
+            onConfirmBooking={handleConfirmMapChargeBooking}
+            onCloseMapExpansion={() => setIsMapExpanded(false)}
+            userBatteryPercent={selectedCar.batteryPercent}
+            lang={lang}
+            isVisible={activeTab === 'home'}
+          />
 
-            {/* Top Floating Car Card */}
-            <FloatingCarCard
-              cars={cars}
-              selectedCar={selectedCar}
-              onSelectCar={setSelectedCar}
-              currentTheme={currentTheme}
-              isMapExpanded={isMapExpanded}
-              userPersona={userPersona}
-              onOpenProfile={() => setActiveTab('profile')}
-              lang={lang}
-            />
+          {activeTab === 'home' && (
+            <>
+              <FloatingCarCard
+                cars={cars}
+                selectedCar={selectedCar}
+                onSelectCar={setSelectedCar}
+                currentTheme={currentTheme}
+                isMapExpanded={isMapExpanded}
+                userPersona={userPersona}
+                onOpenProfile={() => switchTab('profile')}
+                lang={lang}
+              />
 
-            {/* Bottom Quiet Proactive Suggestions */}
-            <ProactiveServiceSection
-              currentTheme={currentTheme}
-              selectedCar={selectedCar}
-              walletState={walletState}
-              onOpenChargeFlow={handleOpenChargeFlow}
-              onBookDriverDirectly={handleBookDriverDirectly}
-              onBookServiceDirectly={handleBookServiceDirectly}
-              isMapExpanded={isMapExpanded}
-              lang={lang}
-            />
-          </div>
-        )}
+              <ProactiveServiceSection
+                currentTheme={currentTheme}
+                selectedCar={selectedCar}
+                walletState={walletState}
+                onOpenChargeFlow={handleOpenChargeFlow}
+                onBookDriverDirectly={handleBookDriverDirectly}
+                onBookServiceDirectly={handleBookServiceDirectly}
+                isMapExpanded={isMapExpanded}
+                lang={lang}
+              />
+
+              {activeOrder && (
+                <ActiveOrderTracker
+                  order={activeOrder}
+                  currentTheme={currentTheme}
+                  onCancelOrder={() => setActiveOrder(null)}
+                  lang={lang}
+                />
+              )}
+            </>
+          )}
+        </div>
 
         {activeTab === 'services' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="services">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="services">
             <ServicesTab
               currentTheme={currentTheme}
               walletState={walletState}
               onSelectService={(service, withBundle) => {
                 handleConfirmMapChargeBooking(service.title, 7, withBundle);
-                setActiveTab('home');
+                switchTab('home');
               }}
-              onTopUpClick={() => setActiveTab('profile')}
+              onTopUpClick={() => switchTab('profile')}
               lang={lang}
             />
           </div>
         )}
 
         {activeTab === 'cars' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="cars">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="cars">
             <CarsTab
               cars={cars}
               selectedCarId={selectedCar.id}
               onSelectCar={(car) => {
                 setSelectedCar(car);
-                setActiveTab('home');
+                switchTab('home');
               }}
               onAddCar={(newCar) => {
                 setCars((prev) => [newCar, ...prev]);
                 setSelectedCar(newCar);
-                setActiveTab('home');
+                switchTab('home');
               }}
               currentTheme={currentTheme}
               lang={lang}
@@ -326,7 +407,7 @@ export default function App() {
         )}
 
         {activeTab === 'profile' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="profile">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="profile">
             <ProfileTab
               userPersona={userPersona}
               walletState={walletState}
@@ -351,16 +432,6 @@ export default function App() {
               lang={lang}
             />
           </div>
-        )}
-
-        {/* Active Order Live Tracker (Floats on Map) */}
-        {activeOrder && (
-          <ActiveOrderTracker
-            order={activeOrder}
-            currentTheme={currentTheme}
-            onCancelOrder={() => setActiveOrder(null)}
-            lang={lang}
-          />
         )}
       </div>
 
@@ -390,11 +461,11 @@ export default function App() {
       {/* Fixed Multilingual iOS Floating Bottom Navigation */}
       <BottomNavigation
         activeTab={activeTab}
-        onChangeTab={(tab) => {
-          setIsMapExpanded(false);
-          setActiveTab(tab);
+        onChangeTab={switchTab}
+        onOpenAIConcierge={() => {
+          closeMapOverlays();
+          setIsAIModalOpen(true);
         }}
-        onOpenAIConcierge={() => setIsAIModalOpen(true)}
         currentTheme={currentTheme}
         lang={lang}
       />

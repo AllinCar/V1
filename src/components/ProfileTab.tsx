@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserPersona, WalletState, ServiceHistory, ThemeAccent, PrepaidPackage } from '../types';
-import { PREPAID_PACKAGES, THEME_ACCENTS } from '../data/mockData';
+import { getPrepaidPackages, getThemeAccents } from '../data/mockData';
 import { Wallet, Award, History, Palette, CheckCircle2, ChevronRight, PlusCircle, ArrowUpRight, X } from 'lucide-react';
 import { Language, translations } from '../translations';
 
@@ -23,7 +23,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   onSelectTheme,
   onTopUpWallet,
   onChangePackage,
-  lang = 'fa',
+  lang = 'fa' as Language,
 }) => {
   const [isTopUpOpen, setIsTopUpOpen] = React.useState(false);
   const [topUpAmount, setTopUpAmount] = React.useState('2000000');
@@ -35,7 +35,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       {/* Page header */}
       <div className="page-header">
         <div>
-          <p className="eyebrow">{lang === 'fa' ? 'حساب کاربری VIP' : 'VIP Account'}</p>
+          <p className="eyebrow">{t.vipAccount}</p>
           <h2 className="text-lg font-bold text-ink mt-1">{t.profile}</h2>
         </div>
       </div>
@@ -71,7 +71,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 <Award className="w-3 h-3" />
                 {userPersona.level}
               </span>
-              <span className="chip font-mono">{userPersona.totalPoints} PTS</span>
+              <span className="chip font-mono">{userPersona.totalPoints} {t.pointsLabel}</span>
             </div>
           </div>
         </div>
@@ -142,13 +142,11 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <h3 className="text-xs font-bold text-ink">{t.appTheme}</h3>
         </div>
         <p className="text-[11px] text-ink-4">
-          {lang === 'fa'
-            ? 'تم اپلیکیشن را مطابق سلیقه یا برند خودروی خود تنظیم کنید:'
-            : 'Customize application theme color to suit your style:'}
+          {t.themeCustomizeHint}
         </p>
 
         <div className="grid grid-cols-2 gap-2.5 pt-1">
-          {THEME_ACCENTS.map((themeItem) => {
+          {getThemeAccents(lang).map((themeItem) => {
             const isActive = currentTheme.id === themeItem.id;
             return (
               <button
@@ -269,7 +267,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             </div>
 
             <div className="space-y-3">
-              {PREPAID_PACKAGES.map((pkg) => (
+              {getPrepaidPackages(lang).map((pkg) => (
                 <div key={pkg.id} className="panel-subtle p-4 space-y-2">
                   <div className="flex items-center justify-between">
                     <h4 className="text-xs font-bold text-ink">{pkg.name}</h4>

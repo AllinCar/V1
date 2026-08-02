@@ -1,6 +1,6 @@
 ﻿import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { Zap, Navigation, ShieldCheck, Truck, Locate } from 'lucide-react';
+import { Zap, ShieldCheck, Locate } from 'lucide-react';
 import { ThemeAccent } from '../types';
 import { Language, translations } from '../translations';
 
@@ -14,6 +14,8 @@ interface MapCanvasProps {
   onCloseMapExpansion?: () => void;
   userBatteryPercent: number;
   lang?: Language;
+  /** When false, map stays mounted but hidden — avoids remount flash */
+  isVisible?: boolean;
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
@@ -25,84 +27,130 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   onCloseMapExpansion,
   userBatteryPercent,
   lang = 'fa',
+  isVisible = true,
 }) => {
   const t = translations[lang];
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const overlaysRef = useRef<L.LayerGroup | null>(null);
   const [includeDryWash, setIncludeDryWash] = React.useState(true);
+  const [isMapReady, setIsMapReady] = React.useState(false);
 
   // State for user location from GPS (falls back to Tehran Elahiyeh)
   const [userCoords, setUserCoords] = React.useState<[number, number]>([35.792, 51.423]);
   const [isGpsActive, setIsGpsActive] = React.useState(false);
+  const [gpsStatus, setGpsStatus] = React.useState<'idle' | 'locating' | 'ok' | 'denied' | 'insecure' | 'error'>('idle');
 
-
-  // Read GPS coordinates on mount
-  useEffect(() => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          if (pos.coords.latitude && pos.coords.longitude) {
-            setUserCoords([pos.coords.latitude, pos.coords.longitude]);
-            setIsGpsActive(true);
-          }
-        },
-        (err) => {
-          console.log('Geolocation fallback to default:', err.message);
-        },
-        { enableHighAccuracy: true, timeout: 5000 }
-      );
+  const requestUserLocation = React.useCallback((flyAfter = false) => {
+    if (!window.isSecureContext) {
+      setGpsStatus('insecure');
+      return;
     }
+    if (!('geolocation' in navigator)) {
+      setGpsStatus('error');
+      return;
+    }
+
+    setGpsStatus('locating');
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const next: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+        setUserCoords(next);
+        setIsGpsActive(true);
+        setGpsStatus('ok');
+        if (flyAfter && mapInstanceRef.current) {
+          mapInstanceRef.current.flyTo(next, 15, { duration: 1.1 });
+        }
+      },
+      (err) => {
+        console.log('Geolocation fallback to default:', err.message);
+        if (err.code === err.PERMISSION_DENIED) setGpsStatus('denied');
+        else setGpsStatus('error');
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
   }, []);
 
-  // Requested Real Tehran Charging Stations
-  const realChargingStations = [
-    { name: 'شهرداری تهران (خیابان بهشت)', coords: [35.708, 51.420] as [number, number], power: '50 kW DC' },
-    { name: 'پارکینگ طالقانی', coords: [35.708, 51.434] as [number, number], power: '60 kW DC' },
-    { name: 'پارکینگ طبقاتی سعدی', coords: [35.683, 51.423] as [number, number], power: '۹۰ کیلووات' },
-    { name: 'پارکینگ نهج‌البلاغه', coords: [35.755, 51.340] as [number, number], power: '۱۳۰ کیلووات (فست)' },
-    { name: 'پارکینگ امیرکبیر', coords: [35.685, 51.435] as [number, number], power: '۷۰ کیلووات' },
-  ];
-
-  // 10 AleenCar Mobile Charging Van Locations widely distributed across Greater Tehran
-  const mobileChargingVans = [
-    { id: 'VAN-101', name: 'ون سیار آلین - کد ۱۰۱ (تجریش / الهیه)', coords: [35.798, 51.425] as [number, number], eta: '۴ دقیقه', battery: '۹۸٪' },
-    { id: 'VAN-102', name: 'ون سیار آلین - کد ۱۰۲ (سعادت‌آباد)', coords: [35.785, 51.365] as [number, number], eta: '۷ دقیقه', battery: '۹۲٪' },
-    { id: 'VAN-103', name: 'ون سیار آلین - کد ۱۰۳ (چیتگر / دریاچه)', coords: [35.735, 51.210] as [number, number], eta: '۱۸ دقیقه', battery: '۸۸٪' },
-    { id: 'VAN-104', name: 'ون سیار آلین - کد ۱۰۴ (میدان آزادی / اکباتان)', coords: [35.698, 51.335] as [number, number], eta: '۱۲ دقیقه', battery: '۹۵٪' },
-    { id: 'VAN-105', name: 'ون سیار آلین - کد ۱۰۵ (شهر ری / جنوب)', coords: [35.590, 51.440] as [number, number], eta: '۲۵ دقیقه', battery: '۱۰۰٪' },
-    { id: 'VAN-106', name: 'ون سیار آلین - کد ۱۰۶ (پاسداران / لویزان)', coords: [35.782, 51.485] as [number, number], eta: '۹ دقیقه', battery: '۸۵٪' },
-    { id: 'VAN-107', name: 'ون سیار آلین - کد ۱۰۷ (تهرانپارس / شرق)', coords: [35.738, 51.530] as [number, number], eta: '۱۶ دقیقه', battery: '۹۱٪' },
-    { id: 'VAN-108', name: 'ون سیار آلین - کد ۱۰۸ (افسریه / خاوران)', coords: [35.645, 51.485] as [number, number], eta: '۲۲ دقیقه', battery: '۹۶٪' },
-    { id: 'VAN-109', name: 'ون سیار آلین - کد ۱۰۹ (میدان ولیعصر / مرکز)', coords: [35.702, 51.405] as [number, number], eta: '۱۱ دقیقه', battery: '۸۹٪' },
-    { id: 'VAN-110', name: 'ون سیار آلین - کد ۱۱۰ (هفت‌تیر / سهروردی)', coords: [35.728, 51.442] as [number, number], eta: '۸ دقیقه', battery: '۹۴٪' },
-  ];
-
+  // Read GPS coordinates on mount (HTTPS required on mobile)
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    requestUserLocation(false);
+  }, [requestUserLocation]);
 
-    // Destroy existing map if any
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
-    }
+  // Init Leaflet once — never tear down on tab switches / GPS / theme
+  useEffect(() => {
+    if (!mapContainerRef.current || mapInstanceRef.current) return;
 
-    // Initialize Leaflet Map centered on user location with optimal zoom level (not too far, perfect visibility)
     const map = L.map(mapContainerRef.current, {
-      center: userCoords,
+      center: [35.792, 51.423],
       zoom: 13.5,
       zoomControl: false,
       attributionControl: false,
     });
 
-    mapInstanceRef.current = map;
-
-    // Add CartoDB Dark Matter tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
       maxZoom: 19,
       subdomains: 'abcd',
     }).addTo(map);
 
-    // 1. User Location Custom HTML Marker (Clean pin icon with no text below)
+    overlaysRef.current = L.layerGroup().addTo(map);
+    mapInstanceRef.current = map;
+
+    const markReady = () => setIsMapReady(true);
+    tiles.on('load', markReady);
+    // Fallback if tile event already fired / cached
+    const readyTimer = window.setTimeout(markReady, 1200);
+
+    requestAnimationFrame(() => map.invalidateSize());
+
+    return () => {
+      window.clearTimeout(readyTimer);
+      tiles.off('load', markReady);
+      map.remove();
+      mapInstanceRef.current = null;
+      overlaysRef.current = null;
+      setIsMapReady(false);
+    };
+  }, []);
+
+  // Refresh size when home becomes visible again (cached map, no remount)
+  useEffect(() => {
+    if (!isVisible || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const id = window.requestAnimationFrame(() => {
+      map.invalidateSize({ animate: false });
+    });
+    return () => window.cancelAnimationFrame(id);
+  }, [isVisible]);
+
+  // Update overlays without destroying the base map (prevents flash)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    const overlays = overlaysRef.current;
+    if (!map || !overlays) return;
+
+    overlays.clearLayers();
+
+    const realChargingStations = [
+      { name: t.station1Name, coords: [35.708, 51.420] as [number, number], power: t.station1Power },
+      { name: t.station2Name, coords: [35.708, 51.434] as [number, number], power: t.station2Power },
+      { name: t.station3Name, coords: [35.683, 51.423] as [number, number], power: t.station3Power },
+      { name: t.station4Name, coords: [35.755, 51.340] as [number, number], power: t.station4Power },
+      { name: t.station5Name, coords: [35.685, 51.435] as [number, number], power: t.station5Power },
+    ];
+
+    const mobileChargingVans = [
+      { id: 'VAN-101', name: t.van101Name, coords: [35.798, 51.425] as [number, number], eta: t.vanMinutes.replace('{n}', '4'), battery: '98%' },
+      { id: 'VAN-102', name: t.van102Name, coords: [35.785, 51.365] as [number, number], eta: t.vanMinutes.replace('{n}', '7'), battery: '92%' },
+      { id: 'VAN-103', name: t.van103Name, coords: [35.735, 51.210] as [number, number], eta: t.vanMinutes.replace('{n}', '18'), battery: '88%' },
+      { id: 'VAN-104', name: t.van104Name, coords: [35.698, 51.335] as [number, number], eta: t.vanMinutes.replace('{n}', '12'), battery: '95%' },
+      { id: 'VAN-105', name: t.van105Name, coords: [35.590, 51.440] as [number, number], eta: t.vanMinutes.replace('{n}', '25'), battery: '100%' },
+      { id: 'VAN-106', name: t.van106Name, coords: [35.782, 51.485] as [number, number], eta: t.vanMinutes.replace('{n}', '9'), battery: '85%' },
+      { id: 'VAN-107', name: t.van107Name, coords: [35.738, 51.530] as [number, number], eta: t.vanMinutes.replace('{n}', '16'), battery: '91%' },
+      { id: 'VAN-108', name: t.van108Name, coords: [35.645, 51.485] as [number, number], eta: t.vanMinutes.replace('{n}', '22'), battery: '96%' },
+      { id: 'VAN-109', name: t.van109Name, coords: [35.702, 51.405] as [number, number], eta: t.vanMinutes.replace('{n}', '11'), battery: '89%' },
+      { id: 'VAN-110', name: t.van110Name, coords: [35.728, 51.442] as [number, number], eta: t.vanMinutes.replace('{n}', '8'), battery: '94%' },
+    ];
+
     const userMarkerHtml = `
       <div style="position: relative; display: flex; align-items: center; justify-content: center;">
         <div style="position: absolute; width: 50px; height: 50px; border-radius: 9999px; background-color: ${currentTheme.primaryHex}; opacity: 0.35; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
@@ -112,16 +160,15 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       </div>
     `;
 
-    const userIcon = L.divIcon({
-      html: userMarkerHtml,
-      className: 'custom-user-leaflet-icon',
-      iconSize: [50, 50],
-      iconAnchor: [25, 25],
-    });
+    L.marker(userCoords, {
+      icon: L.divIcon({
+        html: userMarkerHtml,
+        className: 'custom-user-leaflet-icon',
+        iconSize: [50, 50],
+        iconAnchor: [25, 25],
+      }),
+    }).addTo(overlays);
 
-    L.marker(userCoords, { icon: userIcon }).addTo(map);
-
-    // 2. Add Real Tehran Charging Stations
     realChargingStations.forEach((station) => {
       const stationHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
@@ -134,26 +181,29 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       `;
 
-      const stationIcon = L.divIcon({
-        html: stationHtml,
-        className: 'custom-station-leaflet-icon',
-        iconSize: [160, 60],
-        iconAnchor: [80, 30],
-      });
-
-      const m = L.marker(station.coords, { icon: stationIcon }).addTo(map);
-      m.bindPopup(`
-        <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-          <div style="color: #C5A059; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
-          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
-          <div style="font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
-        </div>
-      `);
+      L.marker(station.coords, {
+        icon: L.divIcon({
+          html: stationHtml,
+          className: 'custom-station-leaflet-icon',
+          iconSize: [160, 60],
+          iconAnchor: [80, 30],
+        }),
+      })
+        .bindPopup(`
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
+            <div style="color: #C5A059; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
+            <div style="font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
+          </div>
+        `)
+        .addTo(overlays);
     });
 
-    // 3. Add 10 AleenCar Mobile Charging Vans & find nearest van to user
     let nearestVan = mobileChargingVans[0];
-    let minDistance = Math.hypot(userCoords[0] - mobileChargingVans[0].coords[0], userCoords[1] - mobileChargingVans[0].coords[1]);
+    let minDistance = Math.hypot(
+      userCoords[0] - mobileChargingVans[0].coords[0],
+      userCoords[1] - mobileChargingVans[0].coords[1]
+    );
 
     mobileChargingVans.forEach((van) => {
       const dist = Math.hypot(userCoords[0] - van.coords[0], userCoords[1] - van.coords[1]);
@@ -173,71 +223,90 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         </div>
       `;
 
-      const vanIcon = L.divIcon({
-        html: vanHtml,
-        className: 'custom-van-leaflet-icon',
-        iconSize: [140, 55],
-        iconAnchor: [70, 27],
-      });
-
-      const vanMarker = L.marker(van.coords, { icon: vanIcon }).addTo(map);
-      vanMarker.bindPopup(`
-        <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-          <div style="color: #34D399; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
-          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.vanEta}: <strong>${van.eta}</strong></div>
-          <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
-        </div>
-      `);
+      L.marker(van.coords, {
+        icon: L.divIcon({
+          html: vanHtml,
+          className: 'custom-van-leaflet-icon',
+          iconSize: [140, 55],
+          iconAnchor: [70, 27],
+        }),
+      })
+        .bindPopup(`
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
+            <div style="color: #34D399; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
+            <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.vanEta}: <strong>${van.eta}</strong></div>
+            <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
+          </div>
+        `)
+        .addTo(overlays);
     });
 
-    // 4. Connect a dynamic polyline with theme color from user position to nearest mobile van
     L.polyline([userCoords, nearestVan.coords], {
       color: currentTheme.primaryHex,
       weight: 3.5,
       opacity: 0.85,
       dashArray: '8, 10',
-    }).addTo(map);
+    }).addTo(overlays);
 
-    return () => {
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-      }
-    };
-  }, [currentTheme, userCoords, lang]);
+    map.setView(userCoords, map.getZoom(), { animate: false });
+  }, [currentTheme, userCoords, lang, t]);
 
   const handleRecenter = () => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.flyTo(userCoords, 14, { duration: 1 });
+    requestUserLocation(true);
+    if (mapInstanceRef.current && isGpsActive) {
+      mapInstanceRef.current.flyTo(userCoords, 15, { duration: 1 });
     }
   };
 
   const handleZoomIn = () => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.zoomIn();
-    }
+    mapInstanceRef.current?.zoomIn();
   };
 
   const handleZoomOut = () => {
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.zoomOut();
-    }
+    mapInstanceRef.current?.zoomOut();
   };
 
   return (
-    <div className="relative w-full h-full min-h-dvh bg-obsidian overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-dvh overflow-hidden select-none" style={{ backgroundColor: '#2b2b2b' }}>
       {/* Real Interactive Leaflet Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
 
-      {/* Map Control Floating Action Buttons */}
-      <div className="absolute left-4 top-20 z-20 flex flex-col gap-2">
+      {/* First-load cover — match map bg so tiles don't flash */}
+      {!isMapReady && (
+        <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none" style={{ backgroundColor: '#2b2b2b' }}>
+          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-gold animate-spin" />
+        </div>
+      )}
+
+      {/* Map Control Floating Action Buttons — below car card on mobile */}
+      <div
+        className={`absolute left-4 z-[35] flex flex-col gap-2 transition-all duration-300 ${
+          isMapExpanded
+            ? 'top-[calc(max(env(safe-area-inset-top),0.75rem)+5.5rem)]'
+            : 'top-[calc(max(env(safe-area-inset-top),0.75rem)+15.5rem)]'
+        }`}
+      >
         <button
           onClick={handleRecenter}
-          className="icon-btn shadow-xl"
-          title={t.myLocation}
+          className={`icon-btn shadow-xl ${gpsStatus === 'locating' ? 'animate-pulse' : ''} ${isGpsActive ? 'text-ok' : 'text-gold'}`}
+          title={
+            gpsStatus === 'insecure'
+              ? t.gpsNeedsHttps
+              : gpsStatus === 'denied'
+              ? t.gpsDenied
+              : gpsStatus === 'locating'
+              ? t.gpsLocating
+              : t.myLocation
+          }
         >
-          <Locate className="w-4 h-4 text-gold" />
+          <Locate className={`w-4 h-4 ${isGpsActive ? 'text-ok' : 'text-gold'}`} />
         </button>
+
+        {(gpsStatus === 'insecure' || gpsStatus === 'denied' || gpsStatus === 'error') && (
+          <div className="mt-1 max-w-[9.5rem] rounded-lg bg-obsidian/90 border border-danger/30 px-2 py-1.5 text-[9px] leading-snug text-danger-2 shadow-lg">
+            {gpsStatus === 'insecure' ? t.gpsNeedsHttps : gpsStatus === 'denied' ? t.gpsDenied : t.gpsError}
+          </div>
+        )}
 
         <button
           onClick={handleZoomIn}
@@ -260,7 +329,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       {isMapExpanded && (
         <div className="absolute inset-x-0 bottom-32 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
           <div className="panel p-5 relative">
-            {/* Header close btn */}
             <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <div
@@ -284,9 +352,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               )}
             </div>
 
-            {/* Smart Suggestions options right inside the map */}
             <div className="space-y-3">
-              {/* Option A: Use 7 kWh from active package */}
               <div
                 onClick={() => onSelectChargeOption && onSelectChargeOption('package_7kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
@@ -315,7 +381,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
               </div>
 
-              {/* Option B: Fast Charger 2 km away */}
               <div
                 onClick={() => onSelectChargeOption && onSelectChargeOption('fast_charger_2km')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
@@ -334,7 +399,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                     <div className="text-xs font-bold text-ink flex items-center gap-2">
                       <span>{t.fastChargerTitle}</span>
                       <span className="text-[10px] bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30">
-                        شارژ DC 150kW
+                        {t.dcFastBadge}
                       </span>
                     </div>
                     <p className="text-[11px] text-ink-4 mt-0.5">{t.fastChargerDesc}</p>
@@ -342,7 +407,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
               </div>
 
-              {/* Option C: Buy 20 kWh extra */}
               <div
                 onClick={() => onSelectChargeOption && onSelectChargeOption('buy_20kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
@@ -369,7 +433,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
               </div>
 
-              {/* Dynamic Bundling Checkbox */}
               <div className="pt-2 border-t border-white/[0.07]">
                 <label className="flex items-center gap-2.5 cursor-pointer text-xs text-ink-2 hover:text-ink transition">
                   <input
@@ -384,7 +447,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </label>
               </div>
 
-              {/* Confirm Booking CTA */}
               <button
                 onClick={() => {
                   if (onConfirmBooking) {

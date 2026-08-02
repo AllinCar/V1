@@ -32,9 +32,9 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
       <div className="flex items-center justify-between mb-2 px-1">
         <p className="eyebrow flex items-center gap-1.5 dir-ltr">
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></span>
-          <span>{lang === 'fa' ? 'QUICK VIP SERVICES' : 'QUICK VIP SERVICES'}</span>
+          <span>{t.quickVipServices}</span>
         </p>
-        <span className="text-[10px] text-ink-4">{lang === 'fa' ? 'سوایپ به چپ ◄' : 'Swipe ◄'}</span>
+        <span className="text-[10px] text-ink-4">{t.swipeHint}</span>
       </div>
 
       {/* Horizontal Scrollable Row for Minimal Side-by-Side Cards */}
@@ -58,9 +58,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
           <div>
             <h4 className="text-xs font-bold text-ink leading-tight">{t.fastChargeReady}</h4>
             <p className="text-[10px] text-ink-4 mt-1 line-clamp-1">
-              {lang === 'fa'
-                ? `باتری ${selectedCar.batteryPercent}٪ • ون سیار`
-                : `Battery ${selectedCar.batteryPercent}% • Mobile Van`}
+              {t.batteryVanLine.replace('{pct}', String(selectedCar.batteryPercent))}
             </p>
           </div>
           <div className="mt-2.5 pt-2 border-t border-white/[0.07] flex items-center justify-between text-[10px] text-gold">

@@ -29,7 +29,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
   const [model, setModel] = React.useState('');
   const [color, setColor] = React.useState('');
   const [batteryCapacity, setBatteryCapacity] = React.useState('93.4');
-  const [plateNumber, setPlateNumber] = React.useState('۵۵ م ۷۷۷ ایران ۲۲');
+  const [plateNumber, setPlateNumber] = React.useState(t.defaultPlate);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -56,13 +56,13 @@ export const CarsTab: React.FC<CarsTabProps> = ({
       if (data) {
         setBrand(data.brand || 'Tesla');
         setModel(data.model || 'Model 3 EV');
-        setColor(data.color || 'مشکی');
+        setColor(data.color || t.defaultColorBlack);
         setBatteryCapacity(data.batteryCapacity || '82');
       }
     } catch (err) {
       setBrand('Mercedes-Benz');
       setModel('EQS 580 4MATIC');
-      setColor('نقره‌ای ابریشمی');
+      setColor(t.defaultColorSilver);
       setBatteryCapacity('107.8');
     } finally {
       setIsAiDetecting(false);
@@ -77,16 +77,14 @@ export const CarsTab: React.FC<CarsTabProps> = ({
       brand,
       model,
       year: '2024',
-      color: color || 'مشکی متالیک',
-      photo:
-        uploadImage ||
-        'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
+      color: color || t.defaultColorMetallic,
+      photo: uploadImage || '/images/cars/tesla-model-s.jpg',
       batteryPercent: 85,
       batteryCapacityKwh: parseFloat(batteryCapacity) || 90,
       currentRangeKm: 380,
       lastServiceKm: 1200,
       kmsSinceLastService: 1200,
-      plateNumber: plateNumber || '۱۲ ک ۳۴۵ ایران ۹۹',
+      plateNumber: plateNumber || t.fallbackPlate,
       vin: `VIN${Math.floor(Math.random() * 899999 + 100000)}`,
       healthScore: 99,
     };
@@ -103,12 +101,12 @@ export const CarsTab: React.FC<CarsTabProps> = ({
       {/* Page header */}
       <div className="page-header">
         <div>
-          <p className="eyebrow">{lang === 'fa' ? 'گاراژ هوشمند' : 'Smart Garage'}</p>
+          <p className="eyebrow">{t.smartGarage}</p>
           <h2 className="text-lg font-bold text-ink mt-1 flex items-center gap-2">
             <span>{t.garageTitle}</span>
             <span className="text-[10px] bg-gold/10 text-gold border border-gold/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
               <Cpu className="w-3 h-3" />
-              <span>AI Base</span>
+              <span>{t.aiBaseBadge}</span>
             </span>
           </h2>
         </div>
@@ -188,9 +186,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                   <span className="flex items-center gap-1.5 text-gold">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>
-                      {lang === 'fa'
-                        ? 'تحلیل AI: باتری در شرایط ایده‌آل بدون افت ولتاژ سلول‌ها'
-                        : 'AI Analysis: Battery in optimal state, zero cell voltage degradation'}
+                      {t.aiBatteryAnalysis}
                     </span>
                   </span>
                   <span className="text-[10px] text-ink-4 font-mono">VIN: {car.vin.slice(0, 8)}...</span>
@@ -229,7 +225,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                   {isAiDetecting && (
                     <div className="absolute inset-0 bg-obsidian/85 flex items-center justify-center gap-2 text-gold text-xs font-bold">
                       <Sparkles className="w-4 h-4 animate-spin" />
-                      <span>{lang === 'fa' ? 'در حال تشخیص مدل و باتری با AI...' : 'AI Detecting model & battery...'}</span>
+                      <span>{t.aiDetecting}</span>
                     </div>
                   )}
                 </div>
@@ -239,12 +235,10 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                     <Camera className="w-6 h-6" />
                   </div>
                   <p className="text-xs font-bold text-ink">
-                    {lang === 'fa' ? 'عکس خودرو را آپلود یا ثبت کنید' : 'Upload or snap car photo'}
+                    {t.uploadCarPhoto}
                   </p>
                   <p className="text-[11px] text-ink-4">
-                    {lang === 'fa'
-                      ? 'هوش مصنوعی مدل، رنگ و باتری خودرو را خودکار تشخیص می‌دهد'
-                      : 'AI will automatically detect brand, color, and battery specs'}
+                    {t.aiDetectHelp}
                   </p>
                 </div>
               )}
@@ -253,37 +247,37 @@ export const CarsTab: React.FC<CarsTabProps> = ({
             {/* Inputs */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div>
-                <label className="text-ink-3 block mb-1.5">{lang === 'fa' ? 'برند خودرو' : 'Brand'}</label>
+                <label className="text-ink-3 block mb-1.5">{t.brandLabel}</label>
                 <input
                   type="text"
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
-                  placeholder="Porsche"
+                  placeholder={t.brandPlaceholder}
                   className="field"
                 />
               </div>
               <div>
-                <label className="text-ink-3 block mb-1.5">{lang === 'fa' ? 'مدل خودرو' : 'Model'}</label>
+                <label className="text-ink-3 block mb-1.5">{t.modelLabel}</label>
                 <input
                   type="text"
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
-                  placeholder="Taycan Turbo S"
+                  placeholder={t.modelPlaceholder}
                   className="field"
                 />
               </div>
               <div>
-                <label className="text-ink-3 block mb-1.5">{lang === 'fa' ? 'رنگ بدنه' : 'Color'}</label>
+                <label className="text-ink-3 block mb-1.5">{t.colorLabel}</label>
                 <input
                   type="text"
                   value={color}
                   onChange={(e) => setColor(e.target.value)}
-                  placeholder={lang === 'fa' ? 'مشکی کربن' : 'Carbon Black'}
+                  placeholder={t.colorPlaceholder}
                   className="field"
                 />
               </div>
               <div>
-                <label className="text-ink-3 block mb-1.5">{lang === 'fa' ? 'ظرفیت باتری (kWh)' : 'Battery (kWh)'}</label>
+                <label className="text-ink-3 block mb-1.5">{t.batteryKwhLabel}</label>
                 <input
                   type="text"
                   value={batteryCapacity}

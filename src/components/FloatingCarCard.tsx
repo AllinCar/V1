@@ -130,7 +130,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
               >
                 {batteryPercent}%
               </span>
-              <span className="text-[7px] text-ink-4 font-mono mt-0.5">SOC</span>
+              <span className="text-[7px] text-ink-4 font-mono mt-0.5">{t.socLabel}</span>
             </div>
           </div>
         </div>

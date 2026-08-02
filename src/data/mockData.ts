@@ -1,223 +1,259 @@
 import { Car, PrepaidPackage, ServiceItem, ThemeAccent, UserPersona, ServiceHistory } from '../types';
+import { Language, translations } from '../translations';
 
-export const INITIAL_CARS: Car[] = [
-  {
-    id: 'car-1',
-    name: 'پورشه تایکان توربو S',
-    brand: 'Porsche',
-    model: 'Taycan Turbo S',
-    year: '2024',
-    color: 'مشکی کربن متالیک',
-    photo: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=1200&q=80',
-    batteryPercent: 32,
-    batteryCapacityKwh: 93.4,
-    currentRangeKm: 145,
-    lastServiceKm: 10450,
-    kmsSinceLastService: 10450,
-    plateNumber: '۶۸ ج ۹۱۲ ایران ۴۴',
-    vin: 'WP0ZZZY1ZMSA88901',
-    healthScore: 98,
-  },
-  {
-    id: 'car-2',
-    name: 'تسلا مدل S پلاد',
-    brand: 'Tesla',
-    model: 'Model S Plaid',
-    year: '2024',
-    color: 'سفید صدفی پیرل',
-    photo: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
-    batteryPercent: 78,
-    batteryCapacityKwh: 100,
-    currentRangeKm: 420,
-    lastServiceKm: 4200,
-    kmsSinceLastService: 4200,
-    plateNumber: '۲۱ ط ۴۵۶ ایران ۱۱',
-    vin: '5YJSA1E28MF998231',
-    healthScore: 99,
-  },
-  {
-    id: 'car-3',
-    name: 'بی‌ام‌و i7 xDrive60',
-    brand: 'BMW',
-    model: 'i7 xDrive60 Luxury',
-    year: '2024',
-    color: 'خاکستری مات دسیگنو',
-    photo: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=1200&q=80',
-    batteryPercent: 19,
-    batteryCapacityKwh: 101.7,
-    currentRangeKm: 92,
-    lastServiceKm: 8100,
-    kmsSinceLastService: 8100,
-    plateNumber: '۸۸ د ۳۳۳ ایران ۳۳',
-    vin: 'WBY73EH020CH88192',
-    healthScore: 96,
-  },
-];
+type T = (typeof translations)['fa'];
 
-export const PREPAID_PACKAGES: PrepaidPackage[] = [
-  {
-    id: 'pkg-diamond',
-    name: 'پکیج الماس برقی VIP (پریمیوم)',
-    price: 8500000,
-    kwhIncluded: 150,
-    washesIncluded: 4,
-    driversIncluded: 2,
-    description: 'شامل ۱۵۰ کیلووات شارژ سیار سریع، ۴ نوبت کارواش نانو خشک VIP و ۲ نوبت راننده اختصاصی بدون پرداخت درگاه در هر درخواست.',
-    badge: 'پیشنهاد VIP',
-    isPopular: true,
-  },
-  {
-    id: 'pkg-gold',
-    name: 'پکیج طلایی شارژ و سرویس',
-    price: 4900000,
-    kwhIncluded: 80,
-    washesIncluded: 2,
-    driversIncluded: 1,
-    description: 'شامل ۸۰ کیلووات شارژ سیار، ۲ بار کارواش خشک در محل و ۱ بار راننده شخصی در شهر.',
-    badge: 'پرفروش',
-  },
-  {
-    id: 'pkg-silver',
-    name: 'پکیج نقره‌ای شارژ سریع سیار',
-    price: 2800000,
-    kwhIncluded: 40,
-    washesIncluded: 1,
-    driversIncluded: 0,
-    description: 'مناسب برای شارژهای ضروری ماهانه همراه با ۱ کارواش خشک مکمل.',
-  },
-];
+export function getInitialCars(lang: Language = 'fa'): Car[] {
+  const t = translations[lang];
+  return [
+    {
+      id: 'car-1',
+      name: t.car1Name,
+      brand: 'Porsche',
+      model: 'Taycan Turbo S',
+      year: '2024',
+      color: t.car1Color,
+      photo: '/images/cars/porsche-taycan.jpg',
+      batteryPercent: 32,
+      batteryCapacityKwh: 93.4,
+      currentRangeKm: 145,
+      lastServiceKm: 10450,
+      kmsSinceLastService: 10450,
+      plateNumber: '۶۸ ج ۹۱۲ ایران ۴۴',
+      vin: 'WP0ZZZY1ZMSA88901',
+      healthScore: 98,
+    },
+    {
+      id: 'car-2',
+      name: t.car2Name,
+      brand: 'Tesla',
+      model: 'Model S Plaid',
+      year: '2024',
+      color: t.car2Color,
+      photo: '/images/cars/tesla-model-s.jpg',
+      batteryPercent: 78,
+      batteryCapacityKwh: 100,
+      currentRangeKm: 420,
+      lastServiceKm: 4200,
+      kmsSinceLastService: 4200,
+      plateNumber: '۲۱ ط ۴۵۶ ایران ۱۱',
+      vin: '5YJSA1E28MF998231',
+      healthScore: 99,
+    },
+    {
+      id: 'car-3',
+      name: t.car3Name,
+      brand: 'BMW',
+      model: 'i7 xDrive60 Luxury',
+      year: '2024',
+      color: t.car3Color,
+      photo: '/images/cars/bmw-i7.jpg',
+      batteryPercent: 19,
+      batteryCapacityKwh: 101.7,
+      currentRangeKm: 92,
+      lastServiceKm: 8100,
+      kmsSinceLastService: 8100,
+      plateNumber: '۸۸ د ۳۳۳ ایران ۳۳',
+      vin: 'WBY73EH020CH88192',
+      healthScore: 96,
+    },
+  ];
+}
 
-export const SERVICES_LIST: ServiceItem[] = [
-  {
-    id: 'srv-mobile-charge',
-    title: 'شارژ سیار در محل (Mobile EV Charge)',
-    category: 'charging',
-    description: 'اعزام ون مخصوص شارژ سریع تا ظرفیت ۶۰ کیلووات مستقیم به موقعیت فعلی خودروی شما در کمتر از ۲۰ دقیقه.',
-    inventoryBadge: '۷ کیلووات در پکیج موجود است',
-    isPrepaidAvailable: true,
-    bundledOffer: 'پیشنهاد مکمل: دستمال‌کشی و کارواش نانو خشک حین شارژ سیار',
-    iconName: 'Zap',
-  },
-  {
-    id: 'srv-fast-station',
-    title: 'هدایت به ایستگاه شارژ سریع نزدیک',
-    category: 'charging',
-    description: 'مسیریابی هوشمند به نزدیک‌ترین ایستگاه شارژ فوق سریع (DC 150kW) در فاصله ۲ کیلومتری.',
-    inventoryBadge: 'رایگان بر اساس اشتراک',
-    isPrepaidAvailable: true,
-    iconName: 'MapPin',
-  },
-  {
-    id: 'srv-dry-wash',
-    title: 'کارواش نانو خشک بدون آب (Eco Dry Wash)',
-    category: 'wash',
-    description: 'شستشوی تخصصی بدنه و رینگ خودرو با محلول نانو و دستمال‌های مایکروفایبر مخصوص خودروهای لوکس.',
-    inventoryBadge: '۱ عدد باقی‌مانده از پکیج',
-    isPrepaidAvailable: true,
-    bundledOffer: 'همزمان با شارژ سیار فعال می‌شود',
-    iconName: 'Sparkles',
-  },
-  {
-    id: 'srv-vip-driver',
-    title: 'راننده اختصاصی تشریفات (Chauffeur Service)',
-    category: 'driver',
-    description: 'اعزام راننده حرفه‌ای کت‌وشلواری و تاییدشده جهت جابه‌جایی خودرو یا رانندگی در جلسات شما.',
-    inventoryBadge: '۱ بار موجود در کیف پکیج',
-    isPrepaidAvailable: true,
-    iconName: 'UserCheck',
-  },
-  {
-    id: 'srv-period-maintenance',
-    title: 'سرویس دوره‌ای ۱۰,۰۰۰ کیلومتر',
-    category: 'maintenance',
-    description: 'چک‌آپ جامع سیستم مدیریت باتری (BMS)، سیستم خنک‌کننده، ترمزها و تنظیم چرخ‌ها در محل.',
-    inventoryBadge: 'آماده ثبت سفارش',
-    isPrepaidAvailable: false,
-    iconName: 'Wrench',
-  },
-  {
-    id: 'srv-emergency-sos',
-    title: 'امداد جاده‌ای اضطراری (Instant Roadside SOS)',
-    category: 'emergency',
-    description: 'پاسخگویی آنی ۲۰ ثانیه‌ای، اعزام فوری خودروی امداد برقی و پشتیبانی تلفنی صدای هوشمند.',
-    inventoryBadge: 'پشتیبانی ۲۴/۷ فعال',
-    isPrepaidAvailable: true,
-    iconName: 'ShieldAlert',
-  },
-];
+export function getPrepaidPackages(lang: Language = 'fa'): PrepaidPackage[] {
+  const t = translations[lang];
+  return [
+    {
+      id: 'pkg-diamond',
+      name: t.pkgDiamondName,
+      price: 8500000,
+      kwhIncluded: 150,
+      washesIncluded: 4,
+      driversIncluded: 2,
+      description: t.pkgDiamondDesc,
+      badge: t.pkgDiamondBadge,
+      isPopular: true,
+    },
+    {
+      id: 'pkg-gold',
+      name: t.pkgGoldName,
+      price: 4900000,
+      kwhIncluded: 80,
+      washesIncluded: 2,
+      driversIncluded: 1,
+      description: t.pkgGoldDesc,
+      badge: t.pkgGoldBadge,
+    },
+    {
+      id: 'pkg-silver',
+      name: t.pkgSilverName,
+      price: 2800000,
+      kwhIncluded: 40,
+      washesIncluded: 1,
+      driversIncluded: 0,
+      description: t.pkgSilverDesc,
+    },
+  ];
+}
 
-export const THEME_ACCENTS: ThemeAccent[] = [
-  {
-    id: 'emerald',
-    name: 'زمردی تیره هوشمند (Voxa Emerald AI)',
-    primaryHex: '#10B981',
-    primaryTailwindBg: 'bg-emerald-500',
-    primaryTailwindText: 'text-emerald-400',
-    glowColor: 'rgba(16, 185, 129, 0.4)',
-    borderGlow: 'border-emerald-500/40',
-  },
-  {
-    id: 'gold',
-    name: 'طلایی شامپایینی لاکچری (Elegant Gold)',
-    primaryHex: '#C5A059',
-    primaryTailwindBg: 'bg-[#C5A059]',
-    primaryTailwindText: 'text-[#C5A059]',
-    glowColor: 'rgba(197, 160, 89, 0.35)',
-    borderGlow: 'border-[#C5A059]/40',
-  },
-  {
-    id: 'cyan',
-    name: 'سایبر پلاتینوم (Cyber Platinum)',
-    primaryHex: '#38BDF8',
-    primaryTailwindBg: 'bg-sky-400',
-    primaryTailwindText: 'text-sky-400',
-    glowColor: 'rgba(56, 189, 248, 0.35)',
-    borderGlow: 'border-sky-400/40',
-  },
-  {
-    id: 'rose',
-    name: 'رزگلد دسیگنو (Designo Rose)',
-    primaryHex: '#FB7185',
-    primaryTailwindBg: 'bg-rose-400',
-    primaryTailwindText: 'text-rose-400',
-    glowColor: 'rgba(251, 113, 133, 0.35)',
-    borderGlow: 'border-rose-400/40',
-  },
-];
+export function getServicesList(lang: Language = 'fa'): ServiceItem[] {
+  const t = translations[lang];
+  return [
+    {
+      id: 'srv-mobile-charge',
+      title: t.srvMobileChargeTitle,
+      category: 'charging',
+      description: t.srvMobileChargeDesc,
+      inventoryBadge: t.srvMobileChargeBadge,
+      isPrepaidAvailable: true,
+      bundledOffer: t.srvMobileChargeBundle,
+      iconName: 'Zap',
+    },
+    {
+      id: 'srv-fast-station',
+      title: t.srvFastStationTitle,
+      category: 'charging',
+      description: t.srvFastStationDesc,
+      inventoryBadge: t.srvFastStationBadge,
+      isPrepaidAvailable: true,
+      iconName: 'MapPin',
+    },
+    {
+      id: 'srv-dry-wash',
+      title: t.srvDryWashTitle,
+      category: 'wash',
+      description: t.srvDryWashDesc,
+      inventoryBadge: t.srvDryWashBadge,
+      isPrepaidAvailable: true,
+      bundledOffer: t.srvDryWashBundle,
+      iconName: 'Sparkles',
+    },
+    {
+      id: 'srv-vip-driver',
+      title: t.srvVipDriverTitle,
+      category: 'driver',
+      description: t.srvVipDriverDesc,
+      inventoryBadge: t.srvVipDriverBadge,
+      isPrepaidAvailable: true,
+      iconName: 'UserCheck',
+    },
+    {
+      id: 'srv-period-maintenance',
+      title: t.srvPeriodMaintTitle,
+      category: 'maintenance',
+      description: t.srvPeriodMaintDesc,
+      inventoryBadge: t.srvPeriodMaintBadge,
+      isPrepaidAvailable: false,
+      iconName: 'Wrench',
+    },
+    {
+      id: 'srv-emergency-sos',
+      title: t.srvEmergencyTitle,
+      category: 'emergency',
+      description: t.srvEmergencyDesc,
+      inventoryBadge: t.srvEmergencyBadge,
+      isPrepaidAvailable: true,
+      iconName: 'ShieldAlert',
+    },
+  ];
+}
 
-export const INITIAL_USER_PERSONA: UserPersona = {
-  name: 'مهندسی علی احمدی',
-  phone: '۰۹۱۲۳۴۵۶۷۸۹',
-  level: 'عضویت الماس پریمیوم VIP',
-  levelBadge: 'VIP Platinum',
-  totalPoints: 1250,
-  avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
-  memberSince: 'اسفند ۱۴۰۲',
-};
+export function getThemeAccents(lang: Language = 'fa'): ThemeAccent[] {
+  const t = translations[lang];
+  return [
+    {
+      id: 'emerald',
+      name: t.themeEmerald,
+      primaryHex: '#10B981',
+      primaryTailwindBg: 'bg-emerald-500',
+      primaryTailwindText: 'text-emerald-400',
+      glowColor: 'rgba(16, 185, 129, 0.4)',
+      borderGlow: 'border-emerald-500/40',
+    },
+    {
+      id: 'gold',
+      name: t.themeGold,
+      primaryHex: '#C5A059',
+      primaryTailwindBg: 'bg-[#C5A059]',
+      primaryTailwindText: 'text-[#C5A059]',
+      glowColor: 'rgba(197, 160, 89, 0.35)',
+      borderGlow: 'border-[#C5A059]/40',
+    },
+    {
+      id: 'cyan',
+      name: t.themeCyan,
+      primaryHex: '#38BDF8',
+      primaryTailwindBg: 'bg-sky-400',
+      primaryTailwindText: 'text-sky-400',
+      glowColor: 'rgba(56, 189, 248, 0.35)',
+      borderGlow: 'border-sky-400/40',
+    },
+    {
+      id: 'rose',
+      name: t.themeRose,
+      primaryHex: '#FB7185',
+      primaryTailwindBg: 'bg-rose-400',
+      primaryTailwindText: 'text-rose-400',
+      glowColor: 'rgba(251, 113, 133, 0.35)',
+      borderGlow: 'border-rose-400/40',
+    },
+  ];
+}
 
-export const INITIAL_HISTORY: ServiceHistory[] = [
-  {
-    id: 'hist-1',
-    serviceTitle: 'شارژ سیار ۲۰ کیلووات در محل',
-    date: 'امروز - ۱۰:۱۵',
-    carName: 'پورشه تایکان توربو S',
-    amountDeduction: 'کسر از پکیج الماس (۲۰kW)',
-    rating: 5,
-  },
-  {
-    id: 'hist-2',
-    serviceTitle: 'کارواش نانو خشک حین شارژ',
-    date: 'دیروز - ۱۸:۳۰',
-    carName: 'پورشه تایکان توربو S',
-    amountDeduction: 'اعتباری (۱ کارواش)',
-    rating: 5,
-  },
-  {
-    id: 'hist-3',
-    serviceTitle: 'خدمت راننده اختصاصی تشریفات',
-    date: '۳ روز پیش - ۱۴:۰۰',
-    carName: 'تسلا مدل S پلاد',
-    amountDeduction: 'اعتباری (۱ سرویس راننده)',
-    rating: 5,
-  },
-];
+export function getInitialUserPersona(lang: Language = 'fa'): UserPersona {
+  const t = translations[lang];
+  return {
+    name: t.userName,
+    phone: t.userPhone,
+    level: t.userLevel,
+    levelBadge: t.userLevelBadge,
+    totalPoints: 1250,
+    avatarUrl: '/images/avatars/user.jpg',
+    memberSince: t.userMemberSince,
+  };
+}
+
+export function getInitialHistory(lang: Language = 'fa'): ServiceHistory[] {
+  const t = translations[lang];
+  return [
+    {
+      id: 'hist-1',
+      serviceTitle: t.hist1Title,
+      date: t.hist1Date,
+      carName: t.hist1Car,
+      amountDeduction: t.hist1Amount,
+      rating: 5,
+    },
+    {
+      id: 'hist-2',
+      serviceTitle: t.hist2Title,
+      date: t.hist2Date,
+      carName: t.hist2Car,
+      amountDeduction: t.hist2Amount,
+      rating: 5,
+    },
+    {
+      id: 'hist-3',
+      serviceTitle: t.hist3Title,
+      date: t.hist3Date,
+      carName: t.hist3Car,
+      amountDeduction: t.hist3Amount,
+      rating: 5,
+    },
+  ];
+}
+
+/** @deprecated Prefer lang-aware getters */
+export const INITIAL_CARS = getInitialCars('fa');
+/** @deprecated Prefer getPrepaidPackages(lang) */
+export const PREPAID_PACKAGES = getPrepaidPackages('fa');
+/** @deprecated Prefer getServicesList(lang) */
+export const SERVICES_LIST = getServicesList('fa');
+/** @deprecated Prefer getThemeAccents(lang) */
+export const THEME_ACCENTS = getThemeAccents('fa');
+/** @deprecated Prefer getInitialUserPersona(lang) */
+export const INITIAL_USER_PERSONA = getInitialUserPersona('fa');
+/** @deprecated Prefer getInitialHistory(lang) */
+export const INITIAL_HISTORY = getInitialHistory('fa');
+
+export type TranslationDict = T;
