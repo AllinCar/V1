@@ -31,7 +31,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const t = translations[lang];
 
   return (
-    <div className="pb-32 pt-6 px-4 max-w-lg mx-auto space-y-6 animate-in fade-in duration-300">
+    <div className="pb-32 pt-[calc(max(env(safe-area-inset-top),0.75rem)+1.5rem)] px-4 max-w-lg mx-auto space-y-6 animate-in fade-in duration-300">
       {/* User Persona Header Card */}
       <div className="bg-black/60 border border-white/10 rounded-3xl p-5 shadow-2xl relative overflow-hidden backdrop-blur-xl">
         <div
