@@ -24,7 +24,7 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
   const currentStepIndex = steps.findIndex((s) => s.id === order.status);
 
   return (
-    <div className="absolute inset-x-4 bottom-24 max-w-lg mx-auto z-30 animate-in fade-in slide-in-from-bottom-4 dir-rtl">
+    <div className="absolute inset-x-4 bottom-32 max-w-lg mx-auto z-30 animate-in fade-in slide-in-from-bottom-4 dir-rtl">
       <div className="bg-slate-900/95 border border-slate-700/80 rounded-3xl p-5 shadow-2xl backdrop-blur-2xl space-y-4">
         {/* Header Order Status */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-3">

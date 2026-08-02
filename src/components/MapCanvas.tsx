@@ -258,7 +258,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {/* Seamless Integrated Map Expansion Panel (Zero Page-Jump Booking) */}
       {isMapExpanded && (
-        <div className="absolute inset-x-0 bottom-24 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
+        <div className="absolute inset-x-0 bottom-32 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
           <div className="bg-black/90 border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl relative">
             {/* Header close btn */}
             <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">

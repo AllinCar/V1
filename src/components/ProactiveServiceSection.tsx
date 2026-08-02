@@ -28,7 +28,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
   const t = translations[lang];
 
   return (
-    <div className="absolute inset-x-4 bottom-20 max-w-lg mx-auto z-20 transition-all duration-300">
+    <div className="absolute inset-x-4 bottom-28 max-w-lg mx-auto z-20 transition-all duration-300">
       <div className="flex items-center justify-between mb-2 px-1">
         <p className="text-[10px] uppercase tracking-[0.18em] font-bold text-[#C5A059] flex items-center gap-1.5 dir-ltr">
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></span>
