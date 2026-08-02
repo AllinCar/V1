@@ -1,5 +1,6 @@
 import { Car, PrepaidPackage, ServiceItem, ThemeAccent, UserPersona, ServiceHistory } from '../types';
 import { Language, translations } from '../translations';
+import { assetUrl } from '../utils/assetUrl';
 
 type T = (typeof translations)['fa'];
 
@@ -13,7 +14,7 @@ export function getInitialCars(lang: Language = 'fa'): Car[] {
       model: 'Taycan Turbo S',
       year: '2024',
       color: t.car1Color,
-      photo: '/images/cars/porsche-taycan.jpg',
+      photo: assetUrl('images/cars/porsche-taycan.jpg'),
       batteryPercent: 32,
       batteryCapacityKwh: 93.4,
       currentRangeKm: 145,
@@ -30,7 +31,7 @@ export function getInitialCars(lang: Language = 'fa'): Car[] {
       model: 'Model S Plaid',
       year: '2024',
       color: t.car2Color,
-      photo: '/images/cars/tesla-model-s.jpg',
+      photo: assetUrl('images/cars/tesla-model-s.jpg'),
       batteryPercent: 78,
       batteryCapacityKwh: 100,
       currentRangeKm: 420,
@@ -47,7 +48,7 @@ export function getInitialCars(lang: Language = 'fa'): Car[] {
       model: 'i7 xDrive60 Luxury',
       year: '2024',
       color: t.car3Color,
-      photo: '/images/cars/bmw-i7.jpg',
+      photo: assetUrl('images/cars/bmw-i7.jpg'),
       batteryPercent: 19,
       batteryCapacityKwh: 101.7,
       currentRangeKm: 92,
@@ -216,7 +217,7 @@ export function getInitialUserPersona(lang: Language = 'fa'): UserPersona {
     level: t.userLevel,
     levelBadge: t.userLevelBadge,
     totalPoints: 1250,
-    avatarUrl: '/images/avatars/user.jpg',
+    avatarUrl: assetUrl('images/avatars/user.jpg'),
     memberSince: t.userMemberSince,
   };
 }

@@ -2,6 +2,7 @@
 import { Car, ThemeAccent } from '../types';
 import { Plus, Camera, Sparkles, BatteryCharging, ShieldCheck, Cpu } from 'lucide-react';
 import { Language, translations } from '../translations';
+import { assetUrl } from '../utils/assetUrl';
 
 interface CarsTabProps {
   cars: Car[];
@@ -78,7 +79,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
       model,
       year: '2024',
       color: color || t.defaultColorMetallic,
-      photo: uploadImage || '/images/cars/tesla-model-s.jpg',
+      photo: uploadImage || assetUrl('images/cars/tesla-model-s.jpg'),
       batteryPercent: 85,
       batteryCapacityKwh: parseFloat(batteryCapacity) || 90,
       currentRangeKm: 380,
