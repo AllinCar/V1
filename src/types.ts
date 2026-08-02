@@ -77,6 +77,8 @@ export interface ThemeAccent {
   primaryTailwindText: string; // 'text-amber-400'
   glowColor: string; // 'rgba(212, 175, 55, 0.3)'
   borderGlow: string; // 'border-amber-500/40'
+  textLight: string; // deep accent for text/links on light surfaces (WCAG AA)
+  secondaryDark: string; // light accent used as secondary on dark surfaces
 }
 
 export interface UserPersona {

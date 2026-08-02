@@ -275,6 +275,7 @@ export const translations = {
     themeEmerald: 'زمردی تیره هوشمند (Voxa Emerald AI)',
     themeGold: 'طلایی شامپایینی لاکچری (Elegant Gold)',
     themeCyan: 'سایبر پلاتینوم (Cyber Platinum)',
+    themeBlue: 'آبی برقی ممتاز (Electric Blue)',
     themeRose: 'رزگلد دسیگنو (Designo Rose)',
 
     // Appearance / Theme Settings
@@ -606,6 +607,7 @@ export const translations = {
     themeEmerald: 'Voxa Emerald AI',
     themeGold: 'Elegant Champagne Gold',
     themeCyan: 'Cyber Platinum',
+    themeBlue: 'Electric Blue',
     themeRose: 'Designo Rose Gold',
 
     // Appearance / Theme Settings

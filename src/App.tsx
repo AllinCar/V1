@@ -54,13 +54,18 @@ export default function App() {
   const [userPersona, setUserPersona] = React.useState<UserPersona>(() => getInitialUserPersona('fa'));
   const [history, setHistory] = React.useState<ServiceHistory[]>(() => getInitialHistory('fa'));
 
-  // Expose the selected accent (emerald) as CSS tokens so every component
-  // resolves accent colors through the design-token system.
+  // Expose the selected accent as CSS tokens so every component resolves
+  // accent colors through the design-token system. Text-oriented accent
+  // tokens deepen on light surfaces to hold WCAG AA contrast.
   React.useEffect(() => {
     const root = document.documentElement;
+    const isLight = theme === 'light';
     root.style.setProperty('--accent-primary', currentTheme.primaryHex);
     root.style.setProperty('--accent-glow', currentTheme.glowColor);
-  }, [currentTheme]);
+    root.style.setProperty('--accent-text', isLight ? currentTheme.textLight : currentTheme.primaryHex);
+    root.style.setProperty('--accent-text-2', isLight ? currentTheme.textLight : currentTheme.primaryHex);
+    root.style.setProperty('--accent-secondary', isLight ? currentTheme.textLight : currentTheme.secondaryDark);
+  }, [currentTheme, theme]);
 
   // Keep localized mock content in sync when language changes
   React.useEffect(() => {

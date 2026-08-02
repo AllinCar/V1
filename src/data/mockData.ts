@@ -169,6 +169,8 @@ export function getThemeAccents(lang: Language = 'fa'): ThemeAccent[] {
       primaryTailwindText: 'text-[#02DAAE]',
       glowColor: 'rgba(2, 218, 174, 0.4)',
       borderGlow: 'border-[#02DAAE]/40',
+      textLight: '#059669',
+      secondaryDark: '#5EEAD4',
     },
     {
       id: 'cyan',
@@ -178,6 +180,19 @@ export function getThemeAccents(lang: Language = 'fa'): ThemeAccent[] {
       primaryTailwindText: 'text-[#02DAAE]',
       glowColor: 'rgba(2, 218, 174, 0.35)',
       borderGlow: 'border-[#02DAAE]/40',
+      textLight: '#059669',
+      secondaryDark: '#5EEAD4',
+    },
+    {
+      id: 'blue',
+      name: t.themeBlue,
+      primaryHex: '#3B82F6',
+      primaryTailwindBg: 'bg-[#3B82F6]',
+      primaryTailwindText: 'text-[#3B82F6]',
+      glowColor: 'rgba(59, 130, 246, 0.4)',
+      borderGlow: 'border-[#3B82F6]/40',
+      textLight: '#1D4ED8',
+      secondaryDark: '#93C5FD',
     },
     {
       id: 'rose',
@@ -187,6 +202,8 @@ export function getThemeAccents(lang: Language = 'fa'): ThemeAccent[] {
       primaryTailwindText: 'text-[#02DAAE]',
       glowColor: 'rgba(2, 218, 174, 0.35)',
       borderGlow: 'border-[#02DAAE]/40',
+      textLight: '#059669',
+      secondaryDark: '#5EEAD4',
     },
   ];
 }
