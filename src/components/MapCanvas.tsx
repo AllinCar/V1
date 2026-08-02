@@ -154,7 +154,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const userMarkerHtml = `
       <div style="position: relative; display: flex; align-items: center; justify-content: center;">
         <div style="position: absolute; width: 50px; height: 50px; border-radius: 9999px; background-color: ${currentTheme.primaryHex}; opacity: 0.35; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-        <div style="width: 38px; height: 38px; border-radius: 9999px; background-color: #000; border: 2.5px solid ${currentTheme.primaryHex}; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px ${currentTheme.glowColor}; z-index: 10;">
+        <div style="width: 38px; height: 38px; border-radius: 9999px; background-color: #1a140d; border: 2.5px solid ${currentTheme.primaryHex}; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px ${currentTheme.glowColor}; z-index: 10;">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${currentTheme.primaryHex}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/></svg>
         </div>
       </div>
@@ -172,10 +172,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     realChargingStations.forEach((station) => {
       const stationHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-          <div style="width: 36px; height: 36px; border-radius: 9999px; background: #000; border: 2px solid #C5A059; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(197,160,89,0.5);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#C5A059" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div style="width: 36px; height: 36px; border-radius: 9999px; background: #1a140d; border: 2px solid #CDA76B; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(205,167,107,0.5);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CDA76B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 2px 7px; background: rgba(0,0,0,0.92); border: 1px solid rgba(197,160,89,0.4); border-radius: 8px; color: #E5C178; font-size: 10px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 2px 7px; background: rgba(20,16,12,0.92); border: 1px solid rgba(205,167,107,0.4); border-radius: 8px; color: #F2D38F; font-size: 10px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             ⚡ ${station.name} (${station.power})
           </div>
         </div>
@@ -191,7 +191,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       })
         .bindPopup(`
           <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-            <div style="color: #C5A059; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
+            <div style="color: #CDA76B; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
             <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
             <div style="font-size: 10px; color: #02DAAE; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
           </div>
@@ -214,10 +214,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       const vanHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-          <div style="width: 34px; height: 34px; border-radius: 9999px; background: #06150C; border: 2px solid #02DAAE; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(2,218,174,0.5);">
+          <div style="width: 34px; height: 34px; border-radius: 9999px; background: #12180f; border: 2px solid #02DAAE; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(2,218,174,0.5);">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#02DAAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 1px 6px; background: rgba(6,21,12,0.92); border: 1px solid rgba(2,218,174,0.4); border-radius: 6px; color: #02DAAE; font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 1px 6px; background: rgba(18,24,15,0.92); border: 1px solid rgba(2,218,174,0.4); border-radius: 6px; color: #02DAAE; font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             🚐 ${van.id} (${van.eta})
           </div>
         </div>
@@ -267,13 +267,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-dvh overflow-hidden select-none" style={{ backgroundColor: '#2b2b2b' }}>
+    <div className="relative w-full h-full min-h-dvh overflow-hidden select-none" style={{ backgroundColor: 'var(--color-surface-1)' }}>
       {/* Real Interactive Leaflet Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
 
       {/* First-load cover — match map bg so tiles don't flash */}
       {!isMapReady && (
-        <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none" style={{ backgroundColor: '#2b2b2b' }}>
+        <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none" style={{ backgroundColor: 'var(--color-surface-1)' }}>
           <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-gold animate-spin" />
         </div>
       )}
