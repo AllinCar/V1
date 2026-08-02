@@ -57,7 +57,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
   };
 
   return (
-    <div className="pb-32 pt-[calc(max(env(safe-area-inset-top),0.75rem)+1.5rem)] px-4 max-w-lg mx-auto space-y-6 animate-in fade-in duration-300">
+    <div className="pb-32 pt-[calc(max(env(safe-area-inset-top),0.75rem)+3.5rem)] px-4 max-w-lg mx-auto space-y-6 animate-in fade-in duration-300">
       {/* Prepaid Inventory Summary Banner (اعتبار پکیج پیش‌پرداخت شما) */}
       <div className="bg-white/5 rounded-3xl p-4 relative overflow-hidden backdrop-blur-xl border border-white/10">
         <div className="flex items-center justify-between pb-3 border-b border-white/10">
