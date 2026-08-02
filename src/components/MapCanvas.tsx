@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+﻿import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Zap, Navigation, ShieldCheck, Truck, Locate } from 'lucide-react';
 import { ThemeAccent } from '../types';
@@ -143,10 +143,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       const m = L.marker(station.coords, { icon: stationIcon }).addTo(map);
       m.bindPopup(`
-        <div style="direction: rtl; color: #fff; padding: 2px;">
+        <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
           <div style="color: #C5A059; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
-          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">توان شارژ: ${station.power}</div>
-          <div style="font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600;">● دسترس‌پذیر • آماده رزرو</div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
+          <div style="font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
         </div>
       `);
     });
@@ -182,10 +182,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       const vanMarker = L.marker(van.coords, { icon: vanIcon }).addTo(map);
       vanMarker.bindPopup(`
-        <div style="direction: rtl; color: #fff; padding: 2px;">
+        <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
           <div style="color: #34D399; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
-          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">زمان رسیدن تخمینی: <strong>${van.eta}</strong></div>
-          <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">شارژ مخزن ون: ${van.battery}</div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.vanEta}: <strong>${van.eta}</strong></div>
+          <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
         </div>
       `);
     });
@@ -204,7 +204,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         mapInstanceRef.current = null;
       }
     };
-  }, [currentTheme, userCoords]);
+  }, [currentTheme, userCoords, lang]);
 
   const handleRecenter = () => {
     if (mapInstanceRef.current) {
@@ -225,7 +225,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-dvh bg-[#050505] overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-dvh bg-obsidian overflow-hidden select-none">
       {/* Real Interactive Leaflet Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
 
@@ -233,24 +233,24 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       <div className="absolute left-4 top-20 z-20 flex flex-col gap-2">
         <button
           onClick={handleRecenter}
-          className="w-9 h-9 rounded-xl bg-black/80 border border-white/20 text-white/80 flex items-center justify-center backdrop-blur-md hover:bg-black transition active:scale-95 shadow-xl"
-          title="موقعیت من"
+          className="icon-btn shadow-xl"
+          title={t.myLocation}
         >
-          <Locate className="w-4 h-4 text-[#C5A059]" />
+          <Locate className="w-4 h-4 text-gold" />
         </button>
 
         <button
           onClick={handleZoomIn}
-          className="w-9 h-9 rounded-xl bg-black/80 border border-white/20 text-white/80 flex items-center justify-center backdrop-blur-md hover:bg-black transition active:scale-95 shadow-xl text-sm font-bold"
-          title="بزرگ‌نمایی"
+          className="icon-btn shadow-xl text-sm font-bold"
+          title={t.zoomIn}
         >
           +
         </button>
 
         <button
           onClick={handleZoomOut}
-          className="w-9 h-9 rounded-xl bg-black/80 border border-white/20 text-white/80 flex items-center justify-center backdrop-blur-md hover:bg-black transition active:scale-95 shadow-xl text-sm font-bold"
-          title="کوچک‌نمایی"
+          className="icon-btn shadow-xl text-sm font-bold"
+          title={t.zoomOut}
         >
           -
         </button>
@@ -259,27 +259,27 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       {/* Seamless Integrated Map Expansion Panel (Zero Page-Jump Booking) */}
       {isMapExpanded && (
         <div className="absolute inset-x-0 bottom-32 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
-          <div className="bg-black/90 border border-white/10 rounded-2xl p-5 shadow-2xl backdrop-blur-xl relative">
+          <div className="panel p-5 relative">
             {/* Header close btn */}
-            <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-white/5 border border-white/10"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-2 border border-white/[0.09]"
                   style={{ color: currentTheme.primaryHex }}
                 >
                   <Zap className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-white">مدیریت هوشمند شارژ خودرو</h3>
-                  <p className="text-[11px] text-white/40 font-mono">شارژ فعلی: {userBatteryPercent}٪</p>
+                  <h3 className="text-sm font-bold text-ink">{t.smartChargeTitle}</h3>
+                  <p className="text-[11px] text-ink-4 font-mono">{t.currentCharge.replace('{pct}', String(userBatteryPercent))}</p>
                 </div>
               </div>
               {onCloseMapExpansion && (
                 <button
                   onClick={onCloseMapExpansion}
-                  className="text-white/40 hover:text-white text-xs bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded-lg border border-white/10"
+                  className="btn-ghost text-[11px] px-2.5 py-1.5"
                 >
-                  بستن ✕
+                  {t.close}
                 </button>
               )}
             </div>
@@ -291,8 +291,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('package_7kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'package_7kw'
-                    ? `${currentTheme.borderGlow} bg-white/10 shadow-lg`
-                    : 'border-white/10 bg-black/60 hover:border-white/20'
+                    ? 'bg-surface-3 border-white/20 shadow-lg'
+                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -302,14 +302,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                     )}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-2">
-                      <span>مصرف ۷ کیلووات از پکیج فعال</span>
-                      <span className="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                        اعتباری (رایگان)
+                    <div className="text-xs font-bold text-ink flex items-center gap-2">
+                      <span>{t.package7kw}</span>
+                      <span className="text-[10px] bg-ok/15 text-ok px-2 py-0.5 rounded-full border border-ok/30">
+                        {t.creditFree}
                       </span>
                     </div>
-                    <p className="text-[11px] text-white/40 mt-0.5">
-                      افزایش شارژ به میزان +۲۵٪ • ارسال ون شارژ سیار در ۱۵ دقیقه
+                    <p className="text-[11px] text-ink-4 mt-0.5">
+                      {t.package7kwDesc}
                     </p>
                   </div>
                 </div>
@@ -320,8 +320,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('fast_charger_2km')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'fast_charger_2km'
-                    ? `${currentTheme.borderGlow} bg-white/10 shadow-lg`
-                    : 'border-white/10 bg-black/60 hover:border-white/20'
+                    ? 'bg-surface-3 border-white/20 shadow-lg'
+                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -331,13 +331,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                     )}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-2">
-                      <span>هدایت به ایستگاه شارژ سریع (۲ کیلومتر)</span>
-                      <span className="text-[10px] bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30">
+                    <div className="text-xs font-bold text-ink flex items-center gap-2">
+                      <span>{t.fastChargerTitle}</span>
+                      <span className="text-[10px] bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30">
                         شارژ DC 150kW
                       </span>
                     </div>
-                    <p className="text-[11px] text-white/40 mt-0.5">مسیریابی مستقیم روی نقشه • فول شارژ در ۲۰ دقیقه</p>
+                    <p className="text-[11px] text-ink-4 mt-0.5">{t.fastChargerDesc}</p>
                   </div>
                 </div>
               </div>
@@ -347,8 +347,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('buy_20kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'buy_20kw'
-                    ? `${currentTheme.borderGlow} bg-white/10 shadow-lg`
-                    : 'border-white/10 bg-black/60 hover:border-white/20'
+                    ? 'bg-surface-3 border-white/20 shadow-lg'
+                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -358,28 +358,28 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                     )}
                   </div>
                   <div>
-                    <div className="text-xs font-bold text-white flex items-center gap-2">
-                      <span>خرید ۲۰ کیلووات شارژ اضافه</span>
-                      <span className="text-[10px] text-[#C5A059] bg-[#C5A059]/10 px-2 py-0.5 rounded-full border border-[#C5A059]/20">
-                        رسیدن کامل به خانه/کار
+                    <div className="text-xs font-bold text-ink flex items-center gap-2">
+                      <span>{t.buy20kwTitle}</span>
+                      <span className="text-[10px] text-gold bg-gold/10 px-2 py-0.5 rounded-full border border-gold/20">
+                        {t.buy20kwBadge}
                       </span>
                     </div>
-                    <p className="text-[11px] text-white/40 mt-0.5">ارسال فوری ون شارژ سنگین ۶۰ کیلوواتی</p>
+                    <p className="text-[11px] text-ink-4 mt-0.5">{t.buy20kwDesc}</p>
                   </div>
                 </div>
               </div>
 
               {/* Dynamic Bundling Checkbox */}
-              <div className="pt-2 border-t border-white/10">
-                <label className="flex items-center gap-2.5 cursor-pointer text-xs text-white/80 hover:text-white transition">
+              <div className="pt-2 border-t border-white/[0.07]">
+                <label className="flex items-center gap-2.5 cursor-pointer text-xs text-ink-2 hover:text-ink transition">
                   <input
                     type="checkbox"
                     checked={includeDryWash}
                     onChange={(e) => setIncludeDryWash(e.target.checked)}
-                    className="w-4 h-4 rounded bg-black border-white/20 text-[#C5A059] focus:ring-0 cursor-pointer"
+                    className="w-4 h-4 rounded bg-surface-2 border-white/15 accent-gold cursor-pointer"
                   />
                   <span className="flex-1 text-[11px] leading-relaxed">
-                    افزودن <strong className="text-[#C5A059]">کارواش نانو خشک (رایگان پکیج)</strong> حین انجام شارژ سیار؟
+                    {t.dryWashAdd} <strong className="text-gold">{t.dryWashName}</strong> {t.dryWashDuring}
                   </span>
                 </label>
               </div>
@@ -390,19 +390,19 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   if (onConfirmBooking) {
                     const title =
                       chargeOptionSelected === 'fast_charger_2km'
-                        ? 'رزرو نوبت ایستگاه شارژ سریع ۲ کیلومتر'
+                        ? t.bookFastStation
                         : chargeOptionSelected === 'buy_20kw'
-                        ? 'سفارش ارسال شارژ سیار ۲۰ کیلووات'
-                        : 'سفارش ارسال شارژ سیار ۷ کیلووات (پکیج)';
+                        ? t.book20kwVan
+                        : t.book7kwVan;
                     const kwh = chargeOptionSelected === 'buy_20kw' ? 20 : 7;
                     onConfirmBooking(title, kwh, includeDryWash);
                   }
                 }}
-                className="w-full mt-3 py-3 rounded-xl font-bold text-black shadow-xl transition-all hover:brightness-110 active:scale-[0.99] flex items-center justify-center gap-2 text-xs"
+                className="btn-accent w-full mt-3 py-3 text-xs"
                 style={{ backgroundColor: currentTheme.primaryHex }}
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>تایید و رزرو خدمات روی نقشه</span>
+                <span>{t.confirmBookingCta}</span>
               </button>
             </div>
           </div>

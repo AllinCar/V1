@@ -9,7 +9,7 @@ import { INITIAL_CARS, PREPAID_PACKAGES, SERVICES_LIST, THEME_ACCENTS, INITIAL_U
 import { MapCanvas } from './components/MapCanvas';
 import { FloatingCarCard } from './components/FloatingCarCard';
 import { ProactiveServiceSection } from './components/ProactiveServiceSection';
-import { BottomNav } from './components/BottomNav';
+import { BottomNavigation } from './components/BottomNavigation';
 import { AIConciergeModal } from './components/AIConciergeModal';
 import { ServicesTab } from './components/ServicesTab';
 import { CarsTab } from './components/CarsTab';
@@ -100,19 +100,19 @@ export default function App() {
     setActiveTab('home');
     const newOrder: ActiveServiceOrder = {
       id: `ord-${Date.now()}`,
-      serviceTitle: 'اعزام راننده تشریفات اختصاصی',
+      serviceTitle: t.driverServiceTitle,
       status: 'on_the_way',
       carName: selectedCar.name,
-      locationName: 'الهیه، فرشته',
+      locationName: t.locationElahiyeh,
       lat: 35.78,
       lng: 51.42,
       etaMinutes: 12,
-      technicianName: 'استاد علیرضا افشار',
+      technicianName: t.techDriver,
       technicianScore: 4.9,
-      technicianPhone: '۰۹۱۲۸۸۸۷۷۶۶',
+      technicianPhone: t.techDriverPhone,
       technicianPhoto:
         'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
-      startTime: 'همین الان',
+      startTime: t.startNow,
       progressPercent: 35,
     };
     setActiveOrder(newOrder);
@@ -127,10 +127,10 @@ export default function App() {
     setHistory((prev) => [
       {
         id: `h-${Date.now()}`,
-        serviceTitle: 'راننده تشریفات اختصاصی',
-        date: 'همین الان',
+        serviceTitle: t.historyDriverTitle,
+        date: t.historyDateNow,
         carName: selectedCar.name,
-        amountDeduction: 'اعتباری (۱ سرویس راننده)',
+        amountDeduction: t.historyDriverCredit,
         rating: 5,
       },
       ...prev,
@@ -141,19 +141,19 @@ export default function App() {
     setActiveTab('home');
     const newOrder: ActiveServiceOrder = {
       id: `ord-${Date.now()}`,
-      serviceTitle: 'سرویس دوره‌ای ۱۰ هزار کیلومتر BMS',
+      serviceTitle: t.bmsServiceTitle,
       status: 'accepted',
       carName: selectedCar.name,
-      locationName: 'الهیه، فرشته',
+      locationName: t.locationElahiyeh,
       lat: 35.78,
       lng: 51.42,
       etaMinutes: 25,
-      technicianName: 'مهندس کامران رستمی',
+      technicianName: t.techBms,
       technicianScore: 5.0,
-      technicianPhone: '۰۹۱۲۳۳۳۴۴۵۵',
+      technicianPhone: t.techBmsPhone,
       technicianPhoto:
         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80',
-      startTime: 'همین الان',
+      startTime: t.startNow,
       progressPercent: 15,
     };
     setActiveOrder(newOrder);
@@ -166,16 +166,16 @@ export default function App() {
       serviceTitle: title,
       status: 'on_the_way',
       carName: selectedCar.name,
-      locationName: 'الهیه، فرشته',
+      locationName: t.locationElahiyeh,
       lat: 35.78,
       lng: 51.42,
       etaMinutes: 15,
-      technicianName: 'تکنسین آرمان شریفی',
+      technicianName: t.techMap,
       technicianScore: 4.95,
-      technicianPhone: '۰۹۱۲۱۱۱۰۰۹۹',
+      technicianPhone: t.techMapPhone,
       technicianPhoto:
         'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=300&q=80',
-      startTime: 'همین الان',
+      startTime: t.startNow,
       kwhAmount: kwhAmount || 7,
       isBundledWash: dryWash,
       progressPercent: 20,
@@ -192,10 +192,10 @@ export default function App() {
     setHistory((prev) => [
       {
         id: `h-${Date.now()}`,
-        serviceTitle: `${title}${dryWash ? ' + کارواش نانو' : ''}`,
-        date: 'همین الان',
+        serviceTitle: `${title}${dryWash ? t.nanoWashSuffix : ''}`,
+        date: t.historyDateNow,
         carName: selectedCar.name,
-        amountDeduction: 'کسر از اعتبارات پکیج',
+        amountDeduction: t.historyDeductedPackage,
         rating: 5,
       },
       ...prev,
@@ -204,7 +204,7 @@ export default function App() {
 
   const handleAIExecuteAction = (action: string, params?: any) => {
     if (action === 'BOOK_MOBILE_CHARGER') {
-      handleConfirmMapChargeBooking('سفارش شارژ سیار ۷ کیلووات (AI Concierge)', params?.kWh || 7, true);
+      handleConfirmMapChargeBooking(t.aiMobileChargeTitle, params?.kWh || 7, true);
     } else if (action === 'SHOW_FAST_CHARGER_MAP') {
       setIsMapExpanded(true);
       setChargeOptionSelected('fast_charger_2km');
@@ -218,29 +218,29 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-dvh bg-[#050505] text-[#E0E0E0] flex flex-col justify-between overflow-hidden relative font-sans">
+    <div className="w-full h-dvh bg-obsidian text-ink flex flex-col justify-between overflow-hidden relative">
       {/* Persistent Icon Header Controls */}
       <div className="absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+0.75rem)] right-4 z-40 flex items-center gap-2">
         <button
           onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
-          className="w-9 h-9 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition active:scale-95 group"
+          className="icon-btn rounded-full group"
           title={lang === 'fa' ? 'Switch to English' : 'تغییر به فارسی'}
         >
-          <Globe className="w-4 h-4 text-[#C5A059] group-hover:rotate-45 transition-transform" />
+          <Globe className="w-4 h-4 text-gold group-hover:rotate-45 transition-transform" />
         </button>
 
         <button
           onClick={() => setIsSOSModalOpen(true)}
-          className="h-9 px-3 bg-red-950/60 hover:bg-red-900/80 border border-red-500/50 text-red-300 hover:text-white rounded-full text-xs font-bold shadow-lg backdrop-blur-md flex items-center gap-1.5 transition active:scale-95"
-          title="امداد جاده‌ای اضطراری (Shake SOS)"
+          className="h-9 px-3 rounded-full text-xs font-bold shadow-lg backdrop-blur-md flex items-center gap-1.5 transition active:scale-95 bg-red-950/60 hover:bg-red-900/80 border border-red-500/50 text-red-300 hover:text-white"
+          title={t.emergencySosTitle}
         >
-          <ShieldAlert className="w-4 h-4 text-red-500 animate-pulse" />
+          <ShieldAlert className="w-4 h-4 text-danger animate-pulse" />
           <span className="font-mono text-[11px] font-extrabold tracking-wider">SOS</span>
         </button>
       </div>
 
       {/* Side Status Indicator (Design Requirement) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-[#C5A059]/10 border-l border-y border-[#C5A059]/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gold/10 border-l border-y border-gold/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
         <div className="w-1 h-6 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
         <p className="writing-vertical-rl text-[9px] uppercase tracking-widest font-bold dir-ltr" style={{ color: currentTheme.primaryHex }}>
           VIP Elite
@@ -250,7 +250,7 @@ export default function App() {
       {/* Main Tab Render Container */}
       <div className="relative flex-1 w-full h-full overflow-hidden">
         {activeTab === 'home' && (
-          <div className="w-full h-full relative">
+          <div className="w-full h-full relative tab-enter" key="home">
             {/* Base Full Map background */}
             <MapCanvas
               currentTheme={currentTheme}
@@ -261,6 +261,7 @@ export default function App() {
               onConfirmBooking={handleConfirmMapChargeBooking}
               onCloseMapExpansion={() => setIsMapExpanded(false)}
               userBatteryPercent={selectedCar.batteryPercent}
+              lang={lang}
             />
 
             {/* Top Floating Car Card */}
@@ -272,6 +273,7 @@ export default function App() {
               isMapExpanded={isMapExpanded}
               userPersona={userPersona}
               onOpenProfile={() => setActiveTab('profile')}
+              lang={lang}
             />
 
             {/* Bottom Quiet Proactive Suggestions */}
@@ -283,12 +285,13 @@ export default function App() {
               onBookDriverDirectly={handleBookDriverDirectly}
               onBookServiceDirectly={handleBookServiceDirectly}
               isMapExpanded={isMapExpanded}
+              lang={lang}
             />
           </div>
         )}
 
         {activeTab === 'services' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar">
+          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="services">
             <ServicesTab
               currentTheme={currentTheme}
               walletState={walletState}
@@ -297,12 +300,13 @@ export default function App() {
                 setActiveTab('home');
               }}
               onTopUpClick={() => setActiveTab('profile')}
+              lang={lang}
             />
           </div>
         )}
 
         {activeTab === 'cars' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar">
+          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="cars">
             <CarsTab
               cars={cars}
               selectedCarId={selectedCar.id}
@@ -316,12 +320,13 @@ export default function App() {
                 setActiveTab('home');
               }}
               currentTheme={currentTheme}
+              lang={lang}
             />
           </div>
         )}
 
         {activeTab === 'profile' && (
-          <div className="w-full h-full overflow-y-auto no-scrollbar">
+          <div className="w-full h-full overflow-y-auto no-scrollbar tab-enter" key="profile">
             <ProfileTab
               userPersona={userPersona}
               walletState={walletState}
@@ -343,6 +348,7 @@ export default function App() {
                   remainingDrivers: prev.remainingDrivers + pkg.driversIncluded,
                 }));
               }}
+              lang={lang}
             />
           </div>
         )}
@@ -353,6 +359,7 @@ export default function App() {
             order={activeOrder}
             currentTheme={currentTheme}
             onCancelOrder={() => setActiveOrder(null)}
+            lang={lang}
           />
         )}
       </div>
@@ -365,6 +372,7 @@ export default function App() {
         selectedCar={selectedCar}
         walletState={walletState}
         onExecuteAction={handleAIExecuteAction}
+        lang={lang}
       />
 
       {/* Emergency Roadside SOS Modal */}
@@ -376,10 +384,11 @@ export default function App() {
         onConfirmSOS={() => {
           handleBookServiceDirectly();
         }}
+        lang={lang}
       />
 
-      {/* Fixed Multilingual Bottom Navigation Bar */}
-      <BottomNav
+      {/* Fixed Multilingual iOS Floating Bottom Navigation */}
+      <BottomNavigation
         activeTab={activeTab}
         onChangeTab={(tab) => {
           setIsMapExpanded(false);

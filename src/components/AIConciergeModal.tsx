@@ -1,6 +1,6 @@
-import React from 'react';
+﻿import React from 'react';
 import { ThemeAccent, Car, WalletState } from '../types';
-import { Mic, Send, X, Bot, Sparkles, Zap, ShieldAlert, CheckCircle2, Volume2 } from 'lucide-react';
+import { Mic, Send, X, Bot, Sparkles, Zap } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface AIConciergeModalProps {
@@ -86,7 +86,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
       const botMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'concierge',
-        text: data.reply || 'درخواست شما ثبت شد.',
+        text: data.reply || t.aiRequestRecorded,
         suggestedAction: data.suggestedAction,
         actionParams: data.actionParams,
       };
@@ -103,7 +103,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         {
           id: (Date.now() + 1).toString(),
           sender: 'concierge',
-          text: 'درود! متوجه درخواست شما شدم. ون شارژ سیار ۷ کیلووات پکیج را آماده اعزام می‌کنم.',
+          text: t.aiDispatchPreparing,
         },
       ]);
     } finally {
@@ -117,7 +117,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
       setIsListening(true);
       setTimeout(() => {
         setIsListening(false);
-        handleSendMessage('لطفاً ون شارژ سیار ۷ کیلووات پکیج من را به موقعیت فعلی بفرست.');
+        handleSendMessage(t.aiVoiceVanRequest);
       }, 2000);
       return;
     }
@@ -146,86 +146,82 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
       };
     } catch (e) {
       setIsListening(false);
-      handleSendMessage('شارژ سیار فوری ارسال کن.');
+      handleSendMessage(t.aiVoiceUrgentCharge);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200">
-      <div className="bg-[#060D08] border border-emerald-900/40 w-full max-w-md h-[92vh] sm:h-[84vh] sm:rounded-[36px] rounded-t-[36px] shadow-[0_0_50px_rgba(16,185,129,0.15)] flex flex-col overflow-hidden relative dir-rtl">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
+      <div className="sheet w-full max-w-md h-[92vh] sm:h-[84vh] sm:rounded-[36px] rounded-t-[36px] flex flex-col overflow-hidden relative dir-rtl" style={{ borderColor: 'color-mix(in oklab, var(--color-ok) 25%, transparent)' }}>
         {/* Background ambient radial glow */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-ok/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Top Header */}
-        <div className="p-4 px-6 border-b border-emerald-900/30 bg-[#060D08]/90 backdrop-blur-md flex items-center justify-between z-10">
+        <div className="p-4 px-6 border-b border-white/[0.07] bg-obsidian/90 backdrop-blur-md flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-lg shadow-emerald-500/20"
-                style={{ backgroundColor: currentTheme.primaryHex }}
+                className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-lg"
+                style={{ backgroundColor: currentTheme.primaryHex, boxShadow: `0 6px 20px ${currentTheme.primaryHex}55` }}
               >
                 <Bot className="w-5 h-5 stroke-[2.2]" />
               </div>
-              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#060D08] flex items-center justify-center">
+              <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-ok border-2 border-surface-2 flex items-center justify-center">
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
               </span>
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-medium text-white tracking-tight">آلین | AI Concierge</h3>
-                <span className="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono uppercase">
-                  Active Voice
+                <h3 className="text-sm font-medium text-ink tracking-tight">{t.aiConciergeTitle}</h3>
+                <span className="text-[9px] bg-ok/10 text-ok border border-ok/30 px-2 py-0.5 rounded-full font-mono uppercase">
+                  {t.activeVoice}
                 </span>
               </div>
-              <p className="text-[10px] text-emerald-500/60 mt-0.5">
-                {isListening ? 'در حال شنیدن صدای شما...' : 'آماده گفتگو و اجرای دستورات خودرو'}
+              <p className="text-[10px] text-ok/70 mt-0.5">
+                {isListening ? t.listening : t.readyAssist}
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white flex items-center justify-center border border-white/10 transition"
-          >
+          <button onClick={onClose} className="icon-btn w-8 h-8 rounded-full">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Central Voxa/Aria Animated Mesh Orb Banner */}
-        <div className="relative py-6 px-4 flex flex-col items-center justify-center bg-gradient-to-b from-emerald-950/20 via-transparent to-transparent border-b border-emerald-900/20">
+        <div className="relative py-6 px-4 flex flex-col items-center justify-center bg-gradient-to-b from-ok/10 via-transparent to-transparent border-b border-ok/20">
           <div className="relative w-28 h-28 flex items-center justify-center">
-            {/* Glowing animated circles & waves */}
-            <div className="absolute inset-0 rounded-full bg-emerald-500/20 blur-xl animate-pulse"></div>
-            <div className="absolute w-24 h-24 rounded-full border border-emerald-500/30 animate-spin" style={{ animationDuration: '10s' }}></div>
-            <div className="absolute w-20 h-20 rounded-full border border-dashed border-emerald-400/40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+            <div className="absolute inset-0 rounded-full bg-ok/20 blur-xl animate-pulse"></div>
+            <div className="absolute w-24 h-24 rounded-full border border-ok/30 animate-spin" style={{ animationDuration: '10s' }}></div>
+            <div className="absolute w-20 h-20 rounded-full border border-dashed border-ok/40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ok to-ok-2 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.5)]">
               <Sparkles className="w-8 h-8 text-black animate-pulse" />
             </div>
           </div>
-          <h4 className="text-xs font-light text-white/90 mt-3 tracking-wide dir-ltr">
-            <span className="italic font-serif text-emerald-400">Voxa AI</span> is here to assist
+          <h4 className="text-xs font-light text-ink-3 mt-3 tracking-wide dir-ltr">
+            <span className="italic font-serif text-ok">Voxa AI</span> is here to assist
           </h4>
-          <p className="text-[10px] text-emerald-500/70 mt-0.5 font-sans">
-            خودروی {selectedCar.name} • شارژ {selectedCar.batteryPercent}٪
+          <p className="text-[10px] text-ok/70 mt-0.5 font-sans">
+            {t.aiBannerSubtitle.replace('{car}', selectedCar.name).replace('{pct}', String(selectedCar.batteryPercent))}
           </p>
         </div>
 
         {/* Chat Stream Messages */}
-        <div className="flex-1 p-4 overflow-y-auto space-y-3.5 z-10">
+        <div className="flex-1 p-4 overflow-y-auto space-y-3.5 z-10 no-scrollbar">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}
             >
               <div
-                className={`max-w-[88%] p-3.5 rounded-2xl text-xs leading-relaxed ${
+                className={`max-w-[88%] p-3.5 rounded-2xl text-xs leading-relaxed border ${
                   msg.sender === 'user'
-                    ? 'bg-emerald-950/60 text-white rounded-tl-none border border-emerald-500/30 shadow-md'
-                    : 'bg-[#0E1B13] text-emerald-100/90 rounded-tr-none border border-emerald-900/40 shadow-lg'
+                    ? 'bg-ok/10 text-ink rounded-tl-none border-ok/25'
+                    : 'panel-subtle text-ink-2 rounded-tr-none border-white/[0.07]'
                 }`}
               >
                 {msg.sender === 'concierge' && (
-                  <div className="flex items-center gap-1.5 text-[10px] text-emerald-400 mb-1 font-mono uppercase tracking-wider">
-                    <Bot className="w-3.5 h-3.5 text-emerald-400" />
+                  <div className="flex items-center gap-1.5 text-[10px] text-ok mb-1 font-mono uppercase tracking-wider">
+                    <Bot className="w-3.5 h-3.5 text-ok" />
                     <span>Aria Voice Concierge</span>
                   </div>
                 )}
@@ -235,9 +231,9 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
           ))}
 
           {isLoading && (
-            <div className="flex items-center gap-2 text-xs text-emerald-400/80 bg-[#0E1B13] p-3 rounded-2xl w-max border border-emerald-900/40">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span>در حال آنالیز پارامترهای BMS و شبکه شارژ...</span>
+            <div className="flex items-center gap-2 text-xs text-ok/80 panel-subtle p-3 rounded-2xl w-max border border-ok/25">
+              <span className="w-2 h-2 rounded-full bg-ok animate-ping"></span>
+              <span>{t.aiAnalyzing}</span>
             </div>
           )}
 
@@ -245,39 +241,39 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         </div>
 
         {/* Preset Quick Action Pills (Voxa Style) */}
-        <div className="px-4 py-2 bg-[#060D08]/90 border-t border-emerald-900/30 flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+        <div className="px-4 py-2 bg-obsidian/90 border-t border-white/[0.07] flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
           <button
-            onClick={() => handleSendMessage('اعزام ون شارژ سیار ۷ کیلووات از اعتباری')}
-            className="text-[11px] bg-[#0E1B13] hover:bg-emerald-950 text-emerald-300 px-3 py-1.5 rounded-full border border-emerald-800/40 shrink-0 transition flex items-center gap-1.5"
+            onClick={() => handleSendMessage(t.aiQuickVanMsg)}
+            className="text-[11px] bg-surface-2 hover:bg-surface-3 text-ok px-3 py-1.5 rounded-full border border-ok/25 shrink-0 transition flex items-center gap-1.5"
           >
-            <Zap className="w-3.5 h-3.5 text-emerald-400" />
-            <span>شارژ سیار ۷kW</span>
+            <Zap className="w-3.5 h-3.5 text-ok" />
+            <span>{t.quickVan}</span>
           </button>
           <button
-            onClick={() => handleSendMessage('وضعیت سلامت باتری و سلامت cellهای BMS چطوره؟')}
-            className="text-[11px] bg-[#0E1B13] hover:bg-emerald-950 text-emerald-300 px-3 py-1.5 rounded-full border border-emerald-800/40 shrink-0 transition flex items-center gap-1.5"
+            onClick={() => handleSendMessage(t.aiQuickBmsMsg)}
+            className="text-[11px] bg-surface-2 hover:bg-surface-3 text-ok px-3 py-1.5 rounded-full border border-ok/25 shrink-0 transition flex items-center gap-1.5"
           >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>چکاپ BMS</span>
+            <Sparkles className="w-3.5 h-3.5 text-ok" />
+            <span>{t.quickBms}</span>
           </button>
           <button
-            onClick={() => handleSendMessage('یک راننده تشریفات برای انتقال خودرو اعزام کن')}
-            className="text-[11px] bg-[#0E1B13] hover:bg-emerald-950 text-emerald-300 px-3 py-1.5 rounded-full border border-emerald-800/40 shrink-0 transition flex items-center gap-1.5"
+            onClick={() => handleSendMessage(t.aiQuickDriverMsg)}
+            className="text-[11px] bg-surface-2 hover:bg-surface-3 text-ok px-3 py-1.5 rounded-full border border-ok/25 shrink-0 transition flex items-center gap-1.5"
           >
-            <span>🤵 راننده اختصاصی</span>
+            <span>🤵 {t.quickDriver}</span>
           </button>
         </div>
 
-        {/* Dark Emerald Bottom Control Bar (Voxa Screen Style) */}
-        <div className="p-3.5 px-4 bg-[#050B07] border-t border-emerald-900/40 flex items-center gap-2.5 z-10">
+        {/* Bottom Control Bar */}
+        <div className="p-3.5 px-4 bg-obsidian border-t border-white/[0.07] flex items-center gap-2.5 z-10">
           <button
             onClick={startVoiceDictation}
             className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition shadow-lg ${
               isListening
-                ? 'bg-emerald-400 text-black animate-pulse shadow-emerald-500/50'
-                : 'bg-emerald-950 border border-emerald-700/50 text-emerald-400 hover:bg-emerald-900'
+                ? 'bg-ok text-black animate-pulse shadow-ok/50'
+                : 'bg-surface-2 border border-ok/25 text-ok hover:bg-surface-3'
             }`}
-            title="گفتگوی صوتی (میکروفون)"
+            title={t.typeMessage}
           >
             <Mic className="w-5 h-5" />
           </button>
@@ -287,8 +283,8 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-            placeholder={isListening ? 'در حال شنیدن صدای شما...' : 'پیام به دستیار هوشمند آلین...'}
-            className="flex-1 bg-[#0B170F] border border-emerald-900/40 rounded-full px-4 py-2.5 text-xs text-white placeholder-emerald-600/60 focus:outline-none focus:border-emerald-500/60"
+            placeholder={isListening ? t.listening : t.typeMessage}
+            className="flex-1 bg-surface-1 border border-white/[0.09] rounded-full px-4 py-2.5 text-xs text-ink placeholder-ink-4 focus:outline-none focus:border-ok/50"
           />
 
           <button
