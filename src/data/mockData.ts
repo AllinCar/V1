@@ -164,11 +164,11 @@ export function getThemeAccents(lang: Language = 'fa'): ThemeAccent[] {
     {
       id: 'emerald',
       name: t.themeEmerald,
-      primaryHex: '#10B981',
-      primaryTailwindBg: 'bg-emerald-500',
-      primaryTailwindText: 'text-emerald-400',
-      glowColor: 'rgba(16, 185, 129, 0.4)',
-      borderGlow: 'border-emerald-500/40',
+      primaryHex: '#02DAAE',
+      primaryTailwindBg: 'bg-[#02DAAE]',
+      primaryTailwindText: 'text-[#02DAAE]',
+      glowColor: 'rgba(2, 218, 174, 0.4)',
+      borderGlow: 'border-[#02DAAE]/40',
     },
     {
       id: 'gold',

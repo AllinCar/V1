@@ -10,11 +10,11 @@
   --font-display: 'Estedad', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Surfaces — obsidian stack (warm-tinted blacks) */
-  --color-obsidian: oklch(15% 0.006 260);
-  --color-surface-1: oklch(18.5% 0.007 260);
-  --color-surface-2: oklch(21.5% 0.008 260);
-  --color-surface-3: oklch(25% 0.009 260);
+  /* Surfaces — card stack anchored on #232323 */
+  --color-obsidian: #1a1a1a;
+  --color-surface-1: #232323;
+  --color-surface-2: #2a2a2a;
+  --color-surface-3: #323232;
 
   /* Text — restrained warm-white hierarchy */
   --color-ink: oklch(96% 0.004 260);
@@ -27,8 +27,8 @@
   --color-gold-2: #e0be7e;
 
   /* Semantic */
-  --color-ok: #34d399;
-  --color-ok-2: #10b981;
+  --color-ok: #02daae;
+  --color-ok-2: #01b892;
   --color-warn: #fbbf24;
   --color-danger: #fb7185;
   --color-danger-2: #f43f5e;
@@ -110,11 +110,7 @@
   .panel {
     border-radius: 1.25rem;
     border: 1px solid oklch(100% 0 0 / 0.07);
-    background: linear-gradient(
-      180deg,
-      color-mix(in oklab, var(--color-surface-2) 96%, oklch(100% 0 0 / 0.03)) 0%,
-      var(--color-surface-1) 60%
-    );
+    background: #232323;
     box-shadow:
       0 1px 0 oklch(100% 0 0 / 0.04) inset,
       0 8px 24px oklch(0% 0 0 / 0.35);
@@ -124,12 +120,12 @@
   .panel-subtle {
     border-radius: 1rem;
     border: 1px solid oklch(100% 0 0 / 0.06);
-    background: color-mix(in oklab, var(--color-surface-1) 70%, transparent);
+    background: #232323;
   }
 
   /* Floating glass sheet (map overlays, chips) */
   .glass {
-    background: color-mix(in oklab, var(--color-obsidian) 72%, transparent);
+    background: #232323;
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border: 1px solid oklch(100% 0 0 / 0.08);
@@ -242,7 +238,7 @@
   .sheet {
     border-radius: 1.75rem 1.75rem 0 0;
     border: 1px solid oklch(100% 0 0 / 0.1);
-    background: linear-gradient(180deg, var(--color-surface-2) 0%, var(--color-obsidian) 40%);
+    background: #232323;
     box-shadow: 0 -24px 64px oklch(0% 0 0 / 0.6);
   }
 

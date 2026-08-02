@@ -295,7 +295,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
             <div className="absolute inset-0 rounded-full bg-ok/20 blur-xl animate-pulse"></div>
             <div className="absolute w-24 h-24 rounded-full border border-ok/30 animate-spin" style={{ animationDuration: '10s' }}></div>
             <div className="absolute w-20 h-20 rounded-full border border-dashed border-ok/40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ok to-ok-2 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.5)]">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ok to-ok-2 flex items-center justify-center shadow-[0_0_30px_rgba(2,218,174,0.5)]">
               <Sparkles className="w-8 h-8 text-black animate-pulse" />
             </div>
           </div>

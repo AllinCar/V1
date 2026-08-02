@@ -193,7 +193,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
             <div style="color: #C5A059; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
             <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
-            <div style="font-size: 10px; color: #10B981; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
+            <div style="font-size: 10px; color: #02DAAE; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
           </div>
         `)
         .addTo(overlays);
@@ -214,10 +214,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       const vanHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-          <div style="width: 34px; height: 34px; border-radius: 9999px; background: #06150C; border: 2px solid #10B981; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(16,185,129,0.5);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+          <div style="width: 34px; height: 34px; border-radius: 9999px; background: #06150C; border: 2px solid #02DAAE; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(2,218,174,0.5);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#02DAAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 1px 6px; background: rgba(6,21,12,0.92); border: 1px solid rgba(16,185,129,0.4); border-radius: 6px; color: #34D399; font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 1px 6px; background: rgba(6,21,12,0.92); border: 1px solid rgba(2,218,174,0.4); border-radius: 6px; color: #02DAAE; font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             🚐 ${van.id} (${van.eta})
           </div>
         </div>
@@ -233,7 +233,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       })
         .bindPopup(`
           <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-            <div style="color: #34D399; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
+            <div style="color: #02DAAE; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
             <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.vanEta}: <strong>${van.eta}</strong></div>
             <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
           </div>
