@@ -52,7 +52,7 @@
   --shadow-sheet: 0 -16px 48px oklch(0% 0 0 / 0.5);
 
   --space-page-x: 1rem;
-  --nav-clearance: 5.5rem;
+  --nav-clearance: 5.25rem;
 }
 
 html[data-appearance="light"] {
@@ -85,7 +85,39 @@ html[data-appearance="light"] {
   html,
   body,
   #root {
-    height: 100%;
+    width: 100%;
+    height: var(--app-height, 100%);
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  .app-shell {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: var(--app-height, 100%);
+    overflow: hidden;
+  }
+
+  .bottom-nav-dock {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: var(--nav-bottom-shift, 0px) !important;
+    top: auto !important;
+    z-index: 45;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    width: 100%;
+    margin: 0;
+    padding-inline: 1rem;
+    padding-top: 0;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
   }
 
   body {

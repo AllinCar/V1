@@ -282,7 +282,7 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-dvh bg-obsidian text-ink flex flex-col justify-between overflow-hidden relative">
+    <div className="app-shell bg-obsidian text-ink">
       {/* Top chrome */}
       <div className="absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+0.5rem)] inset-x-4 z-40 flex items-center justify-between pointer-events-none">
         <div className="pointer-events-auto">

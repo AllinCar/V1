@@ -1,4 +1,5 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, useReducedMotion, type Transition } from 'motion/react';
 import { Home, Layers, Car, User, Mic, type LucideIcon } from 'lucide-react';
 import type { NavTab, ThemeAccent } from '../types';
@@ -123,11 +124,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
     );
   };
 
-  return (
-    <div className="fixed bottom-0 inset-x-0 z-40 pointer-events-none flex justify-center px-4 pb-[max(env(safe-area-inset-bottom),0.35rem)]">
+  const dock = (
+    <div className="bottom-nav-dock">
       <nav
-        className="nav-capsule relative w-full max-w-sm pointer-events-auto flex items-center px-1.5"
-        style={{ height: '3.75rem' }}
+        className="nav-capsule relative w-full max-w-sm pointer-events-auto flex items-center px-1.5 mb-1"
+        style={{ height: '3.5rem' }}
         data-theme={mode === 'light' ? 'light' : undefined}
         aria-label={t.navMainAria}
       >
@@ -135,4 +136,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       </nav>
     </div>
   );
+
+  // Portal to <body> so iOS PWA never traps fixed nav inside overflow shells
+  if (typeof document === 'undefined') return dock;
+  return createPortal(dock, document.body);
 };
