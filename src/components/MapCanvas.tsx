@@ -19,6 +19,13 @@ interface MapCanvasProps {
   isVisible?: boolean;
 }
 
+const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+const LIGHT_TILES = 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+
+function getTilesUrl(theme: string) {
+  return theme === 'light' ? LIGHT_TILES : DARK_TILES;
+}
+
 export const MapCanvas: React.FC<MapCanvasProps> = ({
   currentTheme,
   isMapExpanded,
@@ -91,9 +98,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     });
 
     const tiles = L.tileLayer(
-      theme === 'light'
-        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      getTilesUrl(theme),
       {
         maxZoom: 19,
         subdomains: 'abcd',
@@ -120,6 +125,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       overlaysRef.current = null;
       setIsMapReady(false);
     };
+  }, []);
+
+  // Theme change — swap only the tile imagery in place. The map instance,
+  // center, zoom, user location and all overlays are preserved untouched.
+  useEffect(() => {
+    const tiles = tilesRef.current;
+    if (!tiles) return;
+    tiles.setUrl(getTilesUrl(theme));
   }, [theme]);
 
   // Refresh size when home becomes visible again (cached map, no remount)
