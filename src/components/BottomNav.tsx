@@ -35,8 +35,9 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   ];
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 max-w-lg mx-auto pointer-events-none">
-      <div className="w-full bg-black/90 border-t border-x border-white/10 rounded-t-[28px] px-2.5 pb-[calc(max(env(safe-area-inset-bottom),0.5rem))] pt-2 backdrop-blur-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.8)] flex items-center justify-between pointer-events-auto relative">
+    <div className="fixed bottom-0 inset-x-0 z-40 pointer-events-none">
+      <div className="w-full bg-black border-t border-white/10 backdrop-blur-2xl shadow-[0_-8px_40px_rgba(0,0,0,0.8)]">
+        <div className="max-w-lg mx-auto px-2.5 pb-[calc(max(env(safe-area-inset-bottom),0.75rem))] pt-2 flex items-center justify-between pointer-events-auto relative">
         {/* Left nav items */}
         <div className="flex-1 flex items-center justify-around">
           {navItems.slice(0, 2).map(({ tab, icon }) => {
@@ -131,6 +132,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
               </button>
             );
           })}
+        </div>
         </div>
       </div>
     </div>
