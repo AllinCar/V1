@@ -186,7 +186,7 @@ export const THEME_ACCENTS: ThemeAccent[] = [
 ];
 
 export const INITIAL_USER_PERSONA: UserPersona = {
-  name: 'مهندس محمدحسین کاشفی',
+  name: 'مهندسی علی احمدی',
   phone: '۰۹۱۲۳۴۵۶۷۸۹',
   level: 'عضویت الماس پریمیوم VIP',
   levelBadge: 'VIP Platinum',

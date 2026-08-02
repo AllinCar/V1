@@ -39,8 +39,8 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         id: '1',
         sender: 'concierge',
         text: lang === 'fa'
-          ? `درود جناب مهندس محمدحسین کاشفی! من خادم و دستیار هوشمند اختصاصی شما در آلین‌کار هستم. آماده‌ام هر فرمایشی برای خودروی ${selectedCar.name} (${selectedCar.batteryPercent}٪ شارژ) داشته باشید، فوراً انجام دهم. چه کاری می‌توانم برایتان انجام دهم؟`
-          : `Greetings Eng. Mohammad Hossein Kashfi! I am your personal AI Concierge at Alincar. Ready to manage any requests for your vehicle ${selectedCar.name} (${selectedCar.batteryPercent}% charge). How may I assist you today?`,
+          ? `درود جناب مهندسی علی احمدی! من خادم و دستیار هوشمند اختصاصی شما در آلین‌کار هستم. آماده‌ام هر فرمایشی برای خودروی ${selectedCar.name} (${selectedCar.batteryPercent}٪ شارژ) داشته باشید، فوراً انجام دهم. چه کاری می‌توانم برایتان انجام دهم؟`
+          : `Greetings Eng. Ali Ahmadi! I am your personal AI Concierge at Alincar. Ready to manage any requests for your vehicle ${selectedCar.name} (${selectedCar.batteryPercent}% charge). How may I assist you today?`,
       },
     ]);
   }, [lang, selectedCar.name, selectedCar.batteryPercent]);
