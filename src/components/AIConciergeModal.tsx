@@ -55,6 +55,23 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
 
   const messagesEndRef = React.useRef<HTMLDivElement>(null);
 
+  // Track the visual viewport so the bottom sheet stays above the iOS
+  // on-screen keyboard (layout viewport does not shrink on iOS Safari).
+  const [visualViewportH, setVisualViewportH] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const sync = () => setVisualViewportH(vv.height);
+    sync();
+    vv.addEventListener('resize', sync);
+    vv.addEventListener('scroll', sync);
+    return () => {
+      vv.removeEventListener('resize', sync);
+      vv.removeEventListener('scroll', sync);
+    };
+  }, []);
+
   React.useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
@@ -252,9 +269,26 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
     }
   };
 
+  const keyboardOpen =
+    visualViewportH !== null && visualViewportH < (window.innerHeight || visualViewportH);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
-      <div className="sheet w-full max-w-md h-[92vh] sm:h-[84vh] sm:rounded-[36px] rounded-t-[36px] flex flex-col overflow-hidden relative dir-rtl" style={{ borderColor: 'color-mix(in oklab, var(--color-ok) 25%, transparent)' }}>
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter"
+      style={
+        visualViewportH
+          ? { height: visualViewportH, bottom: 'auto' }
+          : undefined
+      }
+    >
+      <div
+        className="sheet w-full max-w-md h-[92dvh] sm:h-[84dvh] sm:rounded-[36px] rounded-t-[36px] flex flex-col overflow-hidden relative dir-rtl"
+        style={{
+          height: keyboardOpen ? `calc(${visualViewportH}px - 1.25rem)` : undefined,
+          maxHeight: keyboardOpen ? `calc(${visualViewportH}px - 1.25rem)` : undefined,
+          borderColor: 'color-mix(in oklab, var(--color-ok) 25%, transparent)',
+        }}
+      >
         {/* Background ambient radial glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-ok/10 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -367,7 +401,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         </div>
 
         {/* Bottom Control Bar */}
-        <div className="p-3.5 px-4 bg-obsidian border-t border-divider flex items-center gap-2.5 z-10">
+        <div className="px-4 pt-3.5 pb-safe-input bg-obsidian border-t border-divider flex items-center gap-2.5 z-10">
           <button
             onClick={startVoiceDictation}
             className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition shadow-lg ${

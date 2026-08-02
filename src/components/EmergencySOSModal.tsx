@@ -148,7 +148,7 @@ export const EmergencySOSModal: React.FC<EmergencySOSModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
-      <div className="sheet w-full max-w-lg sm:rounded-3xl p-5 space-y-5 relative overflow-hidden sheet-enter" style={{ borderColor: 'color-mix(in oklab, var(--color-danger) 35%, transparent)' }}>
+      <div className="sheet w-full max-w-lg sm:rounded-3xl px-5 pt-5 pb-safe-sheet space-y-5 relative overflow-hidden sheet-enter" style={{ borderColor: 'color-mix(in oklab, var(--color-danger) 35%, transparent)' }}>
         <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-danger/20 blur-3xl pointer-events-none animate-pulse"></div>
 
         <div className="flex items-center justify-between border-b border-divider pb-3 relative z-10">

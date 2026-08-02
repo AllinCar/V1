@@ -145,7 +145,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   };
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 pointer-events-none flex justify-center px-5 pb-[max(env(safe-area-inset-bottom),0.75rem)]">
+    <div className="fixed bottom-0 inset-x-0 z-40 pointer-events-none flex justify-center px-5 pb-safe-nav">
       <nav
         className="nav-capsule relative w-full max-w-sm pointer-events-auto flex items-center px-2"
         style={{ height: '3.25rem' }}

@@ -531,6 +531,31 @@
   scrollbar-width: none;
 }
 
+/* ────────────────────────────────────────────────────────────────
+   Safe-area bottom padding helpers.
+   `constant()` covers iOS 11.0–11.2 (env() unsupported there);
+   the env() declaration overrides it on every modern engine.
+   ──────────────────────────────────────────────────────────────── */
+@layer utilities {
+  /* Floating bottom nav / dock — clear the Home Indicator */
+  .pb-safe-nav {
+    padding-bottom: max(constant(safe-area-inset-bottom), 0.75rem);
+    padding-bottom: max(env(safe-area-inset-bottom), 0.75rem);
+  }
+
+  /* Bottom-sheet content — padding above the Home Indicator */
+  .pb-safe-sheet {
+    padding-bottom: max(constant(safe-area-inset-bottom), 1rem);
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+
+  /* Input bar — room for Home Indicator when keyboard is dismissed */
+  .pb-safe-input {
+    padding-bottom: max(constant(safe-area-inset-bottom), 0.875rem);
+    padding-bottom: max(env(safe-area-inset-bottom), 0.875rem);
+  }
+}
+
 /* Page/tab entrance */
 .tab-enter {
   animation: tab-enter 260ms var(--ease-out-expo) both;
@@ -643,36 +668,6 @@
    ──────────────────────────────────────────────────────────────── */
 .leaflet-container {
   background: var(--map-bg) !important;
-}
-
-/* Zoom control (+ / -) — theme-aware pill */
-.leaflet-control-zoom {
-  border: none !important;
-  border-radius: 14px !important;
-  overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28) !important;
-  font-family: var(--font-sans) !important;
-}
-.leaflet-bar a {
-  background: var(--surface-1) !important;
-  color: var(--text-primary) !important;
-  border-bottom: 1px solid var(--surface-3) !important;
-  width: 38px !important;
-  height: 38px !important;
-  line-height: 38px !important;
-  font-size: 20px !important;
-  transition: background 160ms var(--ease-standard), color 160ms var(--ease-standard);
-}
-.leaflet-bar a:last-child {
-  border-bottom: none !important;
-}
-.leaflet-bar a:hover {
-  background: var(--surface-2) !important;
-  color: var(--accent-text) !important;
-}
-.leaflet-bar a.leaflet-disabled {
-  background: var(--surface-1) !important;
-  color: var(--text-muted) !important;
 }
 
 /* Subtle cinematic color-grade on tile imagery only */
