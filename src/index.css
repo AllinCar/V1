@@ -173,9 +173,10 @@
    colors via `@theme inline` so utilities resolve live.
    ──────────────────────────────────────────────────────────────── */
 @theme {
-  /* Typography — Estedad (Persian/Arabic premium) + Plus Jakarta (Latin) */
+  /* Typography — Estedad (UI) + Vazirmatn (map Persian) + Plus Jakarta (Latin) */
   --font-sans: 'Estedad', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-display: 'Estedad', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-map: 'Vazirmatn', 'Estedad', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
 
   /* Motion */
@@ -665,9 +666,23 @@
 
 /* ────────────────────────────────────────────────────────────────
    Leaflet — theme-aware glass popups & neutral cinematic tiles
+   Leaflet's default stack is Helvetica/Arial (broken for Persian).
+   Force Vazirmatn across the map surface, markers, and popups.
    ──────────────────────────────────────────────────────────────── */
 .leaflet-container {
   background: var(--map-bg) !important;
+  font-family: var(--font-map) !important;
+  font-feature-settings: "ss01", "kern";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.leaflet-container .leaflet-marker-icon,
+.leaflet-container .leaflet-tooltip,
+.custom-user-leaflet-icon,
+.custom-station-leaflet-icon,
+.custom-van-leaflet-icon {
+  font-family: var(--font-map) !important;
 }
 
 /* Subtle cinematic color-grade on tile imagery only */
@@ -686,12 +701,15 @@
   box-shadow: var(--shadow-float) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
+  font-family: var(--font-map) !important;
 }
 
 .leaflet-popup-content {
   margin: 10px 12px !important;
-  line-height: 1.65 !important;
-  font-family: var(--font-sans) !important;
+  line-height: 1.75 !important;
+  font-family: var(--font-map) !important;
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 .leaflet-popup-tip {
@@ -704,6 +722,7 @@
   padding: 6px 8px 0 0 !important;
   font-size: 14px !important;
   font-weight: 300 !important;
+  font-family: var(--font-map) !important;
 }
 
 .leaflet-container a.leaflet-popup-close-button:hover {
