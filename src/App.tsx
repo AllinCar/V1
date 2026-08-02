@@ -218,9 +218,9 @@ export default function App() {
   };
 
   return (
-    <div className="w-full h-screen bg-[#050505] text-[#E0E0E0] flex flex-col justify-between overflow-hidden relative font-sans">
+    <div className="w-full h-dvh bg-[#050505] text-[#E0E0E0] flex flex-col justify-between overflow-hidden relative font-sans">
       {/* Persistent Icon Header Controls */}
-      <div className="absolute top-4 right-4 z-40 flex items-center gap-2">
+      <div className="absolute top-[calc(env(safe-area-inset-top)+1rem)] right-4 z-40 flex items-center gap-2">
         <button
           onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
           className="w-9 h-9 bg-black/70 hover:bg-black/90 border border-white/20 text-white rounded-full shadow-lg backdrop-blur-md flex items-center justify-center transition active:scale-95 group"

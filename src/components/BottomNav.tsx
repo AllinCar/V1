@@ -21,7 +21,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({
   const t = translations[lang];
 
   return (
-    <div className="fixed bottom-0 inset-x-0 z-40 max-w-lg mx-auto pointer-events-none pb-3 px-6">
+    <div className="fixed bottom-0 inset-x-0 z-40 max-w-lg mx-auto pointer-events-none pb-[calc(env(safe-area-inset-bottom)+0.75rem)] px-6">
       <div className="w-full bg-black/90 border border-white/10 rounded-full py-1.5 px-4 backdrop-blur-2xl flex items-center justify-between pointer-events-auto relative">
         {/* 1. Home */}
         <button

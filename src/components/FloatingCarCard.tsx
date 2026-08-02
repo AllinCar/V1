@@ -29,7 +29,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
 
   return (
     <div
-      className={`absolute top-4 inset-x-4 max-w-lg mx-auto z-30 transition-all duration-500 ${
+      className={`absolute top-[calc(env(safe-area-inset-top)+1rem)] inset-x-4 max-w-lg mx-auto z-30 transition-all duration-500 ${
         isMapExpanded ? 'opacity-30 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100'
       }`}
     >

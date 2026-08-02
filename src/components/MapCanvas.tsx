@@ -225,7 +225,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   };
 
   return (
-    <div className="relative w-full h-full min-h-screen bg-[#050505] overflow-hidden select-none">
+    <div className="relative w-full h-full min-h-dvh bg-[#050505] overflow-hidden select-none">
       {/* Real Interactive Leaflet Container */}
       <div ref={mapContainerRef} className="absolute inset-0 w-full h-full z-0" />
 
