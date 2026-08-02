@@ -20,6 +20,7 @@ import { ShieldAlert, Globe } from 'lucide-react';
 import { Language, translations } from './translations';
 import { useTheme } from './theme/ThemeProvider';
 import { ThemeToggle } from './components/ThemeToggle';
+import { assetUrl } from './utils/assetUrl';
 
 export default function App() {
   const { theme, toggleTheme } = useTheme();
@@ -191,7 +192,7 @@ export default function App() {
       technicianName: t.techDriver,
       technicianScore: 4.9,
       technicianPhone: t.techDriverPhone,
-      technicianPhoto: '/images/avatars/tech-driver.jpg',
+      technicianPhoto: assetUrl('images/avatars/tech-driver.jpg'),
       startTime: t.startNow,
       progressPercent: 35,
     };
@@ -232,7 +233,7 @@ export default function App() {
       technicianName: t.techBms,
       technicianScore: 5.0,
       technicianPhone: t.techBmsPhone,
-      technicianPhoto: '/images/avatars/tech-bms.jpg',
+      technicianPhoto: assetUrl('images/avatars/tech-bms.jpg'),
       startTime: t.startNow,
       progressPercent: 15,
     };
@@ -253,7 +254,7 @@ export default function App() {
       technicianName: t.techMap,
       technicianScore: 4.95,
       technicianPhone: t.techMapPhone,
-      technicianPhoto: '/images/avatars/tech-map.jpg',
+      technicianPhoto: assetUrl('images/avatars/tech-map.jpg'),
       startTime: t.startNow,
       kwhAmount: kwhAmount || 7,
       isBundledWash: dryWash,
