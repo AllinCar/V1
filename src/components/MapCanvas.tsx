@@ -175,11 +175,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     ];
 
     const userMarkerHtml = `
-      <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; width: 50px; height: 50px; border-radius: 9999px; background-color: var(--accent-primary); opacity: 0.35; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-        <div style="width: 38px; height: 38px; border-radius: 9999px; background-color: var(--marker-bg); border: 2.5px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--accent-glow); z-index: 10;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/></svg>
-        </div>
+      <div style="position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
+        <!-- luminous colored halo (soft glow) -->
+        <div style="position: absolute; width: 46px; height: 46px; border-radius: 9999px; background: var(--accent-primary); opacity: 0.35; filter: blur(9px);"></div>
+        <!-- simple accent dot with white ring -->
+        <div style="width: 18px; height: 18px; border-radius: 9999px; background: var(--accent-primary); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);"></div>
       </div>
     `;
 
@@ -187,8 +187,8 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       icon: L.divIcon({
         html: userMarkerHtml,
         className: 'custom-user-leaflet-icon',
-        iconSize: [50, 50],
-        iconAnchor: [25, 25],
+        iconSize: [48, 48],
+        iconAnchor: [24, 24],
       }),
     }).addTo(overlays);
 
