@@ -1,8 +1,10 @@
 import React from 'react';
 import { UserPersona, WalletState, ServiceHistory, ThemeAccent, PrepaidPackage } from '../types';
 import { getPrepaidPackages, getThemeAccents } from '../data/mockData';
-import { Wallet, Award, History, Palette, CheckCircle2, ChevronRight, PlusCircle, ArrowUpRight, X } from 'lucide-react';
+import { Wallet, Award, History, Palette, CheckCircle2, ChevronRight, PlusCircle, ArrowUpRight, X, MonitorSmartphone } from 'lucide-react';
 import { Language, translations } from '../translations';
+import { useTheme } from '../theme/ThemeProvider';
+import { ThemeToggleSwitch } from './ThemeToggle';
 
 interface ProfileTabProps {
   userPersona: UserPersona;
@@ -28,6 +30,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const [isTopUpOpen, setIsTopUpOpen] = React.useState(false);
   const [topUpAmount, setTopUpAmount] = React.useState('2000000');
   const [isPackageModalOpen, setIsPackageModalOpen] = React.useState(false);
+  const { theme, setTheme } = useTheme();
   const t = translations[lang];
 
   return (
@@ -44,7 +47,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       <div className="panel p-5 relative overflow-hidden">
         <div
           className="absolute -top-10 -left-10 w-36 h-36 rounded-full blur-3xl opacity-25 pointer-events-none"
-          style={{ backgroundColor: currentTheme.primaryHex }}
+          style={{ backgroundColor: 'var(--accent-primary)' }}
         ></div>
 
         <div className="flex items-center gap-4 relative z-10">
@@ -53,11 +56,11 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
               src={userPersona.avatarUrl}
               alt={userPersona.name}
               className="w-16 h-16 rounded-2xl object-cover border-2 shadow-xl"
-              style={{ borderColor: currentTheme.primaryHex }}
+              style={{ borderColor: 'var(--accent-primary)' }}
             />
             <span
-              className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-black shadow-md uppercase tracking-wider"
-              style={{ backgroundColor: currentTheme.primaryHex }}
+              className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-on-accent shadow-md uppercase tracking-wider"
+              style={{ backgroundColor: 'var(--accent-primary)' }}
             >
               VIP
             </span>
@@ -81,7 +84,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
       <div className="panel p-5 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-surface-2 border border-white/[0.07] flex items-center justify-center text-gold">
+            <div className="w-10 h-10 rounded-xl bg-surface-2 border border-divider flex items-center justify-center text-gold">
               <Wallet className="w-5 h-5" />
             </div>
             <div>
@@ -95,7 +98,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <button
             onClick={() => setIsTopUpOpen(true)}
             className="btn-accent text-[11px] px-3.5 py-2"
-            style={{ backgroundColor: currentTheme.primaryHex }}
           >
             <PlusCircle className="w-3.5 h-3.5" />
             <span>{t.chargeWallet}</span>
@@ -111,7 +113,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           <button
             onClick={() => setIsPackageModalOpen(true)}
             className="text-[11px] font-bold flex items-center gap-0.5 hover:opacity-80 transition"
-            style={{ color: currentTheme.primaryHex }}
+            style={{ color: 'var(--accent-text)' }}
           >
             {t.upgradePackage}
             <ChevronRight className="w-3.5 h-3.5 rtl:rotate-180" />
@@ -154,20 +156,37 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 onClick={() => onSelectTheme(themeItem)}
                 className={`p-3 rounded-2xl border flex items-center gap-2 text-xs font-bold transition ${
                   isActive
-                    ? 'bg-surface-3 border-white/20 text-ink'
-                    : 'bg-transparent border-white/[0.06] text-ink-4 hover:border-white/[0.14]'
+                    ? 'bg-surface-3 border-border-strong text-ink'
+                    : 'bg-transparent border-divider text-ink-4 hover:border-border-strong'
                 }`}
               >
                 <span
-                  className="w-4 h-4 rounded-full border border-white/20 shrink-0"
+                  className="w-4 h-4 rounded-full border border-border-strong shrink-0"
                   style={{ backgroundColor: themeItem.primaryHex }}
                 ></span>
                 <span className="text-[11px] truncate">{themeItem.name}</span>
-                {isActive && <CheckCircle2 className="w-3.5 h-3.5 ml-auto shrink-0" style={{ color: currentTheme.primaryHex }} />}
+                {isActive && <CheckCircle2 className="w-3.5 h-3.5 ml-auto shrink-0" style={{ color: 'var(--accent-text)' }} />}
               </button>
             );
           })}
         </div>
+      </div>
+
+      {/* Appearance & Theme Mode (Dark / Light) */}
+      <div className="panel p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <MonitorSmartphone className="w-4 h-4 text-ok" />
+          <h3 className="text-xs font-bold text-ink">{t.appearanceLabel}</h3>
+        </div>
+        <p className="text-[11px] text-ink-4">
+          {t.themeModeHint}
+        </p>
+        <ThemeToggleSwitch
+          theme={theme}
+          onSelect={setTheme}
+          lightLabel={t.themeLightLabel}
+          darkLabel={t.themeDarkLabel}
+        />
       </div>
 
       {/* Service History Log */}
@@ -232,7 +251,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                   className={`p-2 rounded-xl border font-mono transition ${
                     topUpAmount === amount
                       ? 'border-gold/50 bg-gold/10 text-gold'
-                      : 'border-white/[0.07] bg-surface-1 text-ink-3 hover:border-white/[0.15]'
+                      : 'border-divider bg-surface-1 text-ink-3 hover:border-border-strong'
                   }`}
                 >
                   {Number(amount).toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')} {t.toman}
@@ -246,7 +265,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 setIsTopUpOpen(false);
               }}
               className="btn-accent w-full py-3 text-xs"
-              style={{ backgroundColor: currentTheme.primaryHex }}
             >
               <ArrowUpRight className="w-4 h-4" />
               {t.confirmCharge}
@@ -282,7 +300,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                       setIsPackageModalOpen(false);
                     }}
                     className="btn-accent w-full py-2.5 text-xs mt-1"
-                    style={{ backgroundColor: currentTheme.primaryHex }}
                   >
                     {t.upgradePackage}
                   </button>

@@ -31,7 +31,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
     <div className="absolute inset-x-4 bottom-28 max-w-lg mx-auto z-20 transition-all duration-300">
       <div className="flex items-center justify-between mb-2 px-1">
         <p className="eyebrow flex items-center gap-1.5 dir-ltr">
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></span>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: 'var(--accent-primary)' }}></span>
           <span>{t.quickVipServices}</span>
         </p>
         <span className="text-[10px] text-ink-4">{t.swipeHint}</span>
@@ -42,12 +42,12 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
         {/* Proactive Card 1: Battery / EV Fast Charge Offer */}
         <div
           onClick={onOpenChargeFlow}
-          className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-white/[0.09]"
+          className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-border"
         >
           <div className="flex items-center justify-between mb-2">
             <div
-              className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-white/[0.08]"
-              style={{ color: currentTheme.primaryHex }}
+              className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-border"
+              style={{ color: 'var(--accent-text)' }}
             >
               <Zap className="w-4 h-4" />
             </div>
@@ -61,7 +61,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
               {t.batteryVanLine.replace('{pct}', String(selectedCar.batteryPercent))}
             </p>
           </div>
-          <div className="mt-2.5 pt-2 border-t border-white/[0.07] flex items-center justify-between text-[10px] text-gold">
+          <div className="mt-2.5 pt-2 border-t border-divider flex items-center justify-between text-[10px] text-gold">
             <span>{t.bookNow}</span>
             <ArrowLeft className={`w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform ${lang === 'en' ? 'rotate-180' : ''}`} />
           </div>
@@ -71,12 +71,12 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
         {selectedCar.kmsSinceLastService >= 10000 && (
           <div
             onClick={onBookServiceDirectly}
-            className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-white/[0.09]"
+            className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-border"
           >
             <div className="flex items-center justify-between mb-2">
               <div
-                className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-white/[0.08]"
-                style={{ color: currentTheme.primaryHex }}
+                className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform border border-border"
+                style={{ color: 'var(--accent-text)' }}
               >
                 <Wrench className="w-4 h-4" />
               </div>
@@ -88,7 +88,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
               <h4 className="text-xs font-bold text-ink leading-tight">{t.bmsAlertTitle}</h4>
               <p className="text-[10px] text-ink-4 mt-1 line-clamp-1">{t.bmsAlertDesc}</p>
             </div>
-            <div className="mt-2.5 pt-2 border-t border-white/[0.07] flex items-center justify-between text-[10px] text-ink-2">
+            <div className="mt-2.5 pt-2 border-t border-divider flex items-center justify-between text-[10px] text-ink-2">
               <span>{t.bookNow}</span>
               <ArrowLeft className={`w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform ${lang === 'en' ? 'rotate-180' : ''}`} />
             </div>
@@ -98,10 +98,10 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
         {/* Proactive Card 3: Need a Driver? */}
         <div
           onClick={onBookDriverDirectly}
-          className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-white/[0.09]"
+          className="min-w-[210px] max-w-[230px] shrink-0 snap-start glass hover:bg-surface-1 rounded-2xl p-3 cursor-pointer transition-all active:scale-[0.98] group flex flex-col justify-between border-border"
         >
           <div className="flex items-center justify-between mb-2">
-            <div className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center text-ink-3 shrink-0 group-hover:scale-110 transition-transform border border-white/[0.08]">
+            <div className="w-8 h-8 rounded-xl bg-surface-2 flex items-center justify-center text-ink-3 shrink-0 group-hover:scale-110 transition-transform border border-border">
               <UserCheck className="w-4 h-4" />
             </div>
             <span className="chip font-mono">
@@ -112,7 +112,7 @@ export const ProactiveServiceSection: React.FC<ProactiveServiceSectionProps> = (
             <h4 className="text-xs font-bold text-ink leading-tight">{t.chauffeurTitle}</h4>
             <p className="text-[10px] text-ink-4 mt-1 line-clamp-1">{t.chauffeurDesc}</p>
           </div>
-          <div className="mt-2.5 pt-2 border-t border-white/[0.07] flex items-center justify-between text-[10px] text-ink-2">
+          <div className="mt-2.5 pt-2 border-t border-divider flex items-center justify-between text-[10px] text-ink-2">
             <span>{t.orderOnline}</span>
             <ArrowLeft className={`w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform ${lang === 'en' ? 'rotate-180' : ''}`} />
           </div>

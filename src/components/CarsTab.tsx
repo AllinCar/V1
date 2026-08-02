@@ -104,7 +104,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
           <p className="eyebrow">{t.smartGarage}</p>
           <h2 className="text-lg font-bold text-ink mt-1 flex items-center gap-2">
             <span>{t.garageTitle}</span>
-            <span className="text-[10px] bg-gold/10 text-gold border border-gold/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
+            <span className="text-[10px] bg-ok/10 text-ok border border-ok/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
               <Cpu className="w-3 h-3" />
               <span>{t.aiBaseBadge}</span>
             </span>
@@ -114,7 +114,6 @@ export const CarsTab: React.FC<CarsTabProps> = ({
         <button
           onClick={() => setIsAddModalOpen(true)}
           className="btn-accent text-[11px] px-3.5 py-2.5 shrink-0"
-          style={{ backgroundColor: currentTheme.primaryHex }}
         >
           <Plus className="w-4 h-4 stroke-[3]" />
           <span>{t.addVehicle}</span>
@@ -130,9 +129,9 @@ export const CarsTab: React.FC<CarsTabProps> = ({
               key={car.id}
               onClick={() => onSelectCar(car)}
               className={`panel rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer group ${
-                isSelected ? 'ring-1 ring-gold/40' : 'hover:border-white/[0.14]'
+                isSelected ? 'ring-1 ring-ok/40' : 'hover:border-border-strong'
               }`}
-              style={isSelected ? { borderColor: 'var(--color-gold)' } : undefined}
+              style={isSelected ? { borderColor: 'var(--color-ok)' } : undefined}
             >
               {/* Photo banner */}
               <div className="relative h-48 w-full overflow-hidden bg-surface-1">
@@ -144,7 +143,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                 <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-obsidian/40 to-transparent"></div>
 
                 {isSelected && (
-                  <div className="absolute top-3 right-3 bg-gold text-black text-[10px] font-black px-3 py-1 rounded-full shadow-lg flex items-center gap-1 uppercase tracking-wider">
+                  <div className="absolute top-3 right-3 bg-ok text-on-accent text-[10px] font-black px-3 py-1 rounded-full shadow-lg flex items-center gap-1 uppercase tracking-wider">
                     <ShieldCheck className="w-3.5 h-3.5" />
                     <span>{t.activeVehicleOnMap}</span>
                   </div>
@@ -158,7 +157,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                     </p>
                   </div>
 
-                  <div className="glass px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs text-gold font-bold shrink-0">
+                  <div className="glass px-3 py-1.5 rounded-xl flex items-center gap-1.5 text-xs text-ok font-bold shrink-0">
                     <BatteryCharging className="w-4 h-4" />
                     <span>{car.batteryPercent}%</span>
                   </div>
@@ -178,12 +177,12 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                   </div>
                   <div className="panel-subtle p-2.5">
                     <span className="text-ink-4 block text-[10px] uppercase tracking-wider">{t.bmsStatus}</span>
-                    <strong className="text-gold text-xs font-mono">{car.healthScore}%</strong>
+                    <strong className="text-ok text-xs font-mono">{car.healthScore}%</strong>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-ink-4 pt-3 border-t border-white/[0.07]">
-                  <span className="flex items-center gap-1.5 text-gold">
+                <div className="flex items-center justify-between text-[11px] text-ink-4 pt-3 border-t border-divider">
+                  <span className="flex items-center gap-1.5 text-ok">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>
                       {t.aiBatteryAnalysis}
@@ -203,7 +202,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
           <div className="sheet w-full max-w-lg sm:rounded-3xl p-5 space-y-4 max-h-[92vh] overflow-y-auto no-scrollbar sheet-enter">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-ink flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-gold" />
+                <Sparkles className="w-4 h-4 text-ok" />
                 <span>{t.addCarTitle}</span>
               </h3>
               <button onClick={() => setIsAddModalOpen(false)} className="icon-btn w-8 h-8 rounded-lg text-sm">
@@ -212,7 +211,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
             </div>
 
             {/* Photo upload */}
-            <div className="border border-dashed border-white/15 hover:border-gold/50 rounded-2xl p-4 text-center cursor-pointer bg-surface-1 relative overflow-hidden group transition-colors">
+            <div className="border border-dashed border-border-strong hover:border-ok/50 rounded-2xl p-4 text-center cursor-pointer bg-surface-1 relative overflow-hidden group transition-colors">
               <input
                 type="file"
                 accept="image/*"
@@ -223,7 +222,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                 <div className="relative h-32 w-full rounded-xl overflow-hidden">
                   <img src={uploadImage} alt="Car Upload" className="w-full h-full object-cover" />
                   {isAiDetecting && (
-                    <div className="absolute inset-0 bg-obsidian/85 flex items-center justify-center gap-2 text-gold text-xs font-bold">
+                    <div className="absolute inset-0 bg-obsidian/85 flex items-center justify-center gap-2 text-ok text-xs font-bold">
                       <Sparkles className="w-4 h-4 animate-spin" />
                       <span>{t.aiDetecting}</span>
                     </div>
@@ -231,7 +230,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="w-12 h-12 rounded-full bg-surface-2 border border-white/10 flex items-center justify-center mx-auto text-gold">
+                  <div className="w-12 h-12 rounded-full bg-surface-2 border border-border flex items-center justify-center mx-auto text-ok">
                     <Camera className="w-6 h-6" />
                   </div>
                   <p className="text-xs font-bold text-ink">
@@ -292,7 +291,6 @@ export const CarsTab: React.FC<CarsTabProps> = ({
               onClick={handleCreateCar}
               disabled={!brand || !model}
               className="btn-accent w-full py-3 text-xs"
-              style={{ backgroundColor: currentTheme.primaryHex }}
             >
               {t.confirmAddCar}
             </button>

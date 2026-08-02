@@ -18,8 +18,12 @@ import { EmergencySOSModal } from './components/EmergencySOSModal';
 import { ActiveOrderTracker } from './components/ActiveOrderTracker';
 import { ShieldAlert, Globe } from 'lucide-react';
 import { Language, translations } from './translations';
+import { useTheme } from './theme/ThemeProvider';
+import { ThemeToggle } from './components/ThemeToggle';
 
 export default function App() {
+  const { theme, toggleTheme } = useTheme();
+
   // Navigation, Language & View States
   const [activeTab, setActiveTab] = React.useState<NavTab>('home');
   const [lang, setLang] = React.useState<Language>('fa');
@@ -49,6 +53,14 @@ export default function App() {
   const [currentTheme, setCurrentTheme] = React.useState<ThemeAccent>(() => getThemeAccents('fa')[0]);
   const [userPersona, setUserPersona] = React.useState<UserPersona>(() => getInitialUserPersona('fa'));
   const [history, setHistory] = React.useState<ServiceHistory[]>(() => getInitialHistory('fa'));
+
+  // Expose the selected accent (emerald) as CSS tokens so every component
+  // resolves accent colors through the design-token system.
+  React.useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--accent-primary', currentTheme.primaryHex);
+    root.style.setProperty('--accent-glow', currentTheme.glowColor);
+  }, [currentTheme]);
 
   // Keep localized mock content in sync when language changes
   React.useEffect(() => {
@@ -290,12 +302,14 @@ export default function App() {
           className="icon-btn rounded-full group"
           title={t.languageToggle}
         >
-          <Globe className="w-4 h-4 text-gold group-hover:rotate-45 transition-transform" />
+          <Globe className="w-4 h-4 text-ok group-hover:rotate-45 transition-transform" />
         </button>
+
+        <ThemeToggle theme={theme} onToggle={toggleTheme} lang={lang} />
 
         <button
           onClick={() => setIsSOSModalOpen(true)}
-          className="h-9 px-3 rounded-full text-xs font-bold shadow-lg backdrop-blur-md flex items-center gap-1.5 transition active:scale-95 bg-red-950/60 hover:bg-red-900/80 border border-red-500/50 text-red-300 hover:text-white"
+          className="h-9 px-3 rounded-full text-xs font-bold shadow-lg backdrop-blur-md flex items-center gap-1.5 transition active:scale-95 bg-danger/15 hover:bg-danger/30 border border-danger/40 text-danger"
           title={t.emergencySosTitle}
         >
           <ShieldAlert className="w-4 h-4 text-danger animate-pulse" />
@@ -304,9 +318,9 @@ export default function App() {
       </div>
 
       {/* Side Status Indicator (Design Requirement) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gold/10 border-l border-y border-gold/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
-        <div className="w-1 h-6 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
-        <p className="writing-vertical-rl text-[9px] uppercase tracking-widest font-bold dir-ltr" style={{ color: currentTheme.primaryHex }}>
+      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-ok/10 border-l border-y border-ok/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
+        <div className="w-1 h-6 rounded-full" style={{ backgroundColor: 'var(--accent-text)' }}></div>
+        <p className="writing-vertical-rl text-[9px] uppercase tracking-widest font-bold dir-ltr" style={{ color: 'var(--accent-text)' }}>
           {t.vipElite}
         </p>
       </div>

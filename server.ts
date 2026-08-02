@@ -41,7 +41,6 @@ async function loadOrCreateHttpsCerts() {
   fs.mkdirSync(certDir, { recursive: true });
   const attrs = [{ name: 'commonName', value: 'localhost' }];
   const pems = await generateSelfSigned(attrs, {
-    days: 365,
     keySize: 2048,
     algorithm: 'sha256',
     extensions: [

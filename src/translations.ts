@@ -277,6 +277,15 @@ export const translations = {
     themeCyan: 'سایبر پلاتینوم (Cyber Platinum)',
     themeRose: 'رزگلد دسیگنو (Designo Rose)',
 
+    // Appearance / Theme Settings
+    settingsTitle: 'تنظیمات',
+    appearanceLabel: 'ظاهر و تم اپلیکیشن',
+    themeModeHint: 'تم تیره برای تجربه‌ی سینمایی شبانه و تم روشن برای روزهای آفتابی.',
+    themeDarkLabel: 'تیره',
+    themeLightLabel: 'روشن',
+    themeSwitchToDark: 'تغییر به تم تیره',
+    themeSwitchToLight: 'تغییر به تم روشن',
+
     // Persona
     userName: 'مهندسی علی احمدی',
     userPhone: '۰۹۱۲۳۴۵۶۷۸۹',
@@ -598,6 +607,15 @@ export const translations = {
     themeGold: 'Elegant Champagne Gold',
     themeCyan: 'Cyber Platinum',
     themeRose: 'Designo Rose Gold',
+
+    // Appearance / Theme Settings
+    settingsTitle: 'Settings',
+    appearanceLabel: 'Appearance & Theme',
+    themeModeHint: 'Dark for a cinematic night feel, light for bright days.',
+    themeDarkLabel: 'Dark',
+    themeLightLabel: 'Light',
+    themeSwitchToDark: 'Switch to dark theme',
+    themeSwitchToLight: 'Switch to light theme',
 
     // Persona
     userName: 'Eng. Ali Ahmadi',

@@ -44,7 +44,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
         {/* Ambient theme glow */}
         <div
           className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-15 pointer-events-none"
-          style={{ backgroundColor: currentTheme.primaryHex }}
+          style={{ backgroundColor: 'var(--accent-primary)' }}
         ></div>
 
         <div className="flex items-center justify-between gap-3 relative z-10">
@@ -59,11 +59,11 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                 <img
                   src={userPersona.avatarUrl}
                   alt={userPersona.name}
-                  className="w-11 h-11 rounded-2xl object-cover border border-white/15 group-hover:scale-105 transition-transform"
+                  className="w-11 h-11 rounded-2xl object-cover border border-border-strong group-hover:scale-105 transition-transform"
                 />
                 <span
                   className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-surface-2"
-                  style={{ backgroundColor: currentTheme.primaryHex }}
+                  style={{ backgroundColor: 'var(--accent-primary)' }}
                 />
               </button>
             )}
@@ -72,7 +72,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
               onClick={() => setIsCarDropdownOpen(!isCarDropdownOpen)}
               className="flex items-center gap-2.5 cursor-pointer group min-w-0"
             >
-              <div className="relative w-16 h-11 rounded-xl overflow-hidden bg-white/5 border border-white/10 shrink-0 group-hover:scale-105 transition-transform">
+              <div className="relative w-16 h-11 rounded-xl overflow-hidden bg-surface-2/60 border border-border shrink-0 group-hover:scale-105 transition-transform">
                 <img
                   src={selectedCar.photo}
                   alt={selectedCar.name}
@@ -106,20 +106,22 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                 cy="22"
                 r={RING_R}
                 fill="none"
-                stroke="rgba(255,255,255,0.08)"
                 strokeWidth="3.5"
+                style={{ stroke: 'var(--ring-track)' }}
               />
               <circle
                 cx="22"
                 cy="22"
                 r={RING_R}
                 fill="none"
-                stroke={batteryLow ? 'var(--color-danger)' : currentTheme.primaryHex}
                 strokeWidth="3.5"
                 strokeLinecap="round"
                 strokeDasharray={RING_CIRCUMFERENCE}
                 strokeDashoffset={ringDashOffset}
-                style={{ transition: 'stroke-dashoffset 700ms var(--ease-out-expo)' }}
+                style={{
+                  stroke: batteryLow ? 'var(--color-danger)' : 'var(--accent-primary)',
+                  transition: 'stroke-dashoffset 700ms var(--ease-out-expo)',
+                }}
               />
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -136,7 +138,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
         </div>
 
         {/* Range telemetry strip */}
-        <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between relative z-10">
+        <div className="mt-3 pt-2.5 border-t border-divider flex items-center justify-between relative z-10">
           <span className="flex items-center gap-1.5 text-[10px] text-ink-3 font-mono">
             <span className="w-1 h-1 rounded-full bg-ok animate-pulse" />
             <span>{selectedCar.currentRangeKm} km</span>
@@ -146,7 +148,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
           {selectedCar.kmsSinceLastService >= 10000 ? (
             <span
               className="flex items-center gap-1.5 text-[10px] font-semibold"
-              style={{ color: currentTheme.primaryHex }}
+              style={{ color: 'var(--accent-text)' }}
             >
               <Wrench className="w-3 h-3" />
               <span>{t.bmsInspection}</span>
@@ -164,9 +166,9 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
         {/* Car Switcher Dropdown */}
         {isCarDropdownOpen && (
           <div className="absolute top-full right-0 left-0 mt-3 panel p-4 z-50 space-y-3 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <div className="flex items-center justify-between pb-2 border-b border-divider">
               <span className="text-xs font-bold text-ink flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" style={{ color: currentTheme.primaryHex }} />
+                <Sparkles className="w-3.5 h-3.5" style={{ color: 'var(--accent-text)' }} />
                 <span>{t.selectMapCar}</span>
               </span>
               <span className="text-[10px] text-ink-4 font-mono">{cars.length} {t.vehiclesCount}</span>
@@ -184,7 +186,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                     }}
                     className={`w-full text-right p-3 rounded-2xl flex items-center justify-between transition-all border ${
                       isSelected
-                        ? 'bg-surface-3 text-ink font-medium border-white/15'
+                        ? 'bg-surface-3 text-ink font-medium border-border-strong'
                         : 'bg-transparent text-ink-3 hover:bg-surface-2 border-transparent'
                     }`}
                   >
@@ -196,7 +198,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                           {isSelected && (
                             <span
                               className="w-2 h-2 rounded-full animate-pulse shrink-0"
-                              style={{ backgroundColor: currentTheme.primaryHex }}
+                              style={{ backgroundColor: 'var(--accent-primary)' }}
                             />
                           )}
                         </div>
@@ -211,7 +213,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                         <span className="text-xs font-bold text-ink font-mono block">{car.batteryPercent}%</span>
                         <span className="text-[9px] text-ink-4 font-mono">{car.currentRangeKm} km</span>
                       </div>
-                      {isSelected && <Check className="w-4 h-4 text-gold" />}
+                      {isSelected && <Check className="w-4 h-4 text-ok" />}
                     </div>
                   </button>
                 );

@@ -31,11 +31,11 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
     <div className={`absolute inset-x-4 bottom-32 max-w-lg mx-auto z-30 animate-in fade-in slide-in-from-bottom-4 ${lang === 'fa' ? 'dir-rtl' : 'dir-ltr'}`}>
       <div className="panel rounded-3xl p-5 space-y-4">
         {/* Header Order Status */}
-        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3">
+        <div className="flex items-center justify-between border-b border-divider pb-3">
           <div className="flex items-center gap-2.5">
             <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-black font-bold shadow-md"
-              style={{ backgroundColor: currentTheme.primaryHex }}
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-on-accent font-bold shadow-md"
+              style={{ backgroundColor: 'var(--accent-primary)' }}
             >
               <Truck className="w-5 h-5" />
             </div>
@@ -59,7 +59,7 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
               return (
                 <span
                   key={step.id}
-                  className={`font-medium ${isActive ? 'text-gold font-bold' : 'text-ink-4'}`}
+                  className={`font-medium ${isActive ? 'text-ok font-bold' : 'text-ink-4'}`}
                 >
                   {step.label}
                 </span>
@@ -71,7 +71,7 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
               className="h-full transition-all duration-500 rounded-full"
               style={{
                 width: `${((currentStepIndex + 1) / steps.length) * 100}%`,
-                backgroundColor: currentTheme.primaryHex,
+                backgroundColor: 'var(--accent-primary)',
               }}
             ></div>
           </div>
@@ -83,12 +83,12 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
             <img
               src={order.technicianPhoto}
               alt={order.technicianName}
-              className="w-10 h-10 rounded-xl object-cover border border-white/10"
+              className="w-10 h-10 rounded-xl object-cover border border-border"
             />
             <div>
               <h4 className="text-xs font-bold text-ink">{order.technicianName}</h4>
               <p className="text-[10px] text-ink-4 mt-0.5 flex items-center gap-1">
-                <Star className="w-3 h-3 text-gold fill-gold" />
+                <Star className="w-3 h-3 text-ok fill-ok" />
                 <span>{t.seniorTechnician.replace('{score}', order.technicianScore.toFixed(1))}</span>
               </p>
             </div>
@@ -96,7 +96,7 @@ export const ActiveOrderTracker: React.FC<ActiveOrderTrackerProps> = ({
 
           <a
             href={`tel:${order.technicianPhone}`}
-            className="w-9 h-9 rounded-xl bg-ok/15 text-ok border border-ok/30 flex items-center justify-center hover:bg-ok hover:text-black transition"
+            className="w-9 h-9 rounded-xl bg-ok/15 text-ok border border-ok/30 flex items-center justify-center hover:bg-ok hover:text-on-accent transition"
             title={t.callTechnician}
           >
             <Phone className="w-4 h-4" />

@@ -77,7 +77,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
       <div className="panel p-4 relative overflow-hidden">
         <div
           className="absolute -top-10 -left-10 w-32 h-32 rounded-full blur-3xl opacity-15 pointer-events-none"
-          style={{ backgroundColor: currentTheme.primaryHex }}
+          style={{ backgroundColor: 'var(--accent-primary)' }}
         ></div>
         <div className="relative z-10">
           <div className="flex items-center justify-between">
@@ -89,8 +89,8 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
               <h3 className="text-sm font-bold text-ink mt-2">{t.walletBalance}</h3>
             </div>
             <div
-              className="w-11 h-11 rounded-2xl flex items-center justify-center text-black shrink-0"
-              style={{ backgroundColor: currentTheme.primaryHex }}
+              className="w-11 h-11 rounded-2xl flex items-center justify-center text-on-accent shrink-0"
+              style={{ backgroundColor: 'var(--accent-primary)' }}
             >
               <ShoppingBag className="w-5 h-5 stroke-[2.2]" />
             </div>
@@ -123,10 +123,10 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
               onClick={() => setSelectedCategory(cat.id)}
               className={`px-3.5 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
                 isActive
-                  ? 'text-black'
-                  : 'bg-transparent text-ink-4 border-white/[0.07] hover:text-ink-2 hover:border-white/[0.15]'
+                  ? 'text-on-accent'
+                  : 'bg-transparent text-ink-4 border-divider hover:text-ink-2 hover:border-border-strong'
               }`}
-              style={isActive ? { backgroundColor: currentTheme.primaryHex, borderColor: 'transparent' } : undefined}
+              style={isActive ? { backgroundColor: 'var(--accent-primary)', borderColor: 'transparent' } : undefined}
             >
               {cat.label}
             </button>
@@ -142,7 +142,7 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
             <div key={service.id} className="panel p-5 space-y-3 relative overflow-hidden">
               <div
                 className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-10 pointer-events-none"
-                style={{ backgroundColor: currentTheme.primaryHex }}
+                style={{ backgroundColor: 'var(--accent-primary)' }}
               ></div>
 
               <div className="flex items-center justify-between gap-3 relative z-10">
@@ -150,9 +150,9 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                   <div
                     className="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 border"
                     style={{
-                      color: currentTheme.primaryHex,
-                      backgroundColor: `${currentTheme.primaryHex}14`,
-                      borderColor: `${currentTheme.primaryHex}2E`,
+                      color: 'var(--accent-text)',
+                      backgroundColor: 'color-mix(in oklab, var(--accent-primary) 8%, transparent)',
+                      borderColor: 'color-mix(in oklab, var(--accent-primary) 18%, transparent)',
                     }}
                   >
                     {renderIcon(service.iconName)}
@@ -162,8 +162,8 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                     <span
                       className="text-[10px] px-2 py-0.5 rounded-full inline-block mt-1 font-mono font-bold"
                       style={{
-                        backgroundColor: `${currentTheme.primaryHex}1F`,
-                        color: currentTheme.primaryHex,
+                        backgroundColor: 'color-mix(in oklab, var(--accent-primary) 12%, transparent)',
+                        color: 'var(--accent-text)',
                       }}
                     >
                       {service.inventoryBadge}
@@ -182,14 +182,14 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
                       id={`bundle-${service.id}`}
                       checked={!!isBundled}
                       onChange={() => toggleBundle(service.id)}
-                      className="w-4 h-4 rounded bg-surface-2 border-white/15 accent-gold cursor-pointer"
+                      className="w-4 h-4 rounded bg-surface-2 border-border-strong accent-gold cursor-pointer"
                     />
                     <label htmlFor={`bundle-${service.id}`} className="text-[11px] text-ink-3 cursor-pointer">
                       {service.bundledOffer}
                     </label>
                   </div>
                   {isBundled && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold text-black" style={{ backgroundColor: currentTheme.primaryHex }}>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full font-bold text-on-accent" style={{ backgroundColor: 'var(--accent-primary)' }}>
                       {t.bundledActive}
                     </span>
                   )}
@@ -199,7 +199,6 @@ export const ServicesTab: React.FC<ServicesTabProps> = ({
               <button
                 onClick={() => onSelectService(service, isBundled)}
                 className="btn-accent w-full py-3 text-xs"
-                style={{ backgroundColor: currentTheme.primaryHex }}
               >
                 <Check className="w-3.5 h-3.5 stroke-[3]" />
                 <span>{t.reserveService}</span>

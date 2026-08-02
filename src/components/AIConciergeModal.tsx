@@ -259,17 +259,17 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-ok/10 rounded-full blur-3xl pointer-events-none"></div>
 
         {/* Top Header */}
-        <div className="p-4 px-6 border-b border-white/[0.07] bg-obsidian/90 backdrop-blur-md flex items-center justify-between z-10">
+        <div className="p-4 px-6 border-b border-divider bg-obsidian/90 backdrop-blur-md flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
             <div className="relative">
               <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center text-black shadow-lg"
-                style={{ backgroundColor: currentTheme.primaryHex, boxShadow: `0 6px 20px ${currentTheme.primaryHex}55` }}
+                className="w-10 h-10 rounded-2xl flex items-center justify-center text-on-accent shadow-lg"
+                style={{ backgroundColor: 'var(--accent-primary)', boxShadow: '0 6px 20px color-mix(in oklab, var(--accent-primary) 40%, transparent)' }}
               >
                 <Bot className="w-5 h-5 stroke-[2.2]" />
               </div>
               <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-ok border-2 border-surface-2 flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-on-accent animate-pulse"></span>
               </span>
             </div>
             <div>
@@ -295,8 +295,8 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
             <div className="absolute inset-0 rounded-full bg-ok/20 blur-xl animate-pulse"></div>
             <div className="absolute w-24 h-24 rounded-full border border-ok/30 animate-spin" style={{ animationDuration: '10s' }}></div>
             <div className="absolute w-20 h-20 rounded-full border border-dashed border-ok/40 animate-spin" style={{ animationDuration: '6s', animationDirection: 'reverse' }}></div>
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ok to-ok-2 flex items-center justify-center shadow-[0_0_30px_rgba(2,218,174,0.5)]">
-              <Sparkles className="w-8 h-8 text-black animate-pulse" />
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-ok to-ok-2 flex items-center justify-center shadow-[0_0_30px_var(--accent-glow)]">
+              <Sparkles className="w-8 h-8 text-on-accent animate-pulse" />
             </div>
           </div>
           <h4 className="text-xs font-light text-ink-3 mt-3 tracking-wide">
@@ -318,7 +318,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
                 className={`max-w-[88%] p-3.5 rounded-2xl text-xs leading-relaxed border ${
                   msg.sender === 'user'
                     ? 'bg-ok/10 text-ink rounded-tl-none border-ok/25'
-                    : 'panel-subtle text-ink-2 rounded-tr-none border-white/[0.07]'
+                    : 'panel-subtle text-ink-2 rounded-tr-none border-divider'
                 }`}
               >
                 {msg.sender === 'concierge' && (
@@ -343,7 +343,7 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         </div>
 
         {/* Preset Quick Action Pills (Voxa Style) */}
-        <div className="px-4 py-2 bg-obsidian/90 border-t border-white/[0.07] flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
+        <div className="px-4 py-2 bg-obsidian/90 border-t border-divider flex items-center gap-2 overflow-x-auto no-scrollbar z-10">
           <button
             onClick={() => handleSendMessage(t.aiQuickVanMsg)}
             className="text-[11px] bg-surface-2 hover:bg-surface-3 text-ok px-3 py-1.5 rounded-full border border-ok/25 shrink-0 transition flex items-center gap-1.5"
@@ -367,12 +367,12 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
         </div>
 
         {/* Bottom Control Bar */}
-        <div className="p-3.5 px-4 bg-obsidian border-t border-white/[0.07] flex items-center gap-2.5 z-10">
+        <div className="p-3.5 px-4 bg-obsidian border-t border-divider flex items-center gap-2.5 z-10">
           <button
             onClick={startVoiceDictation}
             className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition shadow-lg ${
               isListening
-                ? 'bg-ok text-black animate-pulse shadow-ok/50'
+                ? 'bg-ok text-on-accent animate-pulse shadow-ok/50'
                 : 'bg-surface-2 border border-ok/25 text-ok hover:bg-surface-3'
             }`}
             title={t.typeMessage}
@@ -386,14 +386,14 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
             placeholder={isListening ? t.listening : t.typeMessage}
-            className="flex-1 bg-surface-1 border border-white/[0.09] rounded-full px-4 py-2.5 text-xs text-ink placeholder-ink-4 focus:outline-none focus:border-ok/50"
+            className="flex-1 bg-surface-1 border border-border rounded-full px-4 py-2.5 text-xs text-ink placeholder-ink-4 focus:outline-none focus:border-ok/50"
           />
 
           <button
             onClick={() => handleSendMessage()}
             disabled={!inputMessage.trim()}
-            className="w-11 h-11 rounded-full text-black font-bold flex items-center justify-center disabled:opacity-30 transition shadow-md shrink-0"
-            style={{ backgroundColor: currentTheme.primaryHex }}
+            className="w-11 h-11 rounded-full text-on-accent font-bold flex items-center justify-center disabled:opacity-30 transition shadow-md shrink-0"
+            style={{ backgroundColor: 'var(--accent-primary)' }}
           >
             <Send className="w-4 h-4 transform rotate-180" />
           </button>

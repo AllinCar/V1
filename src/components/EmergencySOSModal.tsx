@@ -151,7 +151,7 @@ export const EmergencySOSModal: React.FC<EmergencySOSModalProps> = ({
       <div className="sheet w-full max-w-lg sm:rounded-3xl p-5 space-y-5 relative overflow-hidden sheet-enter" style={{ borderColor: 'color-mix(in oklab, var(--color-danger) 35%, transparent)' }}>
         <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-danger/20 blur-3xl pointer-events-none animate-pulse"></div>
 
-        <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 relative z-10">
+        <div className="flex items-center justify-between border-b border-divider pb-3 relative z-10">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-2xl bg-danger/15 border border-danger/40 flex items-center justify-center text-danger animate-pulse">
               <ShieldAlert className="w-6 h-6" />
@@ -220,7 +220,7 @@ export const EmergencySOSModal: React.FC<EmergencySOSModalProps> = ({
 
               <button
                 onClick={startVoiceTriage}
-                className="w-full py-3 rounded-xl bg-danger text-white font-bold text-xs shadow-lg flex items-center justify-center gap-2 hover:brightness-110 transition active:scale-[0.99]"
+                className="w-full py-3 rounded-xl bg-danger text-on-danger font-bold text-xs shadow-lg flex items-center justify-center gap-2 hover:brightness-110 transition active:scale-[0.99]"
               >
                 {isRecordingVoice ? (
                   <>

@@ -3,6 +3,7 @@ import L from 'leaflet';
 import { Zap, ShieldCheck, Locate } from 'lucide-react';
 import { ThemeAccent } from '../types';
 import { Language, translations } from '../translations';
+import { useTheme } from '../theme/ThemeProvider';
 
 interface MapCanvasProps {
   currentTheme: ThemeAccent;
@@ -30,9 +31,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   isVisible = true,
 }) => {
   const t = translations[lang];
+  const { theme } = useTheme();
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const overlaysRef = useRef<L.LayerGroup | null>(null);
+  const tilesRef = useRef<L.TileLayer | null>(null);
   const [includeDryWash, setIncludeDryWash] = React.useState(true);
   const [isMapReady, setIsMapReady] = React.useState(false);
 
@@ -87,11 +90,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attributionControl: false,
     });
 
-    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      maxZoom: 19,
-      subdomains: 'abcd',
-    }).addTo(map);
+    const tiles = L.tileLayer(
+      theme === 'light'
+        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+      {
+        maxZoom: 19,
+        subdomains: 'abcd',
+      }
+    ).addTo(map);
 
+    tilesRef.current = tiles;
     overlaysRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
 
@@ -107,10 +116,11 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       tiles.off('load', markReady);
       map.remove();
       mapInstanceRef.current = null;
+      tilesRef.current = null;
       overlaysRef.current = null;
       setIsMapReady(false);
     };
-  }, []);
+  }, [theme]);
 
   // Refresh size when home becomes visible again (cached map, no remount)
   useEffect(() => {
@@ -153,9 +163,9 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
     const userMarkerHtml = `
       <div style="position: relative; display: flex; align-items: center; justify-content: center;">
-        <div style="position: absolute; width: 50px; height: 50px; border-radius: 9999px; background-color: ${currentTheme.primaryHex}; opacity: 0.35; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
-        <div style="width: 38px; height: 38px; border-radius: 9999px; background-color: #1a140d; border: 2.5px solid ${currentTheme.primaryHex}; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px ${currentTheme.glowColor}; z-index: 10;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${currentTheme.primaryHex}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/></svg>
+        <div style="position: absolute; width: 50px; height: 50px; border-radius: 9999px; background-color: var(--accent-primary); opacity: 0.35; animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;"></div>
+        <div style="width: 38px; height: 38px; border-radius: 9999px; background-color: var(--marker-bg); border: 2.5px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px var(--accent-glow); z-index: 10;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3"/><path d="M12 19v3"/><path d="M2 12h3"/><path d="M19 12h3"/></svg>
         </div>
       </div>
     `;
@@ -172,10 +182,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     realChargingStations.forEach((station) => {
       const stationHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-          <div style="width: 36px; height: 36px; border-radius: 9999px; background: #1a140d; border: 2px solid #CDA76B; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(205,167,107,0.5);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CDA76B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <div style="width: 36px; height: 36px; border-radius: 9999px; background: var(--marker-bg); border: 2px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--accent-glow);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 2px 7px; background: rgba(20,16,12,0.92); border: 1px solid rgba(205,167,107,0.4); border-radius: 8px; color: #F2D38F; font-size: 10px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 2px 7px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 8px; color: var(--accent-text); font-size: 10px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             ⚡ ${station.name} (${station.power})
           </div>
         </div>
@@ -190,10 +200,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }),
       })
         .bindPopup(`
-          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-            <div style="color: #CDA76B; font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
-            <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.stationPower}: ${station.power}</div>
-            <div style="font-size: 10px; color: #02DAAE; margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px;">
+            <div style="color: var(--accent-text); font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">${t.stationPower}: ${station.power}</div>
+            <div style="font-size: 10px; color: var(--accent-text); margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
           </div>
         `)
         .addTo(overlays);
@@ -214,10 +224,10 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       const vanHtml = `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-          <div style="width: 34px; height: 34px; border-radius: 9999px; background: #12180f; border: 2px solid #02DAAE; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px rgba(2,218,174,0.5);">
-            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#02DAAE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
+          <div style="width: 34px; height: 34px; border-radius: 9999px; background: var(--marker-bg); border: 2px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px var(--accent-glow);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 1px 6px; background: rgba(18,24,15,0.92); border: 1px solid rgba(2,218,174,0.4); border-radius: 6px; color: #02DAAE; font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 1px 6px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 6px; color: var(--accent-text); font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             🚐 ${van.id} (${van.eta})
           </div>
         </div>
@@ -232,20 +242,21 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }),
       })
         .bindPopup(`
-          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: #fff; padding: 2px;">
-            <div style="color: #02DAAE; font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
-            <div style="font-size: 11px; color: rgba(255,255,255,0.7);">${t.vanEta}: <strong>${van.eta}</strong></div>
-            <div style="font-size: 10px; color: #F59E0B; margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px;">
+            <div style="color: var(--accent-text); font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
+            <div style="font-size: 11px; color: var(--text-secondary);">${t.vanEta}: <strong>${van.eta}</strong></div>
+            <div style="font-size: 10px; color: var(--warning); margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
           </div>
         `)
         .addTo(overlays);
     });
 
     L.polyline([userCoords, nearestVan.coords], {
-      color: currentTheme.primaryHex,
+      color: 'transparent',
       weight: 3.5,
       opacity: 0.85,
       dashArray: '8, 10',
+      className: 'route-line',
     }).addTo(overlays);
 
     map.setView(userCoords, map.getZoom(), { animate: false });
@@ -258,14 +269,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     }
   };
 
-  const handleZoomIn = () => {
-    mapInstanceRef.current?.zoomIn();
-  };
-
-  const handleZoomOut = () => {
-    mapInstanceRef.current?.zoomOut();
-  };
-
   return (
     <div className="relative w-full h-full min-h-dvh overflow-hidden select-none" style={{ backgroundColor: 'var(--color-surface-1)' }}>
       {/* Real Interactive Leaflet Container */}
@@ -274,7 +277,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       {/* First-load cover — match map bg so tiles don't flash */}
       {!isMapReady && (
         <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none" style={{ backgroundColor: 'var(--color-surface-1)' }}>
-          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-gold animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-border border-t-ok animate-spin" />
         </div>
       )}
 
@@ -288,7 +291,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       >
         <button
           onClick={handleRecenter}
-          className={`icon-btn shadow-xl ${gpsStatus === 'locating' ? 'animate-pulse' : ''} ${isGpsActive ? 'text-ok' : 'text-gold'}`}
+          className={`icon-btn shadow-xl ${gpsStatus === 'locating' ? 'animate-pulse' : ''} ${isGpsActive ? 'text-ok' : 'text-ok'}`}
           title={
             gpsStatus === 'insecure'
               ? t.gpsNeedsHttps
@@ -299,41 +302,25 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
               : t.myLocation
           }
         >
-          <Locate className={`w-4 h-4 ${isGpsActive ? 'text-ok' : 'text-gold'}`} />
+          <Locate className={`w-4 h-4 ${isGpsActive ? 'text-ok' : 'text-ok'}`} />
         </button>
 
         {(gpsStatus === 'insecure' || gpsStatus === 'denied' || gpsStatus === 'error') && (
-          <div className="mt-1 max-w-[9.5rem] rounded-lg bg-obsidian/90 border border-danger/30 px-2 py-1.5 text-[9px] leading-snug text-danger-2 shadow-lg">
+          <div className="mt-1 max-w-[9.5rem] rounded-lg bg-background/90 border border-danger/30 px-2 py-1.5 text-[9px] leading-snug text-danger shadow-lg">
             {gpsStatus === 'insecure' ? t.gpsNeedsHttps : gpsStatus === 'denied' ? t.gpsDenied : t.gpsError}
           </div>
         )}
-
-        <button
-          onClick={handleZoomIn}
-          className="icon-btn shadow-xl text-sm font-bold"
-          title={t.zoomIn}
-        >
-          +
-        </button>
-
-        <button
-          onClick={handleZoomOut}
-          className="icon-btn shadow-xl text-sm font-bold"
-          title={t.zoomOut}
-        >
-          -
-        </button>
       </div>
 
       {/* Seamless Integrated Map Expansion Panel (Zero Page-Jump Booking) */}
       {isMapExpanded && (
         <div className="absolute inset-x-0 bottom-32 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
           <div className="panel p-5 relative">
-            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-divider pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-2 border border-white/[0.09]"
-                  style={{ color: currentTheme.primaryHex }}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-2 border border-divider"
+                  style={{ color: 'var(--accent-text)' }}
                 >
                   <Zap className="w-4 h-4" />
                 </div>
@@ -357,14 +344,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('package_7kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'package_7kw'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-border-strong shadow-lg'
+                    : 'border-divider bg-surface-1/70 hover:border-border-strong'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-border-strong flex items-center justify-center">
                     {chargeOptionSelected === 'package_7kw' && (
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--accent-primary)' }}></div>
                     )}
                   </div>
                   <div>
@@ -385,20 +372,20 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('fast_charger_2km')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'fast_charger_2km'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-border-strong shadow-lg'
+                    : 'border-divider bg-surface-1/70 hover:border-border-strong'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-border-strong flex items-center justify-center">
                     {chargeOptionSelected === 'fast_charger_2km' && (
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--accent-primary)' }}></div>
                     )}
                   </div>
                   <div>
                     <div className="text-xs font-bold text-ink flex items-center gap-2">
                       <span>{t.fastChargerTitle}</span>
-                      <span className="text-[10px] bg-cyan-500/15 text-cyan-300 px-2 py-0.5 rounded-full border border-cyan-500/30">
+                      <span className="text-[10px] bg-ok/15 text-ok px-2 py-0.5 rounded-full border border-ok/30">
                         {t.dcFastBadge}
                       </span>
                     </div>
@@ -411,14 +398,14 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('buy_20kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'buy_20kw'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-border-strong shadow-lg'
+                    : 'border-divider bg-surface-1/70 hover:border-border-strong'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-border-strong flex items-center justify-center">
                     {chargeOptionSelected === 'buy_20kw' && (
-                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--accent-primary)' }}></div>
                     )}
                   </div>
                   <div>
@@ -433,13 +420,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-white/[0.07]">
+              <div className="pt-2 border-t border-divider">
                 <label className="flex items-center gap-2.5 cursor-pointer text-xs text-ink-2 hover:text-ink transition">
                   <input
                     type="checkbox"
                     checked={includeDryWash}
                     onChange={(e) => setIncludeDryWash(e.target.checked)}
-                    className="w-4 h-4 rounded bg-surface-2 border-white/15 accent-gold cursor-pointer"
+                    className="w-4 h-4 rounded bg-surface-2 border-border-strong accent-gold cursor-pointer"
                   />
                   <span className="flex-1 text-[11px] leading-relaxed">
                     {t.dryWashAdd} <strong className="text-gold">{t.dryWashName}</strong> {t.dryWashDuring}
@@ -461,7 +448,6 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                   }
                 }}
                 className="btn-accent w-full mt-3 py-3 text-xs"
-                style={{ backgroundColor: currentTheme.primaryHex }}
               >
                 <ShieldCheck className="w-4 h-4" />
                 <span>{t.confirmBookingCta}</span>

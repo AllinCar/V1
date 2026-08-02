@@ -3,6 +3,7 @@ import { motion, useReducedMotion, type Transition } from 'motion/react';
 import { Home, Layers, Car, User, Mic, type LucideIcon } from 'lucide-react';
 import type { NavTab, ThemeAccent } from '../types';
 import { Language, translations } from '../translations';
+import { useTheme } from '../theme/ThemeProvider';
 
 type NavItemKey = NavTab;
 export type BottomNavMode = 'dark' | 'light' | 'auto';
@@ -49,10 +50,11 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   lang = 'fa',
   mode = 'auto',
 }) => {
+  const { theme } = useTheme();
   const reduceMotion = useReducedMotion();
-  const isLight = mode === 'light';
-  const inactiveInk = isLight ? 'rgba(28,28,36,0.45)' : 'var(--color-ink-4)';
-  const accent = currentTheme.primaryHex;
+  const accent = 'var(--accent-primary)';
+  const activeInk = 'var(--color-ok)';
+  const inactiveInk = 'var(--color-ink-4)';
   const t = translations[lang];
 
   const navItems: NavItemConfig[] = [
@@ -75,7 +77,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
           aria-label={item.label}
         >
           <motion.span
-            className="relative flex items-center justify-center rounded-full shadow-lg"
+            className="relative flex items-center justify-center rounded-full shadow-lg text-on-accent"
             style={{
               width: 52,
               height: 52,
@@ -86,7 +88,6 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             transition={reduceMotion ? { duration: 0 } : itemSpring}
           >
             <item.Icon
-              color="#0a0a0a"
               style={{ width: MIC_SIZE, height: MIC_SIZE }}
               strokeWidth={2.25}
             />
@@ -115,7 +116,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
               : { scale: isActive ? 1.06 : 1 }
           }
           transition={reduceMotion ? { duration: 0 } : itemSpring}
-          style={{ color: isActive ? accent : inactiveInk }}
+          style={{ color: isActive ? activeInk : inactiveInk }}
         >
           <item.Icon
             style={{ width: ICON_SIZE, height: ICON_SIZE }}
@@ -133,8 +134,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
                 width: 5,
                 height: 5,
                 backgroundColor: accent,
-              }}
-              initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
+              }}              initial={reduceMotion ? false : { scale: 0, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={reduceMotion ? { duration: 0 } : dotSpring}
             />
@@ -149,7 +149,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       <nav
         className="nav-capsule relative w-full max-w-sm pointer-events-auto flex items-center px-2"
         style={{ height: '3.25rem' }}
-        data-theme={isLight ? 'light' : undefined}
+        data-theme={theme}
         aria-label={t.navMainAria}
       >
         {navItems.map(renderItem)}
