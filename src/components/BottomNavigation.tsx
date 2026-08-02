@@ -83,20 +83,17 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
       <button
         key={item.key}
         onClick={() => onChangeTab(item.key)}
-        className="relative flex-1 flex flex-col items-center justify-center gap-[3px] h-11 rounded-2xl"
+        className="relative flex-1 flex flex-col items-center justify-center gap-1 h-12 rounded-2xl"
         style={{ WebkitTapHighlightColor: 'transparent' }}
         title={item.label}
       >
-        {/* Icon well + sliding active pill */}
-        <span className="relative w-11 h-9 flex items-center justify-center">
+        {/* Minimal compact pill behind the icon only */}
+        <span className="relative w-10 h-9 flex items-center justify-center">
           {isActive && (
             <motion.span
               layoutId="ios-nav-active-pill"
-              className="absolute inset-0 rounded-2xl"
-              style={{
-                backgroundColor: `${activeInk}2B`,
-                boxShadow: `inset 0 0 0 1px ${activeInk}40`,
-              }}
+              className="absolute inset-[3px] rounded-full"
+              style={{ backgroundColor: `${activeInk}14` }}
               transition={reduceMotion ? { duration: 0 } : pillSpring}
             />
           )}
@@ -105,8 +102,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             className="relative flex items-center justify-center transition-colors duration-200"
             animate={
               reduceMotion
-                ? { opacity: isActive ? 1 : 0.5 }
-                : { scale: isActive ? 1.14 : 1, y: isActive ? -2 : 0, opacity: isActive ? 1 : 0.5 }
+                ? { opacity: isActive ? 1 : 0.45 }
+                : { scale: isActive ? 1.08 : 1, opacity: isActive ? 1 : 0.45 }
             }
             transition={reduceMotion ? { duration: 0 } : itemSpring}
             style={{ color: isActive ? activeInk : dimInk }}
@@ -114,15 +111,15 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
             <item.Icon
               className="drop-shadow-sm"
               style={{ width: ICON_SIZE, height: ICON_SIZE }}
-              strokeWidth={isActive ? 2.4 : 2.1}
+              strokeWidth={isActive ? 2.3 : 2.1}
             />
           </motion.span>
         </span>
 
         {/* Label */}
         <motion.span
-          className="text-[10px] font-semibold leading-none transition-colors duration-200"
-          animate={{ opacity: reduceMotion || isActive ? 1 : 0.5 }}
+          className="relative text-[9px] font-medium leading-none transition-colors duration-200"
+          animate={{ opacity: reduceMotion || isActive ? 1 : 0.45 }}
           transition={{ duration: 0.2 }}
           style={{ color: isActive ? activeInk : dimInk }}
         >
@@ -135,7 +132,8 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   return (
     <div className="fixed bottom-0 inset-x-0 z-40 pointer-events-none flex justify-center px-4">
       <div
-        className="nav-ios relative w-full max-w-md pointer-events-auto rounded-[28px] px-2.5 pt-2 pb-[calc(max(env(safe-area-inset-bottom),0.625rem))] mb-1.5 flex items-center justify-between"
+        className="nav-ios relative w-full max-w-md pointer-events-auto rounded-[28px] px-2.5 mb-1.5 flex items-center justify-between"
+        style={{ height: 'calc(3.5rem + max(env(safe-area-inset-bottom), 0.625rem))' }}
         data-theme={isLight ? 'light' : undefined}
       >
         {/* Glossy top sheen */}
