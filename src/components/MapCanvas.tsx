@@ -198,7 +198,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           <div style="width: 36px; height: 36px; border-radius: 9999px; background: var(--marker-bg); border: 2px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 15px var(--accent-glow);">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 2px 7px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 8px; color: var(--accent-text); font-size: 10px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 2px 7px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 8px; color: var(--accent-text); font-family: var(--font-map); font-size: 10px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             ⚡ ${station.name} (${station.power})
           </div>
         </div>
@@ -213,7 +213,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }),
       })
         .bindPopup(`
-          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px;">
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px; font-family: var(--font-map);">
             <div style="color: var(--accent-text); font-size: 13px; font-weight: 700; margin-bottom: 2px;">⚡ ${station.name}</div>
             <div style="font-size: 11px; color: var(--text-secondary);">${t.stationPower}: ${station.power}</div>
             <div style="font-size: 10px; color: var(--accent-text); margin-top: 4px; font-weight: 600;">${t.stationAvailable}</div>
@@ -240,7 +240,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
           <div style="width: 34px; height: 34px; border-radius: 9999px; background: var(--marker-bg); border: 2px solid var(--accent-primary); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 12px var(--accent-glow);">
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" style="stroke: var(--accent-primary)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="6.5" cy="17.5" r="2.5"/><circle cx="16.5" cy="17.5" r="2.5"/></svg>
           </div>
-          <div style="margin-top: 3px; padding: 1px 6px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 6px; color: var(--accent-text); font-size: 9px; font-weight: 600; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
+          <div style="margin-top: 3px; padding: 1px 6px; background: var(--popup-bg); border: 1px solid var(--accent-border); border-radius: 6px; color: var(--accent-text); font-family: var(--font-map); font-size: 9px; font-weight: 600; letter-spacing: -0.01em; white-space: nowrap; backdrop-filter: blur(6px); direction: rtl;">
             🚐 ${van.id} (${van.eta})
           </div>
         </div>
@@ -255,7 +255,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
         }),
       })
         .bindPopup(`
-          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px;">
+          <div style="direction: ${lang === 'fa' ? 'rtl' : 'ltr'}; color: var(--text-primary); padding: 2px; font-family: var(--font-map);">
             <div style="color: var(--accent-text); font-size: 13px; font-weight: 700; margin-bottom: 2px;">🚐 ${van.name}</div>
             <div style="font-size: 11px; color: var(--text-secondary);">${t.vanEta}: <strong>${van.eta}</strong></div>
             <div style="font-size: 10px; color: var(--warning); margin-top: 4px; font-weight: 600;">${t.vanTank}: ${van.battery}</div>
