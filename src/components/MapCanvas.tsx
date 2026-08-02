@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Zap, ShieldCheck, Locate } from 'lucide-react';
 import { ThemeAccent } from '../types';
@@ -16,6 +16,7 @@ interface MapCanvasProps {
   lang?: Language;
   /** When false, map stays mounted but hidden — avoids remount flash */
   isVisible?: boolean;
+  appearance?: 'dark' | 'light';
 }
 
 export const MapCanvas: React.FC<MapCanvasProps> = ({
@@ -28,11 +29,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
   userBatteryPercent,
   lang = 'fa',
   isVisible = true,
+  appearance = 'dark',
 }) => {
   const t = translations[lang];
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const overlaysRef = useRef<L.LayerGroup | null>(null);
+  const tilesRef = useRef<L.TileLayer | null>(null);
   const [includeDryWash, setIncludeDryWash] = React.useState(true);
   const [isMapReady, setIsMapReady] = React.useState(false);
 
@@ -87,11 +90,17 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       attributionControl: false,
     });
 
-    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    const tileUrl =
+      appearance === 'light'
+        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+    const tiles = L.tileLayer(tileUrl, {
       maxZoom: 19,
       subdomains: 'abcd',
     }).addTo(map);
 
+    tilesRef.current = tiles;
     overlaysRef.current = L.layerGroup().addTo(map);
     mapInstanceRef.current = map;
 
@@ -108,9 +117,41 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       map.remove();
       mapInstanceRef.current = null;
       overlaysRef.current = null;
+      tilesRef.current = null;
       setIsMapReady(false);
     };
+    // appearance only seeds initial tiles; swaps handled below
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Swap basemap tiles when appearance changes (keep map mounted)
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const nextUrl =
+      appearance === 'light'
+        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
+        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+
+    if (tilesRef.current) {
+      map.removeLayer(tilesRef.current);
+      tilesRef.current = null;
+    }
+
+    const tiles = L.tileLayer(nextUrl, {
+      maxZoom: 19,
+      subdomains: 'abcd',
+    }).addTo(map);
+
+    // Keep overlays above basemap
+    if (overlaysRef.current) {
+      overlaysRef.current.remove();
+      overlaysRef.current.addTo(map);
+    }
+
+    tilesRef.current = tiles;
+  }, [appearance]);
 
   // Refresh size when home becomes visible again (cached map, no remount)
   useEffect(() => {
@@ -274,7 +315,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
       {/* First-load cover — match map bg so tiles don't flash */}
       {!isMapReady && (
         <div className="absolute inset-0 z-[5] flex items-center justify-center pointer-events-none" style={{ backgroundColor: '#2b2b2b' }}>
-          <div className="w-8 h-8 rounded-full border-2 border-white/10 border-t-gold animate-spin" />
+          <div className="w-8 h-8 rounded-full border-2 border-[var(--color-border)] border-t-gold animate-spin" />
         </div>
       )}
 
@@ -327,12 +368,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
 
       {/* Seamless Integrated Map Expansion Panel (Zero Page-Jump Booking) */}
       {isMapExpanded && (
-        <div className="absolute inset-x-0 bottom-32 z-30 px-4 max-w-lg mx-auto transition-all duration-300 animate-in fade-in slide-in-from-bottom-6">
+        <div className="absolute inset-x-0 bottom-[calc(var(--nav-clearance)+0.5rem)] z-30 px-4 max-w-lg mx-auto transition-all duration-300 sheet-enter">
           <div className="panel p-5 relative">
-            <div className="flex items-center justify-between border-b border-white/[0.07] pb-3 mb-4">
+            <div className="sheet-handle !mb-3" />
+            <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-2 border border-white/[0.09]"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-surface-2 border border-[var(--color-border)]"
                   style={{ color: currentTheme.primaryHex }}
                 >
                   <Zap className="w-4 h-4" />
@@ -357,12 +399,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('package_7kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'package_7kw'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-[var(--color-border-strong)] shadow-lg'
+                    : 'border-[var(--color-border)] bg-surface-1/70 hover:border-[var(--color-border-strong)]'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-[var(--color-border-strong)] flex items-center justify-center">
                     {chargeOptionSelected === 'package_7kw' && (
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
                     )}
@@ -385,12 +427,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('fast_charger_2km')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'fast_charger_2km'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-[var(--color-border-strong)] shadow-lg'
+                    : 'border-[var(--color-border)] bg-surface-1/70 hover:border-[var(--color-border-strong)]'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-[var(--color-border-strong)] flex items-center justify-center">
                     {chargeOptionSelected === 'fast_charger_2km' && (
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
                     )}
@@ -411,12 +453,12 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 onClick={() => onSelectChargeOption && onSelectChargeOption('buy_20kw')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-center justify-between ${
                   chargeOptionSelected === 'buy_20kw'
-                    ? 'bg-surface-3 border-white/20 shadow-lg'
-                    : 'border-white/[0.07] bg-surface-1/70 hover:border-white/20'
+                    ? 'bg-surface-3 border-[var(--color-border-strong)] shadow-lg'
+                    : 'border-[var(--color-border)] bg-surface-1/70 hover:border-[var(--color-border-strong)]'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-5 h-5 rounded-full border border-white/30 flex items-center justify-center">
+                  <div className="w-5 h-5 rounded-full border border-[var(--color-border-strong)] flex items-center justify-center">
                     {chargeOptionSelected === 'buy_20kw' && (
                       <div className="w-3 h-3 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
                     )}
@@ -433,13 +475,13 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-white/[0.07]">
+              <div className="pt-2 border-t border-[var(--color-border)]">
                 <label className="flex items-center gap-2.5 cursor-pointer text-xs text-ink-2 hover:text-ink transition">
                   <input
                     type="checkbox"
                     checked={includeDryWash}
                     onChange={(e) => setIncludeDryWash(e.target.checked)}
-                    className="w-4 h-4 rounded bg-surface-2 border-white/15 accent-gold cursor-pointer"
+                    className="w-4 h-4 rounded bg-surface-2 border-[var(--color-border-strong)] accent-gold cursor-pointer"
                   />
                   <span className="flex-1 text-[11px] leading-relaxed">
                     {t.dryWashAdd} <strong className="text-gold">{t.dryWashName}</strong> {t.dryWashDuring}

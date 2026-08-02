@@ -16,27 +16,31 @@ import { CarsTab } from './components/CarsTab';
 import { ProfileTab } from './components/ProfileTab';
 import { EmergencySOSModal } from './components/EmergencySOSModal';
 import { ActiveOrderTracker } from './components/ActiveOrderTracker';
-import { ShieldAlert, Globe } from 'lucide-react';
+import { ShieldAlert, Globe, Sun, Moon } from 'lucide-react';
 import { Language, translations } from './translations';
 
+type Appearance = 'dark' | 'light';
+
 export default function App() {
-  // Navigation, Language & View States
   const [activeTab, setActiveTab] = React.useState<NavTab>('home');
   const [lang, setLang] = React.useState<Language>('fa');
+  const [appearance, setAppearance] = React.useState<Appearance>('dark');
   const [isMapExpanded, setIsMapExpanded] = React.useState(false);
   const [chargeOptionSelected, setChargeOptionSelected] = React.useState<
     'package_7kw' | 'buy_20kw' | 'fast_charger_2km' | null
   >('package_7kw');
 
-  // Dynamically set HTML direction and lang attribute
   React.useEffect(() => {
     document.documentElement.dir = lang === 'fa' ? 'rtl' : 'ltr';
     document.documentElement.lang = lang;
   }, [lang]);
 
+  React.useEffect(() => {
+    document.documentElement.dataset.appearance = appearance;
+  }, [appearance]);
+
   const t = translations[lang];
 
-  // Core Data States
   const [cars, setCars] = React.useState<Car[]>(() => getInitialCars('fa'));
   const [selectedCar, setSelectedCar] = React.useState<Car>(() => getInitialCars('fa')[0]);
   const [walletState, setWalletState] = React.useState<WalletState>({
@@ -50,7 +54,11 @@ export default function App() {
   const [userPersona, setUserPersona] = React.useState<UserPersona>(() => getInitialUserPersona('fa'));
   const [history, setHistory] = React.useState<ServiceHistory[]>(() => getInitialHistory('fa'));
 
-  // Keep localized mock content in sync when language changes
+  React.useEffect(() => {
+    document.documentElement.style.setProperty('--color-accent', currentTheme.primaryHex);
+    document.documentElement.style.setProperty('--color-accent-fg', '#0a0a0b');
+  }, [currentTheme]);
+
   React.useEffect(() => {
     const localizedCars = getInitialCars(lang);
     setCars((prev) =>
@@ -91,13 +99,10 @@ export default function App() {
     }));
   }, [lang]);
 
-  // Modals & Active Orders
   const [isAIModalOpen, setIsAIModalOpen] = React.useState(false);
   const [isSOSModalOpen, setIsSOSModalOpen] = React.useState(false);
   const [activeOrder, setActiveOrder] = React.useState<ActiveServiceOrder | null>(null);
 
-  // Shake-to-SOS Detection (Physical Shake Listener)
-  // Higher threshold + cooldown: only a firm, deliberate shake opens SOS
   React.useEffect(() => {
     let lastX = 0,
       lastY = 0,
@@ -136,7 +141,6 @@ export default function App() {
     return () => window.removeEventListener('devicemotion', handleMotion);
   }, []);
 
-  // Handlers for Zero Page-Jump Map Expansions
   const closeMapOverlays = () => {
     setIsMapExpanded(false);
   };
@@ -147,7 +151,6 @@ export default function App() {
     setActiveTab(tab);
   };
 
-  // Leave home → always dismiss map booking sheet (any navigation path)
   React.useEffect(() => {
     if (activeTab !== 'home') {
       setIsMapExpanded(false);
@@ -180,13 +183,11 @@ export default function App() {
     };
     setActiveOrder(newOrder);
 
-    // Update allowances
     setWalletState((prev) => ({
       ...prev,
       remainingDrivers: Math.max(0, prev.remainingDrivers - 1),
     }));
 
-    // Add to history
     setHistory((prev) => [
       {
         id: `h-${Date.now()}`,
@@ -244,7 +245,6 @@ export default function App() {
     };
     setActiveOrder(newOrder);
 
-    // Deduct remaining kwh / wash if available
     setWalletState((prev) => ({
       ...prev,
       remainingKwh: Math.max(0, prev.remainingKwh - (kwhAmount || 7)),
@@ -283,42 +283,42 @@ export default function App() {
 
   return (
     <div className="w-full h-dvh bg-obsidian text-ink flex flex-col justify-between overflow-hidden relative">
-      {/* Persistent Icon Header Controls */}
-      <div className="absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+0.75rem)] right-4 z-40 flex items-center gap-2">
-        <button
-          onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
-          className="icon-btn rounded-full group"
-          title={t.languageToggle}
-        >
-          <Globe className="w-4 h-4 text-gold group-hover:rotate-45 transition-transform" />
-        </button>
-
-        <button
-          onClick={() => setIsSOSModalOpen(true)}
-          className="h-9 px-3 rounded-full text-xs font-bold shadow-lg backdrop-blur-md flex items-center gap-1.5 transition active:scale-95 bg-red-950/60 hover:bg-red-900/80 border border-red-500/50 text-red-300 hover:text-white"
-          title={t.emergencySosTitle}
-        >
-          <ShieldAlert className="w-4 h-4 text-danger animate-pulse" />
-          <span className="font-mono text-[11px] font-extrabold tracking-wider">SOS</span>
-        </button>
+      {/* Top chrome */}
+      <div className="absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+0.5rem)] inset-x-4 z-40 flex items-center justify-between pointer-events-none">
+        <div className="pointer-events-auto">
+          <p className="eyebrow tracking-[0.18em]">AllinCar</p>
+        </div>
+        <div className="pointer-events-auto flex items-center gap-2">
+          <button
+            onClick={() => setAppearance((a) => (a === 'dark' ? 'light' : 'dark'))}
+            className="icon-btn"
+            title={appearance === 'dark' ? t.appearanceLight : t.appearanceDark}
+            aria-label={t.appearanceLabel}
+          >
+            {appearance === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          </button>
+          <button
+            onClick={() => setLang(lang === 'fa' ? 'en' : 'fa')}
+            className="icon-btn"
+            title={t.languageToggle}
+          >
+            <Globe className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => setIsSOSModalOpen(true)}
+            className="btn-danger"
+            title={t.emergencySosTitle}
+          >
+            <ShieldAlert className="w-3.5 h-3.5" />
+            <span className="font-mono tracking-wider">SOS</span>
+          </button>
+        </div>
       </div>
 
-      {/* Side Status Indicator (Design Requirement) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 bg-gold/10 border-l border-y border-gold/20 rounded-l-xl p-1.5 py-5 flex flex-col items-center gap-3 z-30 pointer-events-none">
-        <div className="w-1 h-6 rounded-full" style={{ backgroundColor: currentTheme.primaryHex }}></div>
-        <p className="writing-vertical-rl text-[9px] uppercase tracking-widest font-bold dir-ltr" style={{ color: currentTheme.primaryHex }}>
-          {t.vipElite}
-        </p>
-      </div>
-
-      {/* Main Tab Render Container */}
       <div className="relative flex-1 w-full h-full overflow-hidden">
-        {/* Home/map stays mounted (hidden off-tab) so Leaflet never remounts */}
         <div
           className={`absolute inset-0 ${
-            activeTab === 'home'
-              ? 'z-10 opacity-100'
-              : 'z-0 opacity-0 pointer-events-none'
+            activeTab === 'home' ? 'z-10 opacity-100' : 'z-0 opacity-0 pointer-events-none'
           }`}
           aria-hidden={activeTab !== 'home'}
         >
@@ -333,6 +333,7 @@ export default function App() {
             userBatteryPercent={selectedCar.batteryPercent}
             lang={lang}
             isVisible={activeTab === 'home'}
+            appearance={appearance}
           />
 
           {activeTab === 'home' && (
@@ -348,22 +349,23 @@ export default function App() {
                 lang={lang}
               />
 
-              <ProactiveServiceSection
-                currentTheme={currentTheme}
-                selectedCar={selectedCar}
-                walletState={walletState}
-                onOpenChargeFlow={handleOpenChargeFlow}
-                onBookDriverDirectly={handleBookDriverDirectly}
-                onBookServiceDirectly={handleBookServiceDirectly}
-                isMapExpanded={isMapExpanded}
-                lang={lang}
-              />
-
-              {activeOrder && (
+              {/* Exclusive home bottom layer: order takes priority over offers */}
+              {activeOrder ? (
                 <ActiveOrderTracker
                   order={activeOrder}
                   currentTheme={currentTheme}
                   onCancelOrder={() => setActiveOrder(null)}
+                  lang={lang}
+                />
+              ) : (
+                <ProactiveServiceSection
+                  currentTheme={currentTheme}
+                  selectedCar={selectedCar}
+                  walletState={walletState}
+                  onOpenChargeFlow={handleOpenChargeFlow}
+                  onBookDriverDirectly={handleBookDriverDirectly}
+                  onBookServiceDirectly={handleBookServiceDirectly}
+                  isMapExpanded={isMapExpanded}
                   lang={lang}
                 />
               )}
@@ -372,7 +374,7 @@ export default function App() {
         </div>
 
         {activeTab === 'services' && (
-          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="services">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar scroll-smooth-touch bg-obsidian tab-enter" key="services">
             <ServicesTab
               currentTheme={currentTheme}
               walletState={walletState}
@@ -387,7 +389,7 @@ export default function App() {
         )}
 
         {activeTab === 'cars' && (
-          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="cars">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar scroll-smooth-touch bg-obsidian tab-enter" key="cars">
             <CarsTab
               cars={cars}
               selectedCarId={selectedCar.id}
@@ -407,7 +409,7 @@ export default function App() {
         )}
 
         {activeTab === 'profile' && (
-          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar bg-obsidian tab-enter" key="profile">
+          <div className="absolute inset-0 z-20 w-full h-full overflow-y-auto no-scrollbar scroll-smooth-touch bg-obsidian tab-enter" key="profile">
             <ProfileTab
               userPersona={userPersona}
               walletState={walletState}
@@ -429,13 +431,14 @@ export default function App() {
                   remainingDrivers: prev.remainingDrivers + pkg.driversIncluded,
                 }));
               }}
+              appearance={appearance}
+              onToggleAppearance={() => setAppearance((a) => (a === 'dark' ? 'light' : 'dark'))}
               lang={lang}
             />
           </div>
         )}
       </div>
 
-      {/* Central Interactive AI Concierge Agent Modal (میکروفون هوشمند) */}
       <AIConciergeModal
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
@@ -446,7 +449,6 @@ export default function App() {
         lang={lang}
       />
 
-      {/* Emergency Roadside SOS Modal */}
       <EmergencySOSModal
         isOpen={isSOSModalOpen}
         onClose={() => setIsSOSModalOpen(false)}
@@ -458,7 +460,6 @@ export default function App() {
         lang={lang}
       />
 
-      {/* Fixed Multilingual iOS Floating Bottom Navigation */}
       <BottomNavigation
         activeTab={activeTab}
         onChangeTab={switchTab}
@@ -468,6 +469,7 @@ export default function App() {
         }}
         currentTheme={currentTheme}
         lang={lang}
+        mode={appearance}
       />
     </div>
   );

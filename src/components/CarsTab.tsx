@@ -97,12 +97,12 @@ export const CarsTab: React.FC<CarsTabProps> = ({
   };
 
   return (
-    <div className="pb-32 pt-[calc(max(env(safe-area-inset-top),0.75rem)+3.5rem)] px-4 max-w-lg mx-auto space-y-5">
+    <div className="page-shell space-y-5">
       {/* Page header */}
-      <div className="page-header">
+      <div className="page-header !mb-0">
         <div>
           <p className="eyebrow">{t.smartGarage}</p>
-          <h2 className="text-lg font-bold text-ink mt-1 flex items-center gap-2">
+          <h2 className="page-title mt-1 flex items-center gap-2 flex-wrap">
             <span>{t.garageTitle}</span>
             <span className="text-[10px] bg-gold/10 text-gold border border-gold/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-bold">
               <Cpu className="w-3 h-3" />
@@ -113,7 +113,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
 
         <button
           onClick={() => setIsAddModalOpen(true)}
-          className="btn-accent text-[11px] px-3.5 py-2.5 shrink-0"
+          className="btn-accent text-[11px] !min-h-10 !px-3.5 shrink-0"
           style={{ backgroundColor: currentTheme.primaryHex }}
         >
           <Plus className="w-4 h-4 stroke-[3]" />
@@ -129,8 +129,8 @@ export const CarsTab: React.FC<CarsTabProps> = ({
             <div
               key={car.id}
               onClick={() => onSelectCar(car)}
-              className={`panel rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer group ${
-                isSelected ? 'ring-1 ring-gold/40' : 'hover:border-white/[0.14]'
+              className={`panel overflow-hidden transition-all duration-300 cursor-pointer group panel-interactive ${
+                isSelected ? 'ring-1 ring-gold/40' : ''
               }`}
               style={isSelected ? { borderColor: 'var(--color-gold)' } : undefined}
             >
@@ -182,7 +182,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-[11px] text-ink-4 pt-3 border-t border-white/[0.07]">
+                <div className="flex items-center justify-between text-[11px] text-ink-4 pt-3 border-t border-[var(--color-border)]">
                   <span className="flex items-center gap-1.5 text-gold">
                     <Sparkles className="w-3.5 h-3.5" />
                     <span>
@@ -212,7 +212,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
             </div>
 
             {/* Photo upload */}
-            <div className="border border-dashed border-white/15 hover:border-gold/50 rounded-2xl p-4 text-center cursor-pointer bg-surface-1 relative overflow-hidden group transition-colors">
+            <div className="border border-dashed border-[var(--color-border-strong)] hover:border-gold/50 rounded-2xl p-4 text-center cursor-pointer bg-[var(--color-surface-1)] relative overflow-hidden group transition-colors">
               <input
                 type="file"
                 accept="image/*"
@@ -231,7 +231,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
                 </div>
               ) : (
                 <div className="space-y-2">
-                  <div className="w-12 h-12 rounded-full bg-surface-2 border border-white/10 flex items-center justify-center mx-auto text-gold">
+                  <div className="w-12 h-12 rounded-full bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center mx-auto text-gold">
                     <Camera className="w-6 h-6" />
                   </div>
                   <p className="text-xs font-bold text-ink">

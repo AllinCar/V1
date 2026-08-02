@@ -13,6 +13,10 @@ export const translations = {
     shakeSos: 'تکان دادن گوشی / Shake SOS',
     vipElite: 'VIP Elite',
     languageToggle: 'English',
+    appearanceToggle: 'حالت روشن',
+    appearanceDark: 'تیره',
+    appearanceLight: 'روشن',
+    appearanceLabel: 'ظاهر',
 
     // Floating Car Card
     activeVehicle: 'خودروی فعال',
@@ -335,6 +339,10 @@ export const translations = {
     shakeSos: 'Shake SOS',
     vipElite: 'VIP Elite',
     languageToggle: 'فارسی',
+    appearanceToggle: 'Light mode',
+    appearanceDark: 'Dark',
+    appearanceLight: 'Light',
+    appearanceLabel: 'Appearance',
 
     // Floating Car Card
     activeVehicle: 'Active Vehicle',

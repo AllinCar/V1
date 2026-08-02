@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserPersona, WalletState, ServiceHistory, ThemeAccent, PrepaidPackage } from '../types';
 import { getPrepaidPackages, getThemeAccents } from '../data/mockData';
-import { Wallet, Award, History, Palette, CheckCircle2, ChevronRight, PlusCircle, ArrowUpRight, X } from 'lucide-react';
+import { Wallet, Award, History, Palette, CheckCircle2, ChevronRight, PlusCircle, ArrowUpRight, X, Sun, Moon } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface ProfileTabProps {
@@ -12,6 +12,8 @@ interface ProfileTabProps {
   onSelectTheme: (theme: ThemeAccent) => void;
   onTopUpWallet: (amount: number) => void;
   onChangePackage: (pkg: PrepaidPackage) => void;
+  appearance?: 'dark' | 'light';
+  onToggleAppearance?: () => void;
   lang?: Language;
 }
 
@@ -23,6 +25,8 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   onSelectTheme,
   onTopUpWallet,
   onChangePackage,
+  appearance = 'dark',
+  onToggleAppearance,
   lang = 'fa' as Language,
 }) => {
   const [isTopUpOpen, setIsTopUpOpen] = React.useState(false);
@@ -31,32 +35,26 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
   const t = translations[lang];
 
   return (
-    <div className="pb-32 pt-[calc(max(env(safe-area-inset-top),0.75rem)+3.5rem)] px-4 max-w-lg mx-auto space-y-5">
-      {/* Page header */}
-      <div className="page-header">
+    <div className="page-shell space-y-5">
+      <div className="page-header !mb-0">
         <div>
           <p className="eyebrow">{t.vipAccount}</p>
-          <h2 className="text-lg font-bold text-ink mt-1">{t.profile}</h2>
+          <h2 className="page-title mt-1">{t.profile}</h2>
         </div>
       </div>
 
       {/* User Persona Header Card */}
-      <div className="panel p-5 relative overflow-hidden">
-        <div
-          className="absolute -top-10 -left-10 w-36 h-36 rounded-full blur-3xl opacity-25 pointer-events-none"
-          style={{ backgroundColor: currentTheme.primaryHex }}
-        ></div>
-
-        <div className="flex items-center gap-4 relative z-10">
+      <div className="panel p-5">
+        <div className="flex items-center gap-4">
           <div className="relative shrink-0">
             <img
               src={userPersona.avatarUrl}
               alt={userPersona.name}
-              className="w-16 h-16 rounded-2xl object-cover border-2 shadow-xl"
+              className="w-16 h-16 rounded-2xl object-cover border-2"
               style={{ borderColor: currentTheme.primaryHex }}
             />
             <span
-              className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-black shadow-md uppercase tracking-wider"
+              className="absolute -bottom-1 -right-1 px-2 py-0.5 rounded-full text-[9px] font-bold text-black uppercase tracking-wider"
               style={{ backgroundColor: currentTheme.primaryHex }}
             >
               VIP
@@ -64,10 +62,10 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </div>
 
           <div className="flex-1 min-w-0">
-            <h2 className="text-lg font-light tracking-tight text-ink truncate">{userPersona.name}</h2>
-            <p className="text-[11px] text-ink-4 mt-0.5 font-mono dir-ltr text-right">{userPersona.phone}</p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="chip text-gold border-gold/30">
+            <h2 className="text-lg font-semibold tracking-tight text-ink truncate">{userPersona.name}</h2>
+            <p className="text-[11px] text-ink-4 mt-0.5 font-mono">{userPersona.phone}</p>
+            <div className="mt-2 flex items-center gap-2 flex-wrap">
+              <span className="chip text-gold">
                 <Award className="w-3 h-3" />
                 {userPersona.level}
               </span>
@@ -79,14 +77,14 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
       {/* Financial & Active Package Summary */}
       <div className="panel p-5 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-surface-2 border border-white/[0.07] flex items-center justify-center text-gold">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl bg-[var(--color-surface-2)] border border-[var(--color-border)] flex items-center justify-center text-gold shrink-0">
               <Wallet className="w-5 h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <span className="text-[10px] uppercase tracking-widest text-ink-4 block">{t.walletBalance}</span>
-              <h3 className="text-base font-light tracking-tight text-ink">
+              <h3 className="text-base font-semibold tracking-tight text-ink truncate">
                 {walletState.balance.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')} {t.toman}
               </h3>
             </div>
@@ -94,7 +92,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
 
           <button
             onClick={() => setIsTopUpOpen(true)}
-            className="btn-accent text-[11px] px-3.5 py-2"
+            className="btn-accent text-[11px] !min-h-9 !px-3 shrink-0"
             style={{ backgroundColor: currentTheme.primaryHex }}
           >
             <PlusCircle className="w-3.5 h-3.5" />
@@ -102,15 +100,14 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </button>
         </div>
 
-        {/* Active package */}
-        <div className="panel-subtle p-4 flex items-center justify-between">
-          <div>
+        <div className="panel-subtle p-4 flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <span className="text-[10px] uppercase tracking-widest text-ink-4 block">{t.activePkgLabel}</span>
-            <strong className="text-xs text-ink font-semibold mt-0.5 block">{walletState.activePackageName}</strong>
+            <strong className="text-xs text-ink font-semibold mt-0.5 block truncate">{walletState.activePackageName}</strong>
           </div>
           <button
             onClick={() => setIsPackageModalOpen(true)}
-            className="text-[11px] font-bold flex items-center gap-0.5 hover:opacity-80 transition"
+            className="text-[11px] font-bold flex items-center gap-0.5 hover:opacity-80 transition shrink-0"
             style={{ color: currentTheme.primaryHex }}
           >
             {t.upgradePackage}
@@ -118,7 +115,6 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
           </button>
         </div>
 
-        {/* Remaining inventory */}
         <div className="grid grid-cols-3 gap-2.5 text-center text-xs">
           <div className="panel-subtle p-2.5">
             <span className="text-[10px] uppercase tracking-wider text-ink-4 block">{t.powerRemaining}</span>
@@ -135,45 +131,59 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       </div>
 
-      {/* Theme Accent Customizer */}
-      <div className="panel p-5 space-y-3">
+      {/* Appearance + Accent */}
+      <div className="panel p-5 space-y-4">
         <div className="flex items-center gap-2">
           <Palette className="w-4 h-4 text-gold" />
-          <h3 className="text-xs font-bold text-ink">{t.appTheme}</h3>
+          <h3 className="text-xs font-semibold text-ink">{t.appearanceLabel}</h3>
         </div>
-        <p className="text-[11px] text-ink-4">
-          {t.themeCustomizeHint}
-        </p>
 
-        <div className="grid grid-cols-2 gap-2.5 pt-1">
-          {getThemeAccents(lang).map((themeItem) => {
-            const isActive = currentTheme.id === themeItem.id;
-            return (
-              <button
-                key={themeItem.id}
-                onClick={() => onSelectTheme(themeItem)}
-                className={`p-3 rounded-2xl border flex items-center gap-2 text-xs font-bold transition ${
-                  isActive
-                    ? 'bg-surface-3 border-white/20 text-ink'
-                    : 'bg-transparent border-white/[0.06] text-ink-4 hover:border-white/[0.14]'
-                }`}
-              >
-                <span
-                  className="w-4 h-4 rounded-full border border-white/20 shrink-0"
-                  style={{ backgroundColor: themeItem.primaryHex }}
-                ></span>
-                <span className="text-[11px] truncate">{themeItem.name}</span>
-                {isActive && <CheckCircle2 className="w-3.5 h-3.5 ml-auto shrink-0" style={{ color: currentTheme.primaryHex }} />}
-              </button>
-            );
-          })}
+        {onToggleAppearance && (
+          <button
+            type="button"
+            onClick={onToggleAppearance}
+            className="w-full panel-subtle p-3 flex items-center justify-between hover:border-[var(--color-border-strong)] transition-colors"
+          >
+            <span className="flex items-center gap-2 text-xs font-medium text-ink">
+              {appearance === 'dark' ? <Moon className="w-4 h-4 text-ink-3" /> : <Sun className="w-4 h-4 text-ink-3" />}
+              {appearance === 'dark' ? t.appearanceDark : t.appearanceLight}
+            </span>
+            <span className="chip">{appearance === 'dark' ? t.appearanceToggle : t.appearanceDark}</span>
+          </button>
+        )}
+
+        <div>
+          <p className="text-[11px] text-ink-4 mb-2.5">{t.themeCustomizeHint}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {getThemeAccents(lang).map((themeItem) => {
+              const isActive = currentTheme.id === themeItem.id;
+              return (
+                <button
+                  key={themeItem.id}
+                  onClick={() => onSelectTheme(themeItem)}
+                  className={`p-3 rounded-xl border flex items-center gap-2 text-xs font-semibold transition ${
+                    isActive
+                      ? 'bg-[var(--color-surface-3)] border-[var(--color-border-strong)] text-ink'
+                      : 'bg-transparent border-[var(--color-border)] text-ink-4 hover:border-[var(--color-border-strong)]'
+                  }`}
+                >
+                  <span
+                    className="w-3.5 h-3.5 rounded-full shrink-0 ring-2 ring-[var(--color-border)]"
+                    style={{ backgroundColor: themeItem.primaryHex }}
+                  />
+                  <span className="text-[11px] truncate">{themeItem.name}</span>
+                  {isActive && <CheckCircle2 className="w-3.5 h-3.5 ms-auto shrink-0" style={{ color: currentTheme.primaryHex }} />}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Service History Log */}
       <div className="panel p-5 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-xs font-bold text-ink flex items-center gap-2">
+          <h3 className="text-xs font-semibold text-ink flex items-center gap-2">
             <History className="w-4 h-4 text-ink-4" />
             <span>{t.historyTitle}</span>
           </h3>
@@ -181,35 +191,44 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
 
         <div className="space-y-2 pt-1">
-          {serviceHistory.map((h) => (
-            <div
-              key={h.id}
-              className="panel-subtle p-3 flex items-center justify-between text-xs"
-            >
-              <div className="min-w-0">
-                <h4 className="font-bold text-ink truncate">{h.serviceTitle}</h4>
-                <p className="text-[10px] text-ink-4 mt-0.5">
-                  {h.carName} • {h.date}
-                </p>
+          {serviceHistory.length === 0 ? (
+            <div className="empty-state py-8">
+              <div className="empty-state-icon">
+                <History className="w-5 h-5" />
               </div>
-              <div className="text-left shrink-0">
-                <span className="text-[10px] bg-ok/15 text-ok px-2 py-0.5 rounded-full border border-ok/20 block">
-                  {h.amountDeduction}
-                </span>
-                <span className="text-[10px] text-gold mt-1 block">★ {h.rating}.0</span>
-              </div>
+              <p className="text-xs text-ink-3">{t.historyTitle}</p>
             </div>
-          ))}
+          ) : (
+            serviceHistory.map((h) => (
+              <div
+                key={h.id}
+                className="panel-subtle p-3 flex items-center justify-between text-xs gap-3"
+              >
+                <div className="min-w-0">
+                  <h4 className="font-semibold text-ink truncate">{h.serviceTitle}</h4>
+                  <p className="text-[10px] text-ink-4 mt-0.5 truncate">
+                    {h.carName} • {h.date}
+                  </p>
+                </div>
+                <div className="text-end shrink-0">
+                  <span className="text-[10px] bg-ok/15 text-ok px-2 py-0.5 rounded-full border border-ok/20 block">
+                    {h.amountDeduction}
+                  </span>
+                  <span className="text-[10px] text-gold mt-1 block">★ {h.rating}.0</span>
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
 
-      {/* Wallet Top-Up Modal */}
       {isTopUpOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
           <div className="sheet w-full max-w-lg sm:rounded-3xl p-5 space-y-4 sheet-enter">
+            <div className="sheet-handle sm:hidden" />
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-ink">{t.chargeWallet}</h3>
-              <button onClick={() => setIsTopUpOpen(false)} className="icon-btn w-8 h-8 rounded-lg text-sm">
+              <h3 className="text-sm font-semibold text-ink">{t.chargeWallet}</h3>
+              <button onClick={() => setIsTopUpOpen(false)} className="icon-btn !w-8 !h-8">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -220,7 +239,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 type="number"
                 value={topUpAmount}
                 onChange={(e) => setTopUpAmount(e.target.value)}
-                className="field font-mono text-sm font-bold text-left"
+                className="field font-mono text-sm font-bold"
               />
             </div>
 
@@ -229,13 +248,13 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 <button
                   key={amount}
                   onClick={() => setTopUpAmount(amount)}
-                  className={`p-2 rounded-xl border font-mono transition ${
+                  className={`p-2.5 rounded-xl border font-mono transition ${
                     topUpAmount === amount
                       ? 'border-gold/50 bg-gold/10 text-gold'
-                      : 'border-white/[0.07] bg-surface-1 text-ink-3 hover:border-white/[0.15]'
+                      : 'border-[var(--color-border)] bg-[var(--color-surface-1)] text-ink-3 hover:border-[var(--color-border-strong)]'
                   }`}
                 >
-                  {Number(amount).toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')} {t.toman}
+                  {Number(amount).toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')}
                 </button>
               ))}
             </div>
@@ -245,7 +264,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                 onTopUpWallet(parseInt(topUpAmount) || 2000000);
                 setIsTopUpOpen(false);
               }}
-              className="btn-accent w-full py-3 text-xs"
+              className="btn-accent w-full"
               style={{ backgroundColor: currentTheme.primaryHex }}
             >
               <ArrowUpRight className="w-4 h-4" />
@@ -255,13 +274,13 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
         </div>
       )}
 
-      {/* Package Upgrade Modal */}
       {isPackageModalOpen && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
           <div className="sheet w-full max-w-lg sm:rounded-3xl p-5 space-y-4 max-h-[85vh] overflow-y-auto no-scrollbar sheet-enter">
+            <div className="sheet-handle sm:hidden" />
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-ink">{t.upgradePackage}</h3>
-              <button onClick={() => setIsPackageModalOpen(false)} className="icon-btn w-8 h-8 rounded-lg text-sm">
+              <h3 className="text-sm font-semibold text-ink">{t.upgradePackage}</h3>
+              <button onClick={() => setIsPackageModalOpen(false)} className="icon-btn !w-8 !h-8">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -269,9 +288,9 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
             <div className="space-y-3">
               {getPrepaidPackages(lang).map((pkg) => (
                 <div key={pkg.id} className="panel-subtle p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xs font-bold text-ink">{pkg.name}</h4>
-                    <span className="text-xs font-extrabold text-gold font-mono">
+                  <div className="flex items-center justify-between gap-2">
+                    <h4 className="text-xs font-semibold text-ink">{pkg.name}</h4>
+                    <span className="text-xs font-bold text-gold font-mono shrink-0">
                       {pkg.price.toLocaleString(lang === 'fa' ? 'fa-IR' : 'en-US')} {t.toman}
                     </span>
                   </div>
@@ -281,7 +300,7 @@ export const ProfileTab: React.FC<ProfileTabProps> = ({
                       onChangePackage(pkg);
                       setIsPackageModalOpen(false);
                     }}
-                    className="btn-accent w-full py-2.5 text-xs mt-1"
+                    className="btn-accent w-full !min-h-10"
                     style={{ backgroundColor: currentTheme.primaryHex }}
                   >
                     {t.upgradePackage}

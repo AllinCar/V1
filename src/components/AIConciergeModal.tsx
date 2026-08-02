@@ -254,7 +254,11 @@ export const AIConciergeModal: React.FC<AIConciergeModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 overlay scrim-enter">
-      <div className="sheet w-full max-w-md h-[92vh] sm:h-[84vh] sm:rounded-[36px] rounded-t-[36px] flex flex-col overflow-hidden relative dir-rtl" style={{ borderColor: 'color-mix(in oklab, var(--color-ok) 25%, transparent)' }}>
+      <div
+        className="sheet w-full max-w-md h-[92vh] sm:h-[84vh] sm:rounded-[28px] rounded-t-[28px] flex flex-col overflow-hidden relative"
+        dir={lang === 'fa' ? 'rtl' : 'ltr'}
+        style={{ borderColor: 'color-mix(in oklab, var(--color-accent) 22%, transparent)' }}
+      >
         {/* Background ambient radial glow */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-ok/10 rounded-full blur-3xl pointer-events-none"></div>
 

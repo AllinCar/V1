@@ -1,6 +1,6 @@
 import React from 'react';
 import { Car, ThemeAccent, UserPersona } from '../types';
-import { ChevronDown, Wrench, Check, Sparkles } from 'lucide-react';
+import { ChevronDown, Wrench, Check } from 'lucide-react';
 import { Language, translations } from '../translations';
 
 interface FloatingCarCardProps {
@@ -36,19 +36,12 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
 
   return (
     <div
-      className={`absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+4rem)] inset-x-4 max-w-lg mx-auto z-30 transition-all duration-500 ${
-        isMapExpanded ? 'opacity-30 scale-95 pointer-events-none -translate-y-2' : 'opacity-100 scale-100'
+      className={`absolute top-[calc(max(env(safe-area-inset-top),0.75rem)+3.5rem)] inset-x-4 max-w-lg mx-auto z-30 transition-all duration-400 ${
+        isMapExpanded ? 'opacity-0 scale-[0.97] pointer-events-none -translate-y-3' : 'opacity-100 scale-100 fade-up'
       }`}
     >
-      <div className="panel relative overflow-hidden p-4">
-        {/* Ambient theme glow */}
-        <div
-          className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-15 pointer-events-none"
-          style={{ backgroundColor: currentTheme.primaryHex }}
-        ></div>
-
+      <div className="panel glass relative overflow-hidden p-3.5">
         <div className="flex items-center justify-between gap-3 relative z-10">
-          {/* Left: User Avatar + Car Selector */}
           <div className="flex items-center gap-3 min-w-0">
             {userPersona && (
               <button
@@ -59,20 +52,21 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                 <img
                   src={userPersona.avatarUrl}
                   alt={userPersona.name}
-                  className="w-11 h-11 rounded-2xl object-cover border border-white/15 group-hover:scale-105 transition-transform"
+                  className="w-10 h-10 rounded-xl object-cover border border-[var(--color-border-strong)] group-hover:scale-[1.03] transition-transform duration-200"
                 />
                 <span
-                  className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full border-2 border-surface-2"
+                  className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[var(--color-surface-elevated)]"
                   style={{ backgroundColor: currentTheme.primaryHex }}
                 />
               </button>
             )}
 
-            <div
+            <button
+              type="button"
               onClick={() => setIsCarDropdownOpen(!isCarDropdownOpen)}
-              className="flex items-center gap-2.5 cursor-pointer group min-w-0"
+              className="flex items-center gap-2.5 cursor-pointer group min-w-0 text-start"
             >
-              <div className="relative w-16 h-11 rounded-xl overflow-hidden bg-white/5 border border-white/10 shrink-0 group-hover:scale-105 transition-transform">
+              <div className="relative w-14 h-10 rounded-lg overflow-hidden bg-[var(--color-surface-2)] border border-[var(--color-border)] shrink-0">
                 <img
                   src={selectedCar.photo}
                   alt={selectedCar.name}
@@ -82,7 +76,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
 
               <div className="min-w-0">
                 <div className="flex items-center gap-1">
-                  <span className="text-xs font-semibold text-ink truncate group-hover:text-ink-2 transition">
+                  <span className="text-[13px] font-semibold text-ink truncate">
                     {selectedCar.name}
                   </span>
                   <ChevronDown
@@ -91,23 +85,22 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                     }`}
                   />
                 </div>
-                <p className="text-[10px] text-ink-4 mt-0.5 dir-ltr text-right font-mono">
+                <p className="text-[10px] text-ink-4 mt-0.5 font-mono tracking-wide">
                   {selectedCar.plateNumber}
                 </p>
               </div>
-            </div>
+            </button>
           </div>
 
-          {/* Right: Battery SOC Ring Gauge */}
-          <div className="relative shrink-0 w-[52px] h-[52px]" title={t.battery}>
+          <div className="relative shrink-0 w-[48px] h-[48px]" title={t.battery}>
             <svg viewBox="0 0 44 44" className="w-full h-full -rotate-90">
               <circle
                 cx="22"
                 cy="22"
                 r={RING_R}
                 fill="none"
-                stroke="rgba(255,255,255,0.08)"
-                strokeWidth="3.5"
+                stroke="var(--color-border-strong)"
+                strokeWidth="3.25"
               />
               <circle
                 cx="22"
@@ -115,7 +108,7 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                 r={RING_R}
                 fill="none"
                 stroke={batteryLow ? 'var(--color-danger)' : currentTheme.primaryHex}
-                strokeWidth="3.5"
+                strokeWidth="3.25"
                 strokeLinecap="round"
                 strokeDasharray={RING_CIRCUMFERENCE}
                 strokeDashoffset={ringDashOffset}
@@ -125,20 +118,18 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span
                 className={`text-[11px] font-bold font-mono leading-none ${
-                  batteryLow ? 'text-danger animate-pulse' : 'text-ink'
+                  batteryLow ? 'text-danger animate-pulse-soft' : 'text-ink'
                 }`}
               >
                 {batteryPercent}%
               </span>
-              <span className="text-[7px] text-ink-4 font-mono mt-0.5">{t.socLabel}</span>
             </div>
           </div>
         </div>
 
-        {/* Range telemetry strip */}
-        <div className="mt-3 pt-2.5 border-t border-white/[0.06] flex items-center justify-between relative z-10">
+        <div className="mt-3 pt-2.5 border-t border-[var(--color-border)] flex items-center justify-between relative z-10">
           <span className="flex items-center gap-1.5 text-[10px] text-ink-3 font-mono">
-            <span className="w-1 h-1 rounded-full bg-ok animate-pulse" />
+            <span className="w-1.5 h-1.5 rounded-full bg-ok animate-pulse-soft" />
             <span>{selectedCar.currentRangeKm} km</span>
             <span className="text-ink-4">{t.currentRange}</span>
           </span>
@@ -149,30 +140,23 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
               style={{ color: currentTheme.primaryHex }}
             >
               <Wrench className="w-3 h-3" />
-              <span>{t.bmsInspection}</span>
-              <span className="text-ink-4 font-normal">·</span>
-              <span className="text-ink-4 font-mono">{t.serviceDue}</span>
+              <span>{t.serviceDue}</span>
             </span>
           ) : (
             <span className="flex items-center gap-1.5 text-[10px] text-ink-4">
-              <span className="w-1 h-1 rounded-full bg-ok-2" />
               {t.allSystemsOk}
             </span>
           )}
         </div>
 
-        {/* Car Switcher Dropdown */}
         {isCarDropdownOpen && (
-          <div className="absolute top-full right-0 left-0 mt-3 panel p-4 z-50 space-y-3 animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between pb-2 border-b border-white/10">
-              <span className="text-xs font-bold text-ink flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" style={{ color: currentTheme.primaryHex }} />
-                <span>{t.selectMapCar}</span>
-              </span>
-              <span className="text-[10px] text-ink-4 font-mono">{cars.length} {t.vehiclesCount}</span>
+          <div className="absolute top-full right-0 left-0 mt-2 panel p-3 z-50 space-y-2 scale-in shadow-lg">
+            <div className="flex items-center justify-between px-1 pb-2 border-b border-[var(--color-border)]">
+              <span className="text-xs font-semibold text-ink">{t.selectMapCar}</span>
+              <span className="text-[10px] text-ink-4 font-mono">{cars.length}</span>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1 max-h-56 overflow-y-auto no-scrollbar">
               {cars.map((car) => {
                 const isSelected = car.id === selectedCar.id;
                 return (
@@ -182,35 +166,23 @@ export const FloatingCarCard: React.FC<FloatingCarCardProps> = ({
                       onSelectCar(car);
                       setIsCarDropdownOpen(false);
                     }}
-                    className={`w-full text-right p-3 rounded-2xl flex items-center justify-between transition-all border ${
+                    className={`w-full text-start p-2.5 rounded-xl flex items-center justify-between transition-colors ${
                       isSelected
-                        ? 'bg-surface-3 text-ink font-medium border-white/15'
-                        : 'bg-transparent text-ink-3 hover:bg-surface-2 border-transparent'
+                        ? 'bg-[var(--color-surface-3)] text-ink'
+                        : 'text-ink-3 hover:bg-[var(--color-surface-2)]'
                     }`}
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <img src={car.photo} alt={car.name} className="w-12 h-9 rounded-xl object-cover shrink-0" />
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <img src={car.photo} alt={car.name} className="w-11 h-8 rounded-lg object-cover shrink-0" />
                       <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-ink truncate">{car.name}</span>
-                          {isSelected && (
-                            <span
-                              className="w-2 h-2 rounded-full animate-pulse shrink-0"
-                              style={{ backgroundColor: currentTheme.primaryHex }}
-                            />
-                          )}
-                        </div>
-                        <span className="text-[10px] text-ink-4 font-mono dir-ltr block text-right truncate">
-                          {car.plateNumber} • {car.color}
+                        <span className="text-xs font-semibold text-ink truncate block">{car.name}</span>
+                        <span className="text-[10px] text-ink-4 font-mono truncate block">
+                          {car.plateNumber}
                         </span>
                       </div>
                     </div>
-
-                    <div className="flex items-center gap-3 shrink-0">
-                      <div className="text-left">
-                        <span className="text-xs font-bold text-ink font-mono block">{car.batteryPercent}%</span>
-                        <span className="text-[9px] text-ink-4 font-mono">{car.currentRangeKm} km</span>
-                      </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs font-bold font-mono text-ink">{car.batteryPercent}%</span>
                       {isSelected && <Check className="w-4 h-4 text-gold" />}
                     </div>
                   </button>
