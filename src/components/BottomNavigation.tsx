@@ -51,7 +51,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
 }) => {
   const reduceMotion = useReducedMotion();
   const isLight = mode === 'light';
-  const inactiveInk = isLight ? 'rgba(28,28,36,0.45)' : '#888888';
+  const inactiveInk = isLight ? 'rgba(28,28,36,0.45)' : 'var(--color-ink-4)';
   const accent = currentTheme.primaryHex;
   const t = translations[lang];
 

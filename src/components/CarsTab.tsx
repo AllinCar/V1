@@ -135,7 +135,7 @@ export const CarsTab: React.FC<CarsTabProps> = ({
               style={isSelected ? { borderColor: 'var(--color-gold)' } : undefined}
             >
               {/* Photo banner */}
-              <div className="relative h-48 w-full overflow-hidden bg-black">
+              <div className="relative h-48 w-full overflow-hidden bg-surface-1">
                 <img
                   src={car.photo}
                   alt={car.name}

@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 /* ────────────────────────────────────────────────────────────
-   AleenCar · Obsidian Concierge design system
-   Surfaces, text, brand gold, semantic colors, motion
+   AleenCar · Cinematic Concierge design system
+   A warm, richly-layered dark theme — graded like a film still
+   rather than a flat neutral-gray UI. Surfaces, text, brand
+   gold, semantic colors and motion all live here.
    ──────────────────────────────────────────────────────────── */
 @theme {
   /* Typography — Estedad (Persian/Arabic premium) + Plus Jakarta (Latin) */
@@ -10,21 +12,24 @@
   --font-display: 'Estedad', 'Plus Jakarta Sans', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Menlo, Consolas, monospace;
 
-  /* Surfaces — card stack anchored on #232323 */
-  --color-obsidian: #1a1a1a;
-  --color-surface-1: #232323;
-  --color-surface-2: #2a2a2a;
-  --color-surface-3: #323232;
+  /* Surfaces — a warm graphite stack (not flat neutral gray) that climbs
+     in real, visible steps so cards actually read as "elevated". */
+  --color-obsidian: #14110d;
+  --color-surface-1: #201911;
+  --color-surface-2: #302517;
+  --color-surface-3: #45351f;
 
-  /* Text — restrained warm-white hierarchy */
-  --color-ink: oklch(96% 0.004 260);
-  --color-ink-2: oklch(88% 0.005 260);
-  --color-ink-3: oklch(82% 0.006 260);
-  --color-ink-4: oklch(80% 0.006 260);
+  /* Text — warm candlelight-white hierarchy with real contrast between
+     each step, so the UI has depth instead of a single flat tone. */
+  --color-ink: oklch(97% 0.014 80);
+  --color-ink-2: oklch(89% 0.017 78);
+  --color-ink-3: oklch(76% 0.019 76);
+  --color-ink-4: oklch(58% 0.021 74);
 
-  /* Brand — champagne / brushed gold */
-  --color-gold: #c5a059;
-  --color-gold-2: #e0be7e;
+  /* Brand — champagne / brushed gold, richer and more luminous */
+  --color-gold: #cda76b;
+  --color-gold-2: #f2d38f;
+  --color-gold-3: #8a6a37;
 
   /* Semantic */
   --color-ok: #02daae;
@@ -36,6 +41,7 @@
   /* Motion */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -62,6 +68,38 @@
     overscroll-behavior-y: none;
     font-feature-settings: "ss01", "kern";
     font-kerning: normal;
+    position: relative;
+  }
+
+  /* Cinematic ambient light — soft warm/teal bloom, additive so it lifts
+     the mood without ever washing out or lightening the base surfaces. */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    opacity: 0.8;
+    background:
+      radial-gradient(75% 48% at 16% -10%, color-mix(in oklab, var(--color-gold) 34%, transparent) 0%, transparent 64%),
+      radial-gradient(65% 52% at 106% 6%, color-mix(in oklab, var(--color-ok) 24%, transparent) 0%, transparent 64%),
+      radial-gradient(90% 58% at 50% 120%, color-mix(in oklab, var(--color-gold-2) 18%, transparent) 0%, transparent 62%);
+  }
+
+  /* Cinematic vignette + film grain — frames the screen like a shot on
+     film instead of a flat, uniformly-dark digital surface. */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 61;
+    pointer-events: none;
+    background-image:
+      radial-gradient(150% 120% at 50% 40%, transparent 58%, oklch(0% 0 0 / 0.4) 100%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: no-repeat, repeat;
+    background-size: cover, 140px 140px;
   }
 
   /* English mode — Latin-first stack while keeping Estedad for any Persian */
@@ -106,29 +144,38 @@
 }
 
 @layer components {
-  /* Elevated surface panel — the app's standard card chrome */
+  /* Elevated surface panel — the app's standard card chrome.
+     Sits one visible step above the page canvas, with a soft rim-light
+     on top and a deep, two-layer contact shadow for real depth. */
   .panel {
     border-radius: 1.25rem;
-    border: 1px solid oklch(100% 0 0 / 0.07);
-    background: #232323;
+    border: 1px solid oklch(85% 0.02 75 / 0.08);
+    border-top-color: color-mix(in oklab, var(--color-gold) 22%, oklch(85% 0.02 75 / 0.14));
+    background: var(--color-surface-1);
     box-shadow:
-      0 1px 0 oklch(100% 0 0 / 0.04) inset,
-      0 8px 24px oklch(0% 0 0 / 0.35);
+      0 1px 0 oklch(100% 0 0 / 0.05) inset,
+      0 14px 30px -10px oklch(0% 0 0 / 0.55),
+      0 30px 60px -24px oklch(0% 0 0 / 0.5);
   }
 
-  /* Ghost surface panel — quieter, used for nested cards */
+  /* Ghost surface panel — nested cards, one step lighter than .panel
+     so it actually reads as "elevated within" instead of blending in */
   .panel-subtle {
     border-radius: 1rem;
-    border: 1px solid oklch(100% 0 0 / 0.06);
-    background: #232323;
+    border: 1px solid oklch(85% 0.02 75 / 0.07);
+    border-top-color: color-mix(in oklab, var(--color-gold) 16%, oklch(85% 0.02 75 / 0.12));
+    background: var(--color-surface-2);
   }
 
-  /* Floating glass sheet (map overlays, chips) */
+  /* Floating glass sheet (map overlays, chips) — genuinely translucent
+     so the backdrop-blur has something to actually diffuse */
   .glass {
-    background: #232323;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid oklch(100% 0 0 / 0.08);
+    background: color-mix(in oklab, var(--color-surface-2) 68%, transparent);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border: 1px solid oklch(100% 0 0 / 0.1);
+    border-top-color: color-mix(in oklab, var(--color-gold) 20%, oklch(100% 0 0 / 0.16));
+    box-shadow: 0 10px 30px -14px oklch(0% 0 0 / 0.55);
   }
 
   /* Primary CTA — surface chrome only; accent color applied inline */
@@ -234,12 +281,16 @@
     box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-gold) 18%, transparent);
   }
 
-  /* Bottom-sheet modal container */
+  /* Bottom-sheet modal container — the topmost surface, one step
+     brighter than base panels with a lit top edge for a premium feel */
   .sheet {
     border-radius: 1.75rem 1.75rem 0 0;
-    border: 1px solid oklch(100% 0 0 / 0.1);
-    background: #232323;
-    box-shadow: 0 -24px 64px oklch(0% 0 0 / 0.6);
+    border: 1px solid oklch(100% 0 0 / 0.11);
+    border-top-color: color-mix(in oklab, var(--color-gold) 26%, oklch(100% 0 0 / 0.2));
+    background: var(--color-surface-2);
+    box-shadow:
+      0 1px 0 oklch(100% 0 0 / 0.07) inset,
+      0 -24px 64px oklch(0% 0 0 / 0.6);
   }
 
   /* Overlay scrim */
@@ -334,13 +385,16 @@
    Dark is the default surface; set data-theme="light" to flip.
    ──────────────────────────────────────────────────────────── */
 .nav-capsule {
-  --nav-surface: #0d0d0d;
-  --nav-border: oklch(100% 0 0 / 0.06);
+  --nav-surface: color-mix(in oklab, var(--color-obsidian) 86%, transparent);
+  --nav-border: oklch(85% 0.02 75 / 0.09);
   --nav-shadow:
+    0 1px 0 oklch(100% 0 0 / 0.06) inset,
     0 4px 16px oklch(0% 0 0 / 0.45),
-    0 12px 32px oklch(0% 0 0 / 0.35);
+    0 12px 32px oklch(0% 0 0 / 0.4);
 
   background: var(--nav-surface);
+  backdrop-filter: blur(22px) saturate(160%);
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
   border: 1px solid var(--nav-border);
   border-radius: 9999px;
   box-shadow: var(--nav-shadow);
@@ -361,11 +415,17 @@
 
 /* Custom Leaflet Dark Glassmorphism Popups */
 .leaflet-container {
-  background: #2b2b2b !important;
+  background: #1e1811 !important;
+}
+
+/* Subtle cinematic color-grade on the tile imagery only, so markers and
+   popups keep their crisp, saturated accent colors */
+.leaflet-tile-pane {
+  filter: brightness(0.96) contrast(1.08) saturate(1.08) sepia(0.06);
 }
 
 .leaflet-popup-content-wrapper {
-  background: rgba(10, 15, 12, 0.95) !important;
+  background: rgba(20, 16, 12, 0.94) !important;
   color: #ffffff !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 16px !important;
@@ -380,7 +440,7 @@
 }
 
 .leaflet-popup-tip {
-  background: rgba(10, 15, 12, 0.95) !important;
+  background: rgba(20, 16, 12, 0.94) !important;
   box-shadow: none !important;
 }
 
