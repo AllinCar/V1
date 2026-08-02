@@ -177,7 +177,7 @@ export const MapCanvas: React.FC<MapCanvasProps> = ({
     const userMarkerHtml = `
       <div style="position: relative; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;">
         <!-- luminous colored halo (soft glow) -->
-        <div style="position: absolute; width: 46px; height: 46px; border-radius: 9999px; background: var(--accent-primary); opacity: 0.35; filter: blur(9px);"></div>
+        <div class="map-halo" style="position: absolute; width: 46px; height: 46px; border-radius: 9999px; background: var(--accent-primary); filter: blur(9px);"></div>
         <!-- simple accent dot with white ring -->
         <div style="width: 18px; height: 18px; border-radius: 9999px; background: var(--accent-primary); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);"></div>
       </div>

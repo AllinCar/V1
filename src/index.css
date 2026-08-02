@@ -603,6 +603,22 @@
   box-shadow: 0 0 30px var(--accent-glow);
 }
 
+/* User-location halo — pulsing luminous glow (dim ⇄ bright) */
+.map-halo {
+  animation: map-halo-pulse 2.2s var(--ease-standard) infinite;
+}
+@keyframes map-halo-pulse {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.22);
+  }
+}
+
 /* Leaflet route polyline — CSS var (Leaflet sets stroke via attribute,
    which cannot resolve var(), so theme via class instead) */
 .route-line {
@@ -627,6 +643,36 @@
    ──────────────────────────────────────────────────────────────── */
 .leaflet-container {
   background: var(--map-bg) !important;
+}
+
+/* Zoom control (+ / -) — theme-aware pill */
+.leaflet-control-zoom {
+  border: none !important;
+  border-radius: 14px !important;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.28) !important;
+  font-family: var(--font-sans) !important;
+}
+.leaflet-bar a {
+  background: var(--surface-1) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid var(--surface-3) !important;
+  width: 38px !important;
+  height: 38px !important;
+  line-height: 38px !important;
+  font-size: 20px !important;
+  transition: background 160ms var(--ease-standard), color 160ms var(--ease-standard);
+}
+.leaflet-bar a:last-child {
+  border-bottom: none !important;
+}
+.leaflet-bar a:hover {
+  background: var(--surface-2) !important;
+  color: var(--accent-text) !important;
+}
+.leaflet-bar a.leaflet-disabled {
+  background: var(--surface-1) !important;
+  color: var(--text-muted) !important;
 }
 
 /* Subtle cinematic color-grade on tile imagery only */
